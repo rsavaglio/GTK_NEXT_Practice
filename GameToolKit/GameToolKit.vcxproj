@@ -138,9 +138,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\GTKMath.h" />
     <ClInclude Include="src\Test.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GTKMath.cpp" />
     <ClCompile Include="src\Test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

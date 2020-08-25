@@ -1,0 +1,70 @@
+#pragma once
+
+	namespace GTK {
+
+	#define MTYPE float
+
+	struct vec2
+	{
+		MTYPE x, y;
+
+		vec2(MTYPE X, MTYPE Y) : x(X), y(Y) {}
+
+		// Basic vec2 + vec2 operations
+		vec2 Add     (const vec2& other) { x += other.x; y += other.y; return *this; }
+		vec2 Subtract(const vec2& other) { x -= other.x; y -= other.y; return *this; }
+		vec2 Multiply(const vec2& other) { x *= other.x; y *= other.y; return *this; }
+		vec2 Divide  (const vec2& other) { x /= other.x; y /= other.y; return *this; }
+
+		vec2 operator+=(const vec2& other) { return Add(other); }
+		vec2 operator-=(const vec2& other) { return Subtract(other); }
+		vec2 operator*=(const vec2& other) { return Multiply(other); }
+		vec2 operator/=(const vec2& other) { return Divide(other); }
+
+		vec2 operator+(const vec2& other) { return vec2(x + other.x, y + other.y); }
+		vec2 operator-(const vec2& other) { return vec2(x - other.x, y - other.y); }
+		vec2 operator*(const vec2& other) { return vec2(x * other.x, y * other.y); }
+		vec2 operator/(const vec2& other) { return vec2(x / other.x, y / other.y); }
+
+
+		// Basic vec2 + scalar operations
+		vec2 AddScalar       (const MTYPE& scalar) { x += scalar; y += scalar; return *this; }
+		vec2 SubtractScalar  (const MTYPE& scalar) { x -= scalar; y -= scalar; return *this; }
+		vec2 MultiplyByScalar(const MTYPE& scalar) { x *= scalar; y *= scalar; return *this; }
+		vec2 DivideByScalar  (const MTYPE& scalar) { x /= scalar; y /= scalar; return *this; }
+
+		vec2 operator+=(const MTYPE& other) { return AddScalar(other); }
+		vec2 operator-=(const MTYPE& other) { return SubtractScalar(other); }
+		vec2 operator*=(const MTYPE& other) { return MultiplyByScalar(other); }
+		vec2 operator/=(const MTYPE& other) { return DivideByScalar(other); }
+
+		vec2 operator+(const MTYPE& other) { return vec2(x + other, y + other); }
+		vec2 operator-(const MTYPE& other) { return vec2(x - other, y - other); }
+		vec2 operator*(const MTYPE& other) { return vec2(x * other, y * other); }
+		vec2 operator/(const MTYPE& other) { return vec2(x / other, y / other); }
+
+		// Other basic operations
+		void Increment ()    { x++; y++; }
+		void Decrement ()    { x--; y--; }
+		vec2 operator++()    { Increment(); return *this; }
+		vec2 operator--()    { Decrement(); return *this; }
+		vec2 operator++(int) { vec2 temp = *this; Increment(); return temp; }
+		vec2 operator--(int) { vec2 temp = *this; Decrement(); return temp; }
+
+		bool operator==(const vec2& other) { return x == other.x && y == other.y; }
+		bool operator!=(const vec2& other) { return !(x == other.x && y == other.y); }
+
+
+		// Operations I should have studied more during my undergrad
+		MTYPE DotProduct  (const vec2& other) { return (x * other.x) + (y * other.y); }
+		MTYPE CrossProduct(const vec2& other) { return (x * other.y) - (y * other.x); }
+
+	};
+
+	template<typename T>
+	struct mat2
+	{
+
+	};
+
+}

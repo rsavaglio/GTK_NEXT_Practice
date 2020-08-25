@@ -18,9 +18,15 @@
     <ClCompile Include="src\Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\GTKMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GTKMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
