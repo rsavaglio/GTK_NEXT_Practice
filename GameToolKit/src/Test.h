@@ -2,7 +2,7 @@
 #include <string>
 
 
-namespace GTK {
+namespace gtk {
 
 	std::string HelloWorld()
 	{

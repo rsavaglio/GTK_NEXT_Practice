@@ -1,25 +1,38 @@
 #pragma once
+#include "Core.h"
 
-	namespace GTK {
+	namespace gtk {
 
 	#define MTYPE float
 
 	struct vec2
 	{
-		MTYPE x, y;
+		union {
+			MTYPE values[2];
+			struct { MTYPE x, y; };
+			struct { MTYPE r, g; };
+			struct { MTYPE u, v; };
+		};
 
+		vec2() :x(0), y(0) {}
+		vec2(MTYPE X) : x(X), y(X) {}
 		vec2(MTYPE X, MTYPE Y) : x(X), y(Y) {}
 
-		// Basic vec2 + vec2 operations
-		vec2 Add     (const vec2& other) { x += other.x; y += other.y; return *this; }
-		vec2 Subtract(const vec2& other) { x -= other.x; y -= other.y; return *this; }
-		vec2 Multiply(const vec2& other) { x *= other.x; y *= other.y; return *this; }
-		vec2 Divide  (const vec2& other) { x /= other.x; y /= other.y; return *this; }
+		// Indexing
+		MTYPE& operator[](unsigned short i) { ASSERT(i < 2); return values[i]; }
+		const MTYPE&  operator[](unsigned short i) const { ASSERT(i < 2); return values[i]; }
 
-		vec2 operator+=(const vec2& other) { return Add(other); }
-		vec2 operator-=(const vec2& other) { return Subtract(other); }
-		vec2 operator*=(const vec2& other) { return Multiply(other); }
-		vec2 operator/=(const vec2& other) { return Divide(other); }
+
+		// Basic vec2 + vec2 operations
+		vec2& Add     (const vec2& other) { x += other.x; y += other.y; return *this; }
+		vec2& Subtract(const vec2& other) { x -= other.x; y -= other.y; return *this; }
+		vec2& Multiply(const vec2& other) { x *= other.x; y *= other.y; return *this; }
+		vec2& Divide  (const vec2& other) { x /= other.x; y /= other.y; return *this; }
+
+		vec2& operator+=(const vec2& other) { return Add(other); }
+		vec2& operator-=(const vec2& other) { return Subtract(other); }
+		vec2& operator*=(const vec2& other) { return Multiply(other); }
+		vec2& operator/=(const vec2& other) { return Divide(other); }
 
 		vec2 operator+(const vec2& other) { return vec2(x + other.x, y + other.y); }
 		vec2 operator-(const vec2& other) { return vec2(x - other.x, y - other.y); }
@@ -61,9 +74,37 @@
 
 	};
 
-	template<typename T>
+	
 	struct mat2
 	{
+		union {
+			MTYPE values[4];
+			vec2 rows[2];
+		};
+		
+		mat2() : values{ 0, 0, 
+						 0, 0 } {}
+
+		mat2(MTYPE v) : values{ v, 0,
+								0, v } {}
+
+		mat2(MTYPE x0, MTYPE x1, MTYPE y0, MTYPE y1) : values{ x0, x1, 
+															   y0, y1 } {}
+
+		// Indexing
+		MTYPE& operator()(unsigned short column, unsigned short row) 
+		{ 
+			ASSERT(column < 2 && row < 2); 
+			return values[column + row * 2];
+		}
+		const MTYPE& operator()(unsigned short column, unsigned short row) const 
+		{ 
+			ASSERT(column < 2 && row < 2); 
+			return values[column + row * 2];
+		}
+
+		vec2& operator[](unsigned short i) { ASSERT(i < 2); return rows[i]; }
+		const vec2& operator[](unsigned short i) const { ASSERT(i < 2); return rows[i]; }
 
 	};
 
