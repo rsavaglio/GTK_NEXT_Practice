@@ -1,7 +1,7 @@
 #pragma once
 #include "Core.h"
 
-	namespace gtk {
+namespace gtk {
 
 	#define MTYPE float
 
@@ -111,44 +111,40 @@
 
 		mat2& AddScalar(const MTYPE& scalar)
 		{
-			MTYPE* i = &values[0];
-			*i += scalar; i++;
-			*i += scalar; i++;
-			*i += scalar; i++;
-			*i += scalar;
+			*(values)     += scalar;
+			*(values + 1) += scalar;
+			*(values + 2) += scalar;
+			*(values + 3) += scalar;
 
 			return *this;
 
 		}        mat2& operator+=(const MTYPE& scalar) { return AddScalar(scalar); }
 		mat2& SubtractScalar(const MTYPE& scalar)
 		{
-			MTYPE* i = &values[0];
-			*i -= scalar; i++;
-			*i -= scalar; i++;
-			*i -= scalar; i++;
-			*i -= scalar;
+			*(values)     -= scalar;
+			*(values + 1) -= scalar;
+			*(values + 2) -= scalar;
+			*(values + 3) -= scalar;
 
 			return *this;
 
 		}   mat2& operator-=(const MTYPE& scalar) { return SubtractScalar(scalar); }
 		mat2& MultiplyByScalar(const MTYPE& scalar)
 		{
-			MTYPE* i = &values[0];
-			*i *= scalar; i++;
-			*i *= scalar; i++;
-			*i *= scalar; i++;
-			*i *= scalar;
+			*(values)     *= scalar;
+			*(values + 1) *= scalar;
+			*(values + 2) *= scalar;
+			*(values + 3) *= scalar;
 
 			return *this;
 
 		} mat2& operator*=(const MTYPE& scalar) { return MultiplyByScalar(scalar); }
 		mat2& DivideByScalar(const MTYPE& scalar)
 		{
-			MTYPE* i = &values[0];
-			*i /= scalar; i++;
-			*i /= scalar; i++;
-			*i /= scalar; i++;
-			*i /= scalar;
+			*(values)     /= scalar;
+			*(values + 1) /= scalar;
+			*(values + 2) /= scalar;
+			*(values + 3) /= scalar;
 
 			return *this;
 
@@ -156,46 +152,42 @@
 
 		mat2 operator+(const MTYPE& scalar) 
 		{ 
-			MTYPE* i = &values[0];
 			return 
 			{
-				*(i)   + scalar,
-				*(i+1) + scalar,
-				*(i+2) + scalar,
-				*(i+2) + scalar
+				*(values)   + scalar,
+				*(values+1) + scalar,
+				*(values+2) + scalar,
+				*(values+2) + scalar
 			};
 		}
 		mat2 operator-(const MTYPE& scalar) 
 		{
-			MTYPE* i = &values[0];
 			return
 			{
-				*(i)     - scalar,
-				*(i + 1) - scalar,
-				*(i + 2) - scalar,
-				*(i + 2) - scalar
+				*(values)     - scalar,
+				*(values + 1) - scalar,
+				*(values + 2) - scalar,
+				*(values + 2) - scalar
 			};
 		}
 		mat2 operator*(const MTYPE& scalar)
 		{
-			MTYPE* i = &values[0];
 			return
 			{
-				*(i)     * scalar,
-				*(i + 1) * scalar,
-				*(i + 2) * scalar,
-				*(i + 2) * scalar
+				*(values)     * scalar,
+				*(values + 1) * scalar,
+				*(values + 2) * scalar,
+				*(values + 2) * scalar
 			};
 		}
 		mat2 operator/(const MTYPE& scalar)
 		{
-			MTYPE* i = &values[0];
 			return
 			{
-				*(i)     / scalar,
-				*(i + 1) / scalar,
-				*(i + 2) / scalar,
-				*(i + 2) / scalar
+				*(values)     / scalar,
+				*(values + 1) / scalar,
+				*(values + 2) / scalar,
+				*(values + 2) / scalar
 			};
 		}
 		
@@ -207,12 +199,9 @@
 			// a b * x  = ax + by
 			// c d   y	  cx + dy
 
-			MTYPE* i = &values[0];
-			const MTYPE* j = &vec.values[0];
-
 			return { 
-				((*i  ) * (*j)) + ((*(i+1)) * (*(j+1))), // x1 = ax + by
-				((*i+2) * (*j)) + ((*(i+3)) * (*(j+1)))  // y1 = cx + dy
+				((* values)    * (*vec.values)) + ((*(values+1)) * (*(vec.values+1))), // x1 = ax + by
+				((*(values+2)) * (*vec.values)) + ((*(values+3)) * (*(vec.values+1)))  // y1 = cx + dy
 			};
 
 		} vec2 operator*(const vec2& vec) { return MultiplyByVec2(vec); }
@@ -222,24 +211,20 @@
 
 		mat2& Add(const mat2& other) 
 		{ 
-			MTYPE* i = &values[0];
-			const MTYPE* j = &other.values[0];
-			*i += *j; i++; j++;
-			*i += *j; i++; j++;
-			*i += *j; i++; j++;
-			*i += *j; 
+			*(values)     += *(other.values);
+			*(values + 1) += *(other.values + 1);
+			*(values + 2) += *(other.values + 2);
+			*(values + 3) += *(other.values + 3);
 
 			return *this;
 
-		}      mat2& operator+=(const mat2& other) { return Add(other); }
+		} mat2& operator+=(const mat2& other) { return Add(other); }
 		mat2& Subtract(const mat2& other)
 		{
-			MTYPE* i = &values[0];
-			const MTYPE* j = &other.values[0];
-			*i -= *j; i++; j++;
-			*i -= *j; i++; j++;
-			*i -= *j; i++; j++;
-			*i -= *j;
+			*(values)     -= *(other.values);
+			*(values + 1) -= *(other.values + 1);
+			*(values + 2) -= *(other.values + 2);
+			*(values + 3) -= *(other.values + 3);
 
 			return *this;
 
@@ -249,21 +234,15 @@
 			// a b  *  A B  =  aA + bC, aB + bD
 			// c d     C D     cA + dC, cB + dD
 
-			// a = i, b = i+1, c = i+2, d = i+3
-			// A = j, B = j+1, C = j+2, D = j+3
+			MTYPE a =  *values;
+			MTYPE b = (*(values + 1));
+			MTYPE c = (*(values + 2));
+			MTYPE d = (*(values + 3));
 
-			MTYPE* i = &values[0];
-			const MTYPE* j = &other.values[0];
-
-			MTYPE a = *i;
-			MTYPE b = (*(i + 1));
-			MTYPE c = (*(i + 2));
-			MTYPE d = (*(i + 3));
-
-			* i    = (a * (* j)   ) + (b * (*(j+2))); // a = aA + bC
-			*(i+1) = (a * (*(j+1))) + (b * (*(j+3))); // b = aB + bD
-			*(i+2) = (c * (* j)   ) + (d * (*(j+2))); // c = cA + dC
-			*(i+3) = (c * (*(j+1))) + (d * (*(j+3))); // d = cB + dD
+			* values      = (a * (* other.values)   )   + (b * (*(other.values + 2))); // a = aA + bC
+			*(values + 1) = (a * (*(other.values + 1))) + (b * (*(other.values + 3))); // b = aB + bD
+			*(values + 2) = (c * (*other.values))       + (d * (*(other.values + 2))); // c = cA + dC
+			*(values + 3) = (c * (*(other.values + 1))) + (d * (*(other.values + 3))); // d = cB + dD
 
 			return *this;
 
@@ -271,15 +250,12 @@
 
 		mat2 operator+(const mat2& other)
 		{
-			MTYPE* i = &values[0];
-			const MTYPE* j = &other.values[0];
-
 			return
 			{
-				*(i  ) + *(j  ),
-				*(i+1) + *(j+1),
-				*(i+2) + *(j+2),
-				*(i+3) + *(j+3)
+				*(values)     + *(other.values),
+				*(values + 1) + *(other.values + 1),
+				*(values + 2) + *(other.values + 2),
+				*(values + 3) + *(other.values + 3)
 			};
 		}
 		mat2 operator-(const mat2& other)
@@ -289,23 +265,20 @@
 
 			return
 			{
-				*(i  ) - *(j  ),
-				*(i+1) - *(j+1),
-				*(i+2) - *(j+2),
-				*(i+3) - *(j+3)
+				*(values)     - *(other.values),
+				*(values + 1) - *(other.values + 1),
+				*(values + 2) - *(other.values + 2),
+				*(values + 3) - *(other.values + 3)
 			};
 		}
 		mat2 operator*(const mat2& other)
 		{
-			MTYPE* i = &values[0];
-			const MTYPE* j = &other.values[0];
-
 			return
 			{
-				((* i)      * (*j))       + ((*(i + 1)) * (*(j + 2))), // a1 = aA + bC
-				((* i)      * (*(j + 1))) + ((*(i + 1)) * (*(j + 3))), // b1 = aB + bD
-				((*(i + 2)) * (*j))       + ((*(i + 3)) * (*(j + 2))), // c1 = cA + dC
-				((*(i + 2)) * (*(j + 1))) + ((*(i + 3)) * (*(j + 3)))  // d1 = cB + dD
+				((*values) * (*other.values))             + ((*(values + 1)) * (*(other.values + 2))), // a = aA + bC
+				((*values) * (*(other.values + 1)))       + ((*(values + 1)) * (*(other.values + 3))), // b = aB + bD
+				((*(values + 2)) * (*other.values))       + ((*(values + 3)) * (*(other.values + 2))), // c = cA + dC
+				((*(values + 2)) * (*(other.values + 1))) + ((*(values + 3)) * (*(other.values + 3))) // d = cB + dD
 			};
 		}
 
