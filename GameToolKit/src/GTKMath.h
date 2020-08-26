@@ -92,12 +92,12 @@
 															   y0, y1 } {}
 
 		// Indexing
-		MTYPE& operator()(unsigned short column, unsigned short row) 
+		MTYPE& operator()(unsigned short row, unsigned short column) 
 		{ 
 			ASSERT(column < 2 && row < 2); 
 			return values[column + row * 2];
 		}
-		const MTYPE& operator()(unsigned short column, unsigned short row) const 
+		const MTYPE& operator()(unsigned short row, unsigned short column) const 
 		{ 
 			ASSERT(column < 2 && row < 2); 
 			return values[column + row * 2];
@@ -105,6 +105,124 @@
 
 		vec2& operator[](unsigned short i) { ASSERT(i < 2); return rows[i]; }
 		const vec2& operator[](unsigned short i) const { ASSERT(i < 2); return rows[i]; }
+
+
+		///// mat2 + scalar Operations
+
+		mat2& AddScalar(const MTYPE& scalar)
+		{
+			MTYPE* i = &values[0];
+			*i += scalar; i++;
+			*i += scalar; i++;
+			*i += scalar; i++;
+			*i += scalar;
+
+			return *this;
+
+		} mat2& operator+=(const MTYPE& scalar) { return AddScalar(scalar); }
+
+		mat2& SubtractScalar(const MTYPE& scalar)
+		{
+			MTYPE* i = &values[0];
+			*i -= scalar; i++;
+			*i -= scalar; i++;
+			*i -= scalar; i++;
+			*i -= scalar;
+
+			return *this;
+
+		} mat2& operator-=(const MTYPE& scalar) { return SubtractScalar(scalar); }
+
+
+		mat2& MultiplyByScalar(const MTYPE& scalar)
+		{
+			MTYPE* i = &values[0];
+			*i *= scalar; i++;
+			*i *= scalar; i++;
+			*i *= scalar; i++;
+			*i *= scalar;
+
+			return *this;
+
+		} mat2& operator*=(const MTYPE& scalar) { return MultiplyByScalar(scalar); }
+
+		mat2& DivideByScalar(const MTYPE& scalar)
+		{
+			MTYPE* i = &values[0];
+			*i /= scalar; i++;
+			*i /= scalar; i++;
+			*i /= scalar; i++;
+			*i /= scalar;
+
+			return *this;
+
+		} mat2& operator/=(const MTYPE& scalar) { return DivideByScalar(scalar); }
+
+		//// mat2 + vec2 Operations
+		
+		vec2 MultiplyByVec2(const vec2& vec)
+		{
+			// a b * x  = ax + by
+			// c d   y	  cx + dy
+
+			MTYPE* i = &values[0];
+			const MTYPE* j = &vec.values[0];
+
+
+			return { 
+				((*i  ) * (*j)) + ((*(i+1)) * (*(j+1))), // x1 = ax + by
+				((*i+2) * (*j)) + ((*(i+3)) * (*(j+1)))  // y1 = cx + dy
+			};
+
+		}
+
+		//// mat2 + mat2 Operations
+
+		mat2& Add(const mat2& other) 
+		{ 
+			MTYPE* i = &values[0];
+			const MTYPE* j = &other.values[0];
+			*i += *j; i++; j++;
+			*i += *j; i++; j++;
+			*i += *j; i++; j++;
+			*i += *j; 
+
+			return *this;
+
+		} mat2& operator+=(const mat2& other) { return Add(other); }
+
+		mat2& Subtract(const mat2& other)
+		{
+			MTYPE* i = &values[0];
+			const MTYPE* j = &other.values[0];
+			*i -= *j; i++; j++;
+			*i -= *j; i++; j++;
+			*i -= *j; i++; j++;
+			*i -= *j;
+
+			return *this;
+
+		} mat2& operator-=(const mat2& other) { return Subtract(other); }
+
+		mat2& Multiply(const mat2& other)
+		{
+			// a b  *  A B  =  aA + bC, aB + bD
+			// c d     C D     cA + dC, cB + dD
+
+			// a = i, b = i+1, c = i+2, d = i+3
+			// A = j, B = j+1, C = j+2, D = j+3
+
+			MTYPE* i = &values[0];
+			const MTYPE* j = &other.values[0];
+			
+			* i    = ((*i  ) * (*j  ) + (*(i+1)) * (*(j+2))); // a = aA + bC
+			*(i+1) = ((*i  ) * (*j+1) + (*(i+1)) * (*(j+3))); // b = aB + bD
+			*(i+2) = ((*i+2) * (*j  ) + (*(i+3)) * (*(j+2))); // c = cA + dC
+			*(i+3) = ((*i+2) * (*j+1) + (*(i+3)) * (*(j+3))); // d = cB + dD
+
+			return *this;
+
+		} mat2& operator*=(const mat2& other) { return Multiply(other); }
 
 	};
 
