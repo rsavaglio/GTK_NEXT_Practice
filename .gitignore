@@ -2,6 +2,7 @@
 .vs/
 x64/
 GameTest/x64/
+GTK_UnitTesting/x64/
 
 # Files
 *.user
