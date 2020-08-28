@@ -138,13 +138,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\GTKMath.h" />
-    <ClInclude Include="src\Core.h" />
-    <ClInclude Include="src\Test.h" />
+    <ClInclude Include="gtk\Math.h" />
+    <ClInclude Include="gtk\Core.h" />
+    <ClInclude Include="gtk\Test.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\GTKMath.cpp" />
-    <ClCompile Include="src\Test.cpp" />
+    <ClCompile Include="gtk\Math.cpp" />
+    <ClCompile Include="gtk\Test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

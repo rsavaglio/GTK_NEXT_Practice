@@ -1,0 +1,12 @@
+
+
+EXPECT_TRUE(condition);	 condition is true
+EXPECT_FALSE(condition); condition is false
+
+EXPECT_EQ(val1, val2);	val1 == val2
+EXPECT_NE(val1, val2);	val1 != val2
+EXPECT_LT(val1, val2);	val1 < val2
+EXPECT_LE(val1, val2);	val1 <= val2
+EXPECT_GT(val1, val2);	val1 > val2
+EXPECT_GE(val1, val2);	val1 >= val2
+

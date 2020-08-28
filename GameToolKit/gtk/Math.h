@@ -67,10 +67,22 @@ namespace gtk {
 		bool operator==(const vec2& other) { return   x == other.x && y == other.y ; }
 		bool operator!=(const vec2& other) { return !(x == other.x && y == other.y); }
 
+		friend bool operator==(const vec2& left, const vec2& right)
+		{
+			return   left.x == right.x && left.y == right.y;
+		}
+
+		friend bool operator!=(const vec2& left, const vec2& right)
+		{
+			return   left.x != right.x && left.y != right.y;
+		}
+
 
 		// Operations I should have studied more during my undergrad
-		MTYPE DotProduct  (const vec2& other) { return (x * other.x) + (y * other.y); }
-		MTYPE CrossProduct(const vec2& other) { return (x * other.y) - (y * other.x); }
+		MTYPE Dot  (const vec2& other) { return (x * other.x) + (y * other.y); }
+		MTYPE Cross(const vec2& other) { return (x * other.y) - (y * other.x); }
+
+
 
 	};
 
@@ -157,7 +169,7 @@ namespace gtk {
 				*(values)   + scalar,
 				*(values+1) + scalar,
 				*(values+2) + scalar,
-				*(values+2) + scalar
+				*(values+3) + scalar
 			};
 		}
 		mat2 operator-(const MTYPE& scalar) 
@@ -167,7 +179,7 @@ namespace gtk {
 				*(values)     - scalar,
 				*(values + 1) - scalar,
 				*(values + 2) - scalar,
-				*(values + 2) - scalar
+				*(values + 3) - scalar
 			};
 		}
 		mat2 operator*(const MTYPE& scalar)
@@ -177,7 +189,7 @@ namespace gtk {
 				*(values)     * scalar,
 				*(values + 1) * scalar,
 				*(values + 2) * scalar,
-				*(values + 2) * scalar
+				*(values + 3) * scalar
 			};
 		}
 		mat2 operator/(const MTYPE& scalar)
@@ -187,7 +199,7 @@ namespace gtk {
 				*(values)     / scalar,
 				*(values + 1) / scalar,
 				*(values + 2) / scalar,
-				*(values + 2) / scalar
+				*(values + 3) / scalar
 			};
 		}
 		
@@ -282,6 +294,33 @@ namespace gtk {
 			};
 		}
 
+		// Bool Operators
+		bool operator==(const mat2& other) 
+		{ 
+			for (int i = 0; i < 4; i++)
+			{
+				if (*(values + i) != *(other.values + i))
+					return false;
+			}
+
+			return true;
+		}
+		bool operator!=(const mat2& other) { return !(*this == other); }
+
+		friend bool operator==(const mat2& left, const mat2& right)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				if (*(left.values + i) != *(right.values + i))
+					return false;
+			}
+
+			return true;
+		}
+		friend bool operator!=(const mat2& left, const mat2& right)
+		{
+			return   !(left == right);
+		}
 	};
 
 }
