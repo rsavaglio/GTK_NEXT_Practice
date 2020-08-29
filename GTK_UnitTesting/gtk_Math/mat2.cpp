@@ -45,7 +45,7 @@ TEST_F(Mat2_F, mat2_contrustors)
 
 	gtk::mat2 w(-499.5f, -55.0f, 2, 1);
 	EXPECT_FLOAT_EQ(w.values[0], -499.5f); EXPECT_FLOAT_EQ(w.values[1], -55.0f);
-	EXPECT_FLOAT_EQ(w.values[2], 2.0f); EXPECT_FLOAT_EQ(w.values[3], 1.0f);
+	EXPECT_FLOAT_EQ(w.values[2], 2.0f);    EXPECT_FLOAT_EQ(w.values[3], 1.0f);
 }
 
 

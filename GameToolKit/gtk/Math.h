@@ -74,7 +74,7 @@ namespace gtk {
 
 		friend bool operator!=(const vec2& left, const vec2& right)
 		{
-			return   left.x != right.x && left.y != right.y;
+			return   !(left == right);
 		}
 
 
@@ -83,6 +83,96 @@ namespace gtk {
 		MTYPE Cross(const vec2& other) { return (x * other.y) - (y * other.x); }
 
 
+
+	};
+
+
+	struct vec3
+	{
+		union {
+			MTYPE values[3];
+			struct { MTYPE x, y, z; };
+			struct { MTYPE r, g, b; };
+		};
+
+		vec3() :x(0), y(0), z(0) {}
+		vec3(MTYPE X) : x(X), y(X), z(X) {}
+		vec3(MTYPE X, MTYPE Y, MTYPE Z) : x(X), y(Y), z(Z) {}
+
+		// Indexing
+		MTYPE& operator[](unsigned short i) { ASSERT(i < 3); return values[i]; }
+		const MTYPE& operator[](unsigned short i) const { ASSERT(i < 3); return values[i]; }
+
+
+		// Basic vec2 + vec2 operations
+		vec3& Add(const vec3& other)      { x += other.x; y += other.y; z += other.z; return *this; }
+		vec3& Subtract(const vec3& other) { x -= other.x; y -= other.y; z -= other.z; return *this; }
+		vec3& Multiply(const vec3& other) { x *= other.x; y *= other.y; z *= other.z; return *this; }
+		vec3& Divide(const vec3& other)   { x /= other.x; y /= other.y; z /= other.z; return *this; }
+
+		vec3& operator+=(const vec3& other) { return Add(other); }
+		vec3& operator-=(const vec3& other) { return Subtract(other); }
+		vec3& operator*=(const vec3& other) { return Multiply(other); }
+		vec3& operator/=(const vec3& other) { return Divide(other); }
+
+		vec3 operator+(const vec3& other) { return vec3(x + other.x, y + other.y, z + other.z); }
+		vec3 operator-(const vec3& other) { return vec3(x - other.x, y - other.y, z - other.z); }
+		vec3 operator*(const vec3& other) { return vec3(x * other.x, y * other.y, z * other.z); }
+		vec3 operator/(const vec3& other) { return vec3(x / other.x, y / other.y, z / other.z); }
+
+
+		// Basic vec2 + scalar operations
+		vec3& AddScalar(const MTYPE& scalar)        { x += scalar; y += scalar; z += scalar; return *this; }
+		vec3& SubtractScalar(const MTYPE& scalar)   { x -= scalar; y -= scalar; z -= scalar; return *this; }
+		vec3& MultiplyByScalar(const MTYPE& scalar) { x *= scalar; y *= scalar; z *= scalar; return *this; }
+		vec3& DivideByScalar(const MTYPE& scalar)   { x /= scalar; y /= scalar; z /= scalar; return *this; }
+
+		vec3& operator+=(const MTYPE& other) { return AddScalar(other); }
+		vec3& operator-=(const MTYPE& other) { return SubtractScalar(other); }
+		vec3& operator*=(const MTYPE& other) { return MultiplyByScalar(other); }
+		vec3& operator/=(const MTYPE& other) { return DivideByScalar(other); }
+
+		vec3 operator+(const MTYPE& other) { return vec3(x + other, y + other, z + other); }
+		vec3 operator-(const MTYPE& other) { return vec3(x - other, y - other, z - other); }
+		vec3 operator*(const MTYPE& other) { return vec3(x * other, y * other, z * other); }
+		vec3 operator/(const MTYPE& other) { return vec3(x / other, y / other, z / other); }
+
+		// Other basic operations
+		void Increment() { x++; y++; z++; }
+		void Decrement() { x--; y--; z--; }
+		vec3& operator++() { Increment(); return *this; }
+		vec3& operator--() { Decrement(); return *this; }
+		vec3  operator++(int) { vec3 temp = *this; Increment(); return temp; }
+		vec3  operator--(int) { vec3 temp = *this; Decrement(); return temp; }
+
+		bool operator==(const vec3& other) { return   x == other.x && y == other.y && z == other.z; }
+		bool operator!=(const vec3& other) { return !(x == other.x && y == other.y && z == other.z); }
+
+		friend bool operator==(const vec3& left, const vec3& right)
+		{
+			return   left.x == right.x && left.y == right.y && left.z == right.z;
+		}
+
+		friend bool operator!=(const vec3& left, const vec3& right)
+		{
+			return   !(left == right);
+		}
+
+
+		// Operations I should have studied more during my undergrad
+		MTYPE Dot(const vec3& other) { return (x * other.x) + (y * other.y) + (z * other.z); }
+		vec3 Cross(const vec3& other)
+		{
+			gtk::vec3 out;
+
+			// x = values
+			// y = values + 1
+			// z = values + 2
+
+			out.x = ((*(values + 1)) * (*(other.values + 2))) - ((*(values + 2)) * (*(other.values + 1)));
+			out.y = ((*(values + 2)) * (*other.values)      ) - ((*values)       * (*(other.values + 2)));
+			out.z = ((*values)       * (*(other.values + 1))) - ((*(values + 1)) * (*other.values)      );
+		}
 
 	};
 
