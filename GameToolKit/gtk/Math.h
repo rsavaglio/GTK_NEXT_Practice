@@ -172,6 +172,8 @@ namespace gtk {
 			out.x = ((*(values + 1)) * (*(other.values + 2))) - ((*(values + 2)) * (*(other.values + 1)));
 			out.y = ((*(values + 2)) * (*other.values)      ) - ((*values)       * (*(other.values + 2)));
 			out.z = ((*values)       * (*(other.values + 1))) - ((*(values + 1)) * (*other.values)      );
+
+			return out;
 		}
 
 	};

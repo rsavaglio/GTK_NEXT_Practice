@@ -24,6 +24,11 @@ TEST_F(Vec2_F, vec2_boolOperators)
 	EXPECT_EQ(d, e);
 	EXPECT_TRUE(d == e);
 	EXPECT_FALSE(d == a);
+
+
+	EXPECT_FALSE(d != e);
+	EXPECT_TRUE(d != a);
+
 }
 
 TEST_F(Vec2_F, vec2_constructors)

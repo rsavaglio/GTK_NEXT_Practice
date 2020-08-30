@@ -25,6 +25,9 @@ TEST_F(Mat2_F, mat2_boolOperators)
 	EXPECT_EQ(d, e);
 	EXPECT_TRUE(d == e);
 	EXPECT_FALSE(d == a);
+
+	EXPECT_FALSE(d != e);
+	EXPECT_TRUE(d != a);
 }
 
 TEST_F(Mat2_F, mat2_contrustors)
