@@ -178,6 +178,101 @@ namespace gtk {
 
 	};
 
+	struct vec4
+	{
+		union {
+			MTYPE values[4];
+			struct { MTYPE x, y, z, w; };
+			struct { MTYPE r, g, b, a; };
+		};
+
+		vec4() :x(0), y(0), z(0), w(0) {}
+		vec4(MTYPE X) : x(X), y(X), z(X), w(X) {}
+		vec4(MTYPE X, MTYPE Y, MTYPE Z, MTYPE W) : x(X), y(Y), z(Z), w(W) {}
+
+		// Indexing
+		MTYPE& operator[](unsigned short i) { ASSERT(i < 4); return values[i]; }
+		const MTYPE& operator[](unsigned short i) const { ASSERT(i < 4); return values[i]; }
+
+
+		// Basic vec2 + vec2 operations
+		vec4& Add     (const vec4& other) { x += other.x; y += other.y; z += other.z; w += other.w; return *this; }
+		vec4& Subtract(const vec4& other) { x -= other.x; y -= other.y; z -= other.z; w -= other.w; return *this; }
+		vec4& Multiply(const vec4& other) { x *= other.x; y *= other.y; z *= other.z; w *= other.w; return *this; }
+		vec4& Divide  (const vec4& other) { x /= other.x; y /= other.y; z /= other.z; w /= other.w; return *this; }
+
+		vec4& operator+=(const vec4& other) { return Add(other); }
+		vec4& operator-=(const vec4& other) { return Subtract(other); }
+		vec4& operator*=(const vec4& other) { return Multiply(other); }
+		vec4& operator/=(const vec4& other) { return Divide(other); }
+
+		vec4 operator+(const vec4& other) { return vec4(x + other.x, y + other.y, z + other.z, w + other.x); }
+		vec4 operator-(const vec4& other) { return vec4(x - other.x, y - other.y, z - other.z, w - other.x); }
+		vec4 operator*(const vec4& other) { return vec4(x * other.x, y * other.y, z * other.z, w * other.x); }
+		vec4 operator/(const vec4& other) { return vec4(x / other.x, y / other.y, z / other.z, w / other.x); }
+
+
+		// Basic vec2 + scalar operations
+		vec4& AddScalar       (const MTYPE& scalar) { x += scalar; y += scalar; z += scalar; w += scalar; return *this; }
+		vec4& SubtractScalar  (const MTYPE& scalar) { x -= scalar; y -= scalar; z -= scalar; w -= scalar; return *this; }
+		vec4& MultiplyByScalar(const MTYPE& scalar) { x *= scalar; y *= scalar; z *= scalar; w *= scalar; return *this; }
+		vec4& DivideByScalar  (const MTYPE& scalar) { x /= scalar; y /= scalar; z /= scalar; w /= scalar; return *this; }
+
+		vec4& operator+=(const MTYPE& other) { return AddScalar(other); }
+		vec4& operator-=(const MTYPE& other) { return SubtractScalar(other); }
+		vec4& operator*=(const MTYPE& other) { return MultiplyByScalar(other); }
+		vec4& operator/=(const MTYPE& other) { return DivideByScalar(other); }
+
+		vec4 operator+(const MTYPE& other) { return vec4(x + other, y + other, z + other, w + other); }
+		vec4 operator-(const MTYPE& other) { return vec4(x - other, y - other, z - other, w - other); }
+		vec4 operator*(const MTYPE& other) { return vec4(x * other, y * other, z * other, w * other); }
+		vec4 operator/(const MTYPE& other) { return vec4(x / other, y / other, z / other, w / other); }
+
+		// Other basic operations
+		void Increment() { x++; y++; z++; w++; }
+		void Decrement() { x--; y--; z--; w--; }
+		vec4& operator++() { Increment(); return *this; }
+		vec4& operator--() { Decrement(); return *this; }
+		vec4  operator++(int) { vec4 temp = *this; Increment(); return temp; }
+		vec4  operator--(int) { vec4 temp = *this; Decrement(); return temp; }
+
+		bool operator==(const vec4& other) { return   x == other.x && y == other.y && z == other.z && w == other.w; }
+		bool operator!=(const vec4& other) { return !(x == other.x && y == other.y && z == other.z && w == other.w); }
+
+		friend bool operator==(const vec4& left, const vec4& right)
+		{
+			return   left.x == right.x && left.y == right.y && left.z == right.z && left.w == right.w;
+		}
+
+		friend bool operator!=(const vec4& left, const vec4& right)
+		{
+			return   !(left == right);
+		}
+
+
+		// Operations I should have studied more during my undergrad
+		MTYPE Dot(const vec4& other) { return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w); }
+		vec4 Cross(const vec4& other)
+		{
+			gtk::vec4 out;
+
+			// x = values
+			// y = values + 1
+			// z = values + 2
+			// w = walues + 3
+
+			out.x = ((*(values + 1)) * (*(other.values + 2))) - ((*(values + 2)) * (*(other.values + 1)));
+			out.y = ((*(values + 2)) * (*other.values)) - ((*values) * (*(other.values + 2)));
+			out.z = ((*values) * (*(other.values + 1))) - ((*(values + 1)) * (*other.values));
+			out.w = 0; // TODO
+
+			return out;
+		}
+
+	};
+
+
+
 	
 	struct mat2
 	{
