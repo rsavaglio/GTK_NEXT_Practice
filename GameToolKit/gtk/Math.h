@@ -206,10 +206,10 @@ namespace gtk {
 		vec4& operator*=(const vec4& other) { return Multiply(other); }
 		vec4& operator/=(const vec4& other) { return Divide(other); }
 
-		vec4 operator+(const vec4& other) { return vec4(x + other.x, y + other.y, z + other.z, w + other.x); }
-		vec4 operator-(const vec4& other) { return vec4(x - other.x, y - other.y, z - other.z, w - other.x); }
-		vec4 operator*(const vec4& other) { return vec4(x * other.x, y * other.y, z * other.z, w * other.x); }
-		vec4 operator/(const vec4& other) { return vec4(x / other.x, y / other.y, z / other.z, w / other.x); }
+		vec4 operator+(const vec4& other) { return vec4(x + other.x, y + other.y, z + other.z, w + other.w); }
+		vec4 operator-(const vec4& other) { return vec4(x - other.x, y - other.y, z - other.z, w - other.w); }
+		vec4 operator*(const vec4& other) { return vec4(x * other.x, y * other.y, z * other.z, w * other.w); }
+		vec4 operator/(const vec4& other) { return vec4(x / other.x, y / other.y, z / other.z, w / other.w); }
 
 
 		// Basic vec2 + scalar operations
