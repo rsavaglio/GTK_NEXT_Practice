@@ -1,5 +1,6 @@
 #pragma once
 #include "Core.h"
+#include <math.h>
 
 namespace gtk {
 
@@ -79,10 +80,32 @@ namespace gtk {
 
 
 		// Operations I should have studied more during my undergrad
+
 		MTYPE Dot  (const vec2& other) { return (x * other.x) + (y * other.y); }
 		MTYPE Cross(const vec2& other) { return (x * other.y) - (y * other.x); }
 
+		// TODO: Optimize
 
+		MTYPE Length() const { return sqrt(x * x + y * y); }
+		MTYPE LengthSquared() const { return x * x + y * y; }
+
+		vec2& Normalize()
+		{
+			MTYPE lengthsq = x * x + y * y;
+
+			if (lengthsq == 0)
+			{
+				x = y = 0.0f;
+				return *this;
+			}
+
+			float recip = 1 / sqrt(lengthsq);
+
+			x *= recip;
+			y *= recip;
+
+			return *this;
+		}
 
 	};
 
@@ -174,6 +197,29 @@ namespace gtk {
 			out.z = ((*values)       * (*(other.values + 1))) - ((*(values + 1)) * (*other.values)      );
 
 			return out;
+		}
+
+
+		MTYPE Length() const { return sqrt(x * x + y * y + z * z); }
+		MTYPE LengthSquared() const { return x * x + y * y + z * z; }
+
+		vec3& Normalize()
+		{
+			MTYPE lengthsq = x * x + y * y + z * z;
+
+			if (lengthsq == 0)
+			{
+				x = y = z = 0.0f;
+				return *this;
+			}
+
+			float recip = 1 / sqrt(lengthsq);
+
+			x *= recip;
+			y *= recip;
+			z *= recip;
+
+			return *this;
 		}
 
 	};
@@ -268,6 +314,31 @@ namespace gtk {
 
 			return out;
 		}
+
+		MTYPE Length() const { return sqrt(x * x + y * y + z * z + w * w); }
+		MTYPE LengthSquared() const { return x * x + y * y + z * z + w * w; }
+
+		vec4& Normalize()
+		{
+			MTYPE lengthsq = x * x + y * y + z * z + w * w;
+
+			if (lengthsq == 0)
+			{
+				x = y = z = w = 0.0f;
+				return *this;
+			}
+
+			float recip = 1 / sqrt(lengthsq);
+
+			x *= recip;
+			y *= recip;
+			z *= recip;
+			w *= recip;
+
+			return *this;
+		}
+
+
 
 	};
 

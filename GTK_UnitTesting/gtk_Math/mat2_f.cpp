@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "gtk/Math.h"
+#include "gtk/gtkMath.h"
 
 class Mat2_F : public ::testing::Test
 {
