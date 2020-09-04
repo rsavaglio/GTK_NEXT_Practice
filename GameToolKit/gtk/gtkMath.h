@@ -576,4 +576,323 @@ namespace gtk {
 		}
 	};
 
+
+	struct mat3
+	{
+		union {
+			MTYPE values[9];
+			vec3 cols[3];
+		};
+
+		// Column Major Format
+		// 1 4 7
+		// 2 5 8
+		// 3 6 9
+
+		mat3() : values{ 0, 0, 0,
+						 0, 0, 0,
+						 0, 0, 0 } {}
+
+		mat3(MTYPE v) : values{ v, 0, 0,
+								0, v, 0,
+								0, 0, v } {}
+
+		mat3(MTYPE x0, MTYPE y0, MTYPE z0, 
+			 MTYPE x1, MTYPE y1, MTYPE z1, 
+			 MTYPE x2, MTYPE y2, MTYPE z2 ) 
+
+			: values{ x0, y0, z0,
+					  x1, y1, z1,
+					  x2, y2, z2 } {}
+
+		// Indexing
+		MTYPE& operator()(unsigned short row, unsigned short column)
+		{
+			ASSERT(column < 3 && row < 3);
+			return values[column * 3 + row];
+		}
+		const MTYPE& operator()(unsigned short row, unsigned short column) const
+		{
+			ASSERT(column < 3 && row < 3);
+			return values[column * 3 + row];
+		}
+
+		vec3& operator[](unsigned short i) { ASSERT(i < 3); return cols[i]; }
+		const vec3& operator[](unsigned short i) const { ASSERT(i < 3); return cols[i]; }
+
+
+		///// mat2 + scalar Operations
+
+		mat3& AddScalar(const MTYPE& scalar)
+		{
+			*(values    ) += scalar;
+			*(values + 1) += scalar;
+			*(values + 2) += scalar;
+
+			*(values + 3) += scalar;
+			*(values + 4) += scalar;
+			*(values + 5) += scalar;
+
+			*(values + 6) += scalar;
+			*(values + 7) += scalar;
+			*(values + 8) += scalar;
+
+			return *this;
+
+		}        mat3& operator+=(const MTYPE& scalar) { return AddScalar(scalar); }
+		mat3& SubtractScalar(const MTYPE& scalar)
+		{
+			*(values)     -= scalar;
+			*(values + 1) -= scalar;
+			*(values + 2) -= scalar;
+						  
+			*(values + 3) -= scalar;
+			*(values + 4) -= scalar;
+			*(values + 5) -= scalar;
+						  
+			*(values + 6) -= scalar;
+			*(values + 7) -= scalar;
+			*(values + 8) -= scalar;
+
+			return *this;
+
+		}   mat3& operator-=(const MTYPE& scalar) { return SubtractScalar(scalar); }
+		mat3& MultiplyByScalar(const MTYPE& scalar)
+		{
+			*(values)     *= scalar;
+			*(values + 1) *= scalar;
+			*(values + 2) *= scalar;
+						  
+			*(values + 3) *= scalar;
+			*(values + 4) *= scalar;
+			*(values + 5) *= scalar;
+						  
+			*(values + 6) *= scalar;
+			*(values + 7) *= scalar;
+			*(values + 8) *= scalar;
+
+			return *this;
+
+		} mat3& operator*=(const MTYPE& scalar) { return MultiplyByScalar(scalar); }
+		mat3& DivideByScalar(const MTYPE& scalar)
+		{
+			*(values)     /= scalar;
+			*(values + 1) /= scalar;
+			*(values + 2) /= scalar;
+						  
+			*(values + 3) /= scalar;
+			*(values + 4) /= scalar;
+			*(values + 5) /= scalar;
+						  
+			*(values + 6) /= scalar;
+			*(values + 7) /= scalar;
+			*(values + 8) /= scalar;
+
+			return *this;
+
+		}   mat3& operator/=(const MTYPE& scalar) { return DivideByScalar(scalar); }
+
+		mat3 operator+(const MTYPE& scalar)
+		{
+			return
+			{
+				*(values    ) + scalar,
+				*(values + 1) + scalar,
+				*(values + 2) + scalar,
+				*(values + 3) + scalar,
+				*(values + 4) + scalar,
+				*(values + 5) + scalar,
+				*(values + 6) + scalar,
+				*(values + 7) + scalar,
+				*(values + 8) + scalar
+			};
+		}
+		mat3 operator-(const MTYPE& scalar)
+		{
+			return
+			{
+				*(values)     - scalar,
+				*(values + 1) - scalar,
+				*(values + 2) - scalar,
+				*(values + 3) - scalar,
+				*(values + 4) - scalar,
+				*(values + 5) - scalar,
+				*(values + 6) - scalar,
+				*(values + 7) - scalar,
+				*(values + 8) - scalar
+			};
+		}
+		mat3 operator*(const MTYPE& scalar)
+		{
+			return
+			{
+				*(values)     * scalar,
+				*(values + 1) * scalar,
+				*(values + 2) * scalar,
+				*(values + 3) * scalar,
+				*(values + 4) * scalar,
+				*(values + 5) * scalar,
+				*(values + 6) * scalar,
+				*(values + 7) * scalar,
+				*(values + 8) * scalar
+			};
+		}
+		mat3 operator/(const MTYPE& scalar)
+		{
+			return
+			{
+				*(values)     / scalar,
+				*(values + 1) / scalar,
+				*(values + 2) / scalar,
+				*(values + 3) / scalar,
+				*(values + 4) / scalar,
+				*(values + 5) / scalar,
+				*(values + 6) / scalar,
+				*(values + 7) / scalar,
+				*(values + 8) / scalar
+			};
+		}
+
+
+		//// mat2 + vec2 Operations
+
+		vec3 TransformVec3(const vec3& vec)
+		{
+			return
+			{
+				// 0 3 6 * x = 0*x + 3*y + 6*z
+				// 1 4 7   y   1*x + 4*y + 7*z
+				// 2 5 8   z   2*x + 5*y + 8*z
+
+				(*(values + 0)) * vec.x + (*(values + 3)) * vec.y + (*(values + 6)) * vec.z,
+				(*(values + 1)) * vec.x + (*(values + 4)) * vec.y + (*(values + 7)) * vec.z,
+				(*(values + 2)) * vec.x + (*(values + 5)) * vec.y + (*(values + 8)) * vec.z
+			};
+		} vec3 operator*(const vec3& vec) { return TransformVec3(vec); }
+
+
+		//// mat2 + mat2 Operations
+
+		mat3& Add(const mat3& other)
+		{
+			*(values)     += *(other.values);
+			*(values + 1) += *(other.values + 1);
+			*(values + 2) += *(other.values + 2);
+			*(values + 3) += *(other.values + 3);
+			*(values + 4) += *(other.values + 4);
+			*(values + 5) += *(other.values + 5);
+			*(values + 6) += *(other.values + 6);
+			*(values + 7) += *(other.values + 7);
+			*(values + 8) += *(other.values + 8);
+
+			return *this;
+
+		} mat3& operator+=(const mat3& other) { return Add(other); }
+		mat3& Subtract(const mat3& other)
+		{
+			*(values)     -= *(other.values);
+			*(values + 1) -= *(other.values + 1);
+			*(values + 2) -= *(other.values + 2);
+			*(values + 3) -= *(other.values + 3);
+			*(values + 4) -= *(other.values + 4);
+			*(values + 5) -= *(other.values + 5);
+			*(values + 6) -= *(other.values + 6);
+			*(values + 7) -= *(other.values + 7);
+			*(values + 8) -= *(other.values + 8);
+
+			return *this;
+
+		} mat3& operator-=(const mat3& other) { return Subtract(other); }
+		mat3& Multiply(const mat3& other)
+		{
+			// TODO
+
+			*this = *this * other;
+
+			return *this;
+
+		} mat3& operator*=(const mat3& other) { return Multiply(other); } // TODO
+
+		mat3 operator+(const mat3& other)
+		{
+			return
+			{
+				*(values)     + *(other.values),
+				*(values + 1) + *(other.values + 1),
+				*(values + 2) + *(other.values + 2),
+				*(values + 3) + *(other.values + 3),
+				*(values + 4) + *(other.values + 4),
+				*(values + 5) + *(other.values + 5),
+				*(values + 6) + *(other.values + 6),
+				*(values + 7) + *(other.values + 7),
+				*(values + 8) + *(other.values + 8)
+			};
+		}
+		mat3 operator-(const mat3& other)
+		{
+			return
+			{
+				*(values)     - *(other.values),
+				*(values + 1) - *(other.values + 1),
+				*(values + 2) - *(other.values + 2),
+				*(values + 3) - *(other.values + 3),
+				*(values + 4) - *(other.values + 4),
+				*(values + 5) - *(other.values + 5),
+				*(values + 6) - *(other.values + 6),
+				*(values + 7) - *(other.values + 7),
+				*(values + 8) - *(other.values + 8)
+			};
+		}
+		mat3 operator*(const mat3& other)
+		{
+			return
+			{
+				// 0 3 6 * o0 o4 o7  =  0 * o0 + 3 * o1 + 6 * o2, 0 * o3 + 3 * o4 + 6 * o5, 0 * o6 + 3 * o7 + 6 * o8
+				// 1 4 7   o1 o5 o8     1 * o0 + 4 * o1 + 7 * o2, 1 * o3 + 4 * o4 + 7 * o5, 1 * o6 + 4 * o7 + 7 * o8
+				// 2 5 8   o2 o6 o9     2 * o0 + 5 * o1 + 8 * o2, 2 * o3 + 5 * o4 + 8 * o5, 2 * o6 + 5 * o7 + 8 * o8
+
+
+
+				(*(values + 0)) * (*(other.values + 0)) + (*(values + 3)) * (*(other.values + 1)) + (*(values + 6)) * (*(other.values + 2)), // 0 * o0 + 3 * o1 + 6 * o2
+				(*(values + 0)) * (*(other.values + 3)) + (*(values + 3)) * (*(other.values + 4)) + (*(values + 6)) * (*(other.values + 5)), // 0 * o3 + 3 * o4 + 6 * o5
+				(*(values + 0)) * (*(other.values + 6)) + (*(values + 3)) * (*(other.values + 7)) + (*(values + 6)) * (*(other.values + 8)), // 0 * o6 + 3 * o7 + 6 * o8
+
+				(*(values + 1)) * (*(other.values + 0)) + (*(values + 4)) * (*(other.values + 1)) + (*(values + 7)) * (*(other.values + 2)), // 1 * o0 + 4 * o1 + 7 * o2
+				(*(values + 1)) * (*(other.values + 3)) + (*(values + 4)) * (*(other.values + 4)) + (*(values + 7)) * (*(other.values + 5)), // 1 * o3 + 4 * o4 + 7 * o5
+				(*(values + 1)) * (*(other.values + 6)) + (*(values + 4)) * (*(other.values + 7)) + (*(values + 7)) * (*(other.values + 8)), // 1 * o6 + 4 * o7 + 7 * o8
+
+				(*(values + 2)) * (*(other.values + 0)) + (*(values + 5)) * (*(other.values + 1)) + (*(values + 8)) * (*(other.values + 2)), // 2 * o0 + 5 * o1 + 8 * o2
+				(*(values + 2)) * (*(other.values + 3)) + (*(values + 5)) * (*(other.values + 4)) + (*(values + 8)) * (*(other.values + 5)), // 2 * o3 + 5 * o4 + 8 * o5
+				(*(values + 2)) * (*(other.values + 6)) + (*(values + 5)) * (*(other.values + 7)) + (*(values + 8)) * (*(other.values + 8))  // 2 * o6 + 5 * o7 + 8 * o8
+
+			};
+		}
+
+		// Bool Operators
+		bool operator==(const mat3& other)
+		{
+			for (int i = 0; i < 9; i++)
+			{
+				if (*(values + i) != *(other.values + i))
+					return false;
+			}
+
+			return true;
+		}
+		bool operator!=(const mat3& other) { return !(*this == other); }
+
+		friend bool operator==(const mat3& left, const mat3& right)
+		{
+			for (int i = 0; i < 9; i++)
+			{
+				if (*(left.values + i) != *(right.values + i))
+					return false;
+			}
+
+			return true;
+		}
+		friend bool operator!=(const mat3& left, const mat3& right) { return !(left == right); }
+
+	};
+
 }
