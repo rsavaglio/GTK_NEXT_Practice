@@ -349,8 +349,12 @@ namespace gtk {
 	{
 		union {
 			MTYPE values[4];
-			vec2 rows[2];
+			vec2 cols[2];
 		};
+
+		// Column Major Format
+		// 1 3
+		// 2 4
 		
 		mat2() : values{ 0, 0, 
 						 0, 0 } {}
@@ -358,23 +362,23 @@ namespace gtk {
 		mat2(MTYPE v) : values{ v, 0,
 								0, v } {}
 
-		mat2(MTYPE x0, MTYPE x1, MTYPE y0, MTYPE y1) : values{ x0, x1, 
-															   y0, y1 } {}
+		mat2(MTYPE x0, MTYPE x1, MTYPE y0, MTYPE y1) : values{ x0, y0, 
+															   x1, y1 } {}
 
 		// Indexing
 		MTYPE& operator()(unsigned short row, unsigned short column)       
 		{ 
 			ASSERT(column < 2 && row < 2); 
-			return values[column + row * 2];
+			return values[column * 2 + row];
 		}
 		const MTYPE& operator()(unsigned short row, unsigned short column) const 
 		{ 
 			ASSERT(column < 2 && row < 2); 
-			return values[column + row * 2];
+			return values[column * 2 + row];
 		}
 
-		vec2& operator[](unsigned short i) { ASSERT(i < 2); return rows[i]; }
-		const vec2& operator[](unsigned short i) const { ASSERT(i < 2); return rows[i]; }
+		vec2& operator[](unsigned short i) { ASSERT(i < 2); return cols[i]; }
+		const vec2& operator[](unsigned short i) const { ASSERT(i < 2); return cols[i]; }
 
 
 		///// mat2 + scalar Operations
@@ -464,17 +468,17 @@ namespace gtk {
 		
 		//// mat2 + vec2 Operations
 		
-		vec2 MultiplyByVec2(const vec2& vec)
+		vec2 TransformVec2(const vec2& vec)
 		{
-			// a b * x  = ax + by
-			// c d   y	  cx + dy
+			return
+			{
+				// 0 2 * x  =  0*x + 2*y
+				// 1 3   y     1*x + 3*y
 
-			return { 
-				((* values)    * (*vec.values)) + ((*(values+1)) * (*(vec.values+1))), // x1 = ax + by
-				((*(values+2)) * (*vec.values)) + ((*(values+3)) * (*(vec.values+1)))  // y1 = cx + dy
+				(*(values    )) * vec.x + (*(values + 2)) * vec.y,
+				(*(values + 1)) * vec.x + (*(values + 3)) * vec.y
 			};
-
-		} vec2 operator*(const vec2& vec) { return MultiplyByVec2(vec); }
+		} vec2 operator*(const vec2& vec) { return TransformVec2(vec); }
 
 		
 		//// mat2 + mat2 Operations
@@ -501,18 +505,9 @@ namespace gtk {
 		} mat2& operator-=(const mat2& other) { return Subtract(other); }
 		mat2& Multiply(const mat2& other)
 		{
-			// a b  *  A B  =  aA + bC, aB + bD
-			// c d     C D     cA + dC, cB + dD
-
-			MTYPE a =  *values;
-			MTYPE b = (*(values + 1));
-			MTYPE c = (*(values + 2));
-			MTYPE d = (*(values + 3));
-
-			* values      = (a * (* other.values)   )   + (b * (*(other.values + 2))); // a = aA + bC
-			*(values + 1) = (a * (*(other.values + 1))) + (b * (*(other.values + 3))); // b = aB + bD
-			*(values + 2) = (c * (*other.values))       + (d * (*(other.values + 2))); // c = cA + dC
-			*(values + 3) = (c * (*(other.values + 1))) + (d * (*(other.values + 3))); // d = cB + dD
+			// TODO
+			
+			*this = *this * other;
 
 			return *this;
 
@@ -530,9 +525,6 @@ namespace gtk {
 		}
 		mat2 operator-(const mat2& other)
 		{
-			MTYPE* i = &values[0];
-			const MTYPE* j = &other.values[0];
-
 			return
 			{
 				*(values)     - *(other.values),
@@ -545,10 +537,13 @@ namespace gtk {
 		{
 			return
 			{
-				((*values) * (*other.values))             + ((*(values + 1)) * (*(other.values + 2))), // a = aA + bC
-				((*values) * (*(other.values + 1)))       + ((*(values + 1)) * (*(other.values + 3))), // b = aB + bD
-				((*(values + 2)) * (*other.values))       + ((*(values + 3)) * (*(other.values + 2))), // c = cA + dC
-				((*(values + 2)) * (*(other.values + 1))) + ((*(values + 3)) * (*(other.values + 3))) // d = cB + dD
+				// 0 2 * x0 z2  =  0*x + 2*y, 0*z + 2*w
+				// 1 3   y1 w3     1*x + 3*y, 1*z + 3*w
+
+				(*(values    )) * (*(other.values    )) + (*(values + 2)) * (*(other.values + 1)), // 0*x0 + 2*y1
+				(*(values    )) * (*(other.values + 2)) + (*(values + 2)) * (*(other.values + 3)), // 0*z2 + 2*w3
+				(*(values + 1)) * (*(other.values    )) + (*(values + 3)) * (*(other.values + 1)), // 1*x0 + 3*y1
+				(*(values + 1)) * (*(other.values + 2)) + (*(values + 3)) * (*(other.values + 3)) //  1*z2 + 3*w3
 			};
 		}
 
