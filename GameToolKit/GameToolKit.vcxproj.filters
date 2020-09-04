@@ -18,9 +18,6 @@
     <ClCompile Include="gtk\Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gtk\gtkMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtk\Core.h">
@@ -29,7 +26,7 @@
     <ClInclude Include="gtk\Test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gtk\gtkMath.h">
+    <ClInclude Include="gtk\gtkMath.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

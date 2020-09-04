@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "gtk/gtkMath.h"
+#include "gtk/gtkMath.hpp"
 
 class Vec3_F : public ::testing::Test
 {

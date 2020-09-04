@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "gtk/gtkMath.h"
+#include "gtk/gtkMath.hpp"
 
 class Mat3_F : public ::testing::Test
 {
@@ -47,3 +47,4 @@ TEST_F(Mat3_F, mat2_Multiply)
 
 TEST_F(Mat3_F, mat2_Divide)
 {
+}
