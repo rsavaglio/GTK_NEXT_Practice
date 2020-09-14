@@ -141,14 +141,17 @@ TEST_F(Vec4_F, vec4_DotCross)
 	vec4 x(-5);
 	EXPECT_FLOAT_EQ(c.Dot(x), -50);
 	EXPECT_EQ(c, vec4(1, 2, 3, 4));
-
-
-
-
-
 }
 
 
+TEST_F(Vec4_F, vec4_Length)
+{
+	// Length
+	EXPECT_FLOAT_EQ(c.Length(), 5.477225575f);
 
+	// Length Squared
+	EXPECT_FLOAT_EQ(c.LengthSquared(), 30.0f);
+
+}
 
 

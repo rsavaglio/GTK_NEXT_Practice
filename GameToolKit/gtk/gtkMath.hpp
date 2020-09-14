@@ -337,9 +337,6 @@ namespace gtk {
 
 			return *this;
 		}
-
-
-
 	};
 
 
@@ -353,35 +350,63 @@ namespace gtk {
 		};
 
 		// Column Major Format
+		// 0 2
 		// 1 3
-		// 2 4
 		
-		mat2() : values{ 0, 0, 
+						  // T
+		mat2() : values{ 0, 0,     
 						 0, 0 } {}
 
-		mat2(MTYPE v) : values{ v, 0,
+								 // T
+		mat2(MTYPE v) : values{ v, 0, 
 								0, v } {}
+																  // T
+		mat2(MTYPE x0, MTYPE x1, MTYPE y0, MTYPE y1) : values{ x0, x1, 
+															   y0, y1 } {}
 
-		mat2(MTYPE x0, MTYPE x1, MTYPE y0, MTYPE y1) : values{ x0, y0, 
-															   x1, y1 } {}
 
 		// Indexing
-		MTYPE& operator()(unsigned short row, unsigned short column)       
+		MTYPE& operator()(unsigned short col, unsigned short row)       
 		{ 
-			ASSERT(column < 2 && row < 2); 
-			return values[column * 2 + row];
+			ASSERT(row < 2 && col < 2); 
+			return values[row + col * 2];
 		}
-		const MTYPE& operator()(unsigned short row, unsigned short column) const 
+
+		const MTYPE& operator()(unsigned short row, unsigned short col) const 
 		{ 
-			ASSERT(column < 2 && row < 2); 
-			return values[column * 2 + row];
+			ASSERT(row < 2 && col < 2); 
+			return values[row + col * 2];
 		}
 
 		vec2& operator[](unsigned short i) { ASSERT(i < 2); return cols[i]; }
 		const vec2& operator[](unsigned short i) const { ASSERT(i < 2); return cols[i]; }
 
+		///// Inverse
+
+		mat2& SetInverse() 
+		{
+			mat2 temp(*this);
+			
+			*(values + 1) = *(temp.values + 2);
+			*(values + 2) = *(temp.values + 1);
+
+			return *this;
+		}
+		mat2 GetInverse()
+		{
+			return mat2
+			{
+				*(values),
+				*(values + 2),
+				*(values + 1),
+				*(values + 3)
+			};
+		}
+
+
 
 		///// mat2 + scalar Operations
+
 
 		mat2& AddScalar(const MTYPE& scalar)
 		{
@@ -505,7 +530,6 @@ namespace gtk {
 		} mat2& operator-=(const mat2& other) { return Subtract(other); }
 		mat2& Multiply(const mat2& other)
 		{
-			// TODO
 			
 			*this = *this * other;
 
@@ -537,19 +561,20 @@ namespace gtk {
 		{
 			return
 			{
-				// 0 2 * x0 z2  =  0*x + 2*y, 0*z + 2*w
-				// 1 3   y1 w3     1*x + 3*y, 1*z + 3*w
+				// 0 2 * x z  =  0*x + 2*y, 0*z + 2*w, 
+				// 1 3   y w     1*x + 3*y, 1*z + 3*w
 
-				(*(values    )) * (*(other.values    )) + (*(values + 2)) * (*(other.values + 1)), // 0*x0 + 2*y1
-				(*(values    )) * (*(other.values + 2)) + (*(values + 2)) * (*(other.values + 3)), // 0*z2 + 2*w3
-				(*(values + 1)) * (*(other.values    )) + (*(values + 3)) * (*(other.values + 1)), // 1*x0 + 3*y1
-				(*(values + 1)) * (*(other.values + 2)) + (*(values + 3)) * (*(other.values + 3)) //  1*z2 + 3*w3
+				(*(values    )) * (*(other.values    )) + (*(values + 2)) * (*(other.values + 1)), // 0*x + 2*y
+				(*(values + 1)) * (*(other.values    )) + (*(values + 3)) * (*(other.values + 1)), // 1*x + 3*y
+				(*(values    )) * (*(other.values + 2)) + (*(values + 2)) * (*(other.values + 3)), // 0*z + 2*w
+				(*(values + 1)) * (*(other.values + 2)) + (*(values + 3)) * (*(other.values + 3))  // 1*z + 3*w
 			};
 		}
 
 		// Bool Operators
 		bool operator==(const mat2& other) 
 		{ 
+
 			for (int i = 0; i < 4; i++)
 			{
 				if (*(values + i) != *(other.values + i))

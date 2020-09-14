@@ -125,6 +125,16 @@ TEST_F(Vec3_F, vec3_DotCross)
 }
 
 
+TEST_F(Vec3_F, vec3_Length)
+{
+	// Length
+	EXPECT_FLOAT_EQ(c.Length(), 3.741657387f);
+
+	// Length Squared
+	EXPECT_FLOAT_EQ(c.LengthSquared(), 14.0f);
+
+}
+
 
 
 

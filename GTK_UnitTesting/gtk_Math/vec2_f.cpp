@@ -193,6 +193,17 @@ TEST_F(Vec2_F, vec2_DotCross)
 
 }
 
+TEST_F(Vec2_F, vec2_Length)
+{
+	// Length
+	EXPECT_FLOAT_EQ(a.Length(), 21.21320344f);
+	EXPECT_FLOAT_EQ(d.Length(), 141.2799349f);
+	
+	// Length Squared
+	EXPECT_FLOAT_EQ(a.LengthSquared(), 450.0f);
+	EXPECT_FLOAT_EQ(d.LengthSquared(), 19960.02f);
+
+}
 
 
 
