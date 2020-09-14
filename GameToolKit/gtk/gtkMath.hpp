@@ -385,10 +385,7 @@ namespace gtk {
 
 		mat2& SetInverse() 
 		{
-			mat2 temp(*this);
-			
-			*(values + 1) = *(temp.values + 2);
-			*(values + 2) = *(temp.values + 1);
+			*this = GetInverse();
 
 			return *this;
 		}
@@ -402,8 +399,6 @@ namespace gtk {
 				*(values + 3)
 			};
 		}
-
-
 
 		///// mat2 + scalar Operations
 
@@ -630,6 +625,7 @@ namespace gtk {
 					  x1, y1, z1,
 					  x2, y2, z2 } {}
 
+
 		// Indexing
 		MTYPE& operator()(unsigned short row, unsigned short column)
 		{
@@ -645,8 +641,34 @@ namespace gtk {
 		vec3& operator[](unsigned short i) { ASSERT(i < 3); return cols[i]; }
 		const vec3& operator[](unsigned short i) const { ASSERT(i < 3); return cols[i]; }
 
+		// Inverse
 
-		///// mat2 + scalar Operations
+		mat3& SetInverse()
+		{
+			*this = GetInverse();
+
+			return *this;
+		}
+		mat3 GetInverse()
+		{
+			return mat3
+			{
+				*(values),
+				*(values + 3),
+				*(values + 6),
+
+				*(values + 1),
+				*(values + 4),
+				*(values + 7),
+
+				*(values + 2),
+				*(values + 5),
+				*(values + 8)
+			};
+		}
+
+
+		///// mat3 + scalar Operations
 
 		mat3& AddScalar(const MTYPE& scalar)
 		{
@@ -779,7 +801,7 @@ namespace gtk {
 		}
 
 
-		//// mat2 + vec2 Operations
+		//// mat3 + vec2 Operations
 
 		vec3 TransformVec3(const vec3& vec)
 		{
@@ -796,7 +818,7 @@ namespace gtk {
 		} vec3 operator*(const vec3& vec) { return TransformVec3(vec); }
 
 
-		//// mat2 + mat2 Operations
+		//// mat3 + mat3 Operations
 
 		mat3& Add(const mat3& other)
 		{
@@ -830,13 +852,12 @@ namespace gtk {
 		} mat3& operator-=(const mat3& other) { return Subtract(other); }
 		mat3& Multiply(const mat3& other)
 		{
-			// TODO
 
 			*this = *this * other;
 
 			return *this;
 
-		} mat3& operator*=(const mat3& other) { return Multiply(other); } // TODO
+		} mat3& operator*=(const mat3& other) { return Multiply(other); }
 
 		mat3 operator+(const mat3& other)
 		{
@@ -879,15 +900,15 @@ namespace gtk {
 
 
 				(*(values + 0)) * (*(other.values + 0)) + (*(values + 3)) * (*(other.values + 1)) + (*(values + 6)) * (*(other.values + 2)), // 0 * o0 + 3 * o1 + 6 * o2
-				(*(values + 0)) * (*(other.values + 3)) + (*(values + 3)) * (*(other.values + 4)) + (*(values + 6)) * (*(other.values + 5)), // 0 * o3 + 3 * o4 + 6 * o5
-				(*(values + 0)) * (*(other.values + 6)) + (*(values + 3)) * (*(other.values + 7)) + (*(values + 6)) * (*(other.values + 8)), // 0 * o6 + 3 * o7 + 6 * o8
-
 				(*(values + 1)) * (*(other.values + 0)) + (*(values + 4)) * (*(other.values + 1)) + (*(values + 7)) * (*(other.values + 2)), // 1 * o0 + 4 * o1 + 7 * o2
-				(*(values + 1)) * (*(other.values + 3)) + (*(values + 4)) * (*(other.values + 4)) + (*(values + 7)) * (*(other.values + 5)), // 1 * o3 + 4 * o4 + 7 * o5
-				(*(values + 1)) * (*(other.values + 6)) + (*(values + 4)) * (*(other.values + 7)) + (*(values + 7)) * (*(other.values + 8)), // 1 * o6 + 4 * o7 + 7 * o8
-
 				(*(values + 2)) * (*(other.values + 0)) + (*(values + 5)) * (*(other.values + 1)) + (*(values + 8)) * (*(other.values + 2)), // 2 * o0 + 5 * o1 + 8 * o2
+
+				(*(values + 0)) * (*(other.values + 3)) + (*(values + 3)) * (*(other.values + 4)) + (*(values + 6)) * (*(other.values + 5)), // 0 * o3 + 3 * o4 + 6 * o5
+				(*(values + 1)) * (*(other.values + 3)) + (*(values + 4)) * (*(other.values + 4)) + (*(values + 7)) * (*(other.values + 5)), // 1 * o3 + 4 * o4 + 7 * o5
 				(*(values + 2)) * (*(other.values + 3)) + (*(values + 5)) * (*(other.values + 4)) + (*(values + 8)) * (*(other.values + 5)), // 2 * o3 + 5 * o4 + 8 * o5
+
+				(*(values + 0)) * (*(other.values + 6)) + (*(values + 3)) * (*(other.values + 7)) + (*(values + 6)) * (*(other.values + 8)), // 0 * o6 + 3 * o7 + 6 * o8
+				(*(values + 1)) * (*(other.values + 6)) + (*(values + 4)) * (*(other.values + 7)) + (*(values + 7)) * (*(other.values + 8)), // 1 * o6 + 4 * o7 + 7 * o8
 				(*(values + 2)) * (*(other.values + 6)) + (*(values + 5)) * (*(other.values + 7)) + (*(values + 8)) * (*(other.values + 8))  // 2 * o6 + 5 * o7 + 8 * o8
 
 			};
