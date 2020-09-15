@@ -42,8 +42,8 @@ TEST_F(Mat2_F, contrustors)
 
 	mat2 z = { 4, 3, 2, 1 };
 	EXPECT_FLOAT_EQ(z(0, 0), 4.0f);
-	EXPECT_FLOAT_EQ(z(0, 1), 3.0f);
-	EXPECT_FLOAT_EQ(z(1, 0), 2.0f);
+	EXPECT_FLOAT_EQ(z(1, 0), 3.0f);
+	EXPECT_FLOAT_EQ(z(0, 1), 2.0f);
 	EXPECT_FLOAT_EQ(z(1, 1), 1.0f);
 
 	EXPECT_FLOAT_EQ(z[0][0], 4.0f);
