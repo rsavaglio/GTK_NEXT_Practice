@@ -38,6 +38,7 @@
   <ItemGroup>
     <ClCompile Include="gtk_Math\mat2_f.cpp" />
     <ClCompile Include="gtk_Math\mat3_f.cpp" />
+    <ClCompile Include="gtk_Math\mat4_f.cpp" />
     <ClCompile Include="gtk_Math\vec2_f.cpp" />
     <ClCompile Include="gtk_Math\vec3_f.cpp" />
     <ClCompile Include="gtk_Math\vec4_f.cpp" />

@@ -1255,7 +1255,7 @@ namespace gtk {
 		} mat4& operator+=(const mat4& other) { return Add(other); }
 		mat4& Subtract(const mat4& other)
 		{
-			*(values) += *(other.values);
+			*(values) -= *(other.values);
 			*(values + 1) -= *(other.values + 1);
 			*(values + 2) -= *(other.values + 2);
 			*(values + 3) -= *(other.values + 3);
