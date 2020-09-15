@@ -20,7 +20,7 @@ protected:
 	vec4 t;
 };
 
-TEST_F(Vec4_F, vec4_boolOperators)
+TEST_F(Vec4_F, boolOperators)
 {
 
 
@@ -36,8 +36,7 @@ TEST_F(Vec4_F, vec4_boolOperators)
 
 }
 
-
-TEST_F(Vec4_F, vec4_constructors)
+TEST_F(Vec4_F, constructors)
 {
 	vec4 x;
 	EXPECT_FLOAT_EQ(x.x, 0.0f);
@@ -67,7 +66,7 @@ TEST_F(Vec4_F, vec4_constructors)
 
 }
 
-TEST_F(Vec4_F, vec4_Add)
+TEST_F(Vec4_F, add)
 {
 
 	vec4 x(1);
@@ -86,8 +85,7 @@ TEST_F(Vec4_F, vec4_Add)
 
 }
 
-
-TEST_F(Vec4_F, vec4_Subtract)
+TEST_F(Vec4_F, subtract)
 {
 	vec4 x(3);
 	EXPECT_EQ(x -= a, vec4(2));
@@ -98,7 +96,7 @@ TEST_F(Vec4_F, vec4_Subtract)
 	EXPECT_EQ(x - 2, vec4(1, 0, -1, -2));
 }
 
-TEST_F(Vec4_F, vec4_Multiply)
+TEST_F(Vec4_F, multiply)
 {
 	vec4 x(1);
 	EXPECT_EQ(x *= c, vec4(1, 2, 3, 4));
@@ -111,8 +109,7 @@ TEST_F(Vec4_F, vec4_Multiply)
 	EXPECT_EQ(x, vec4(4, 16, 36, 64));
 }
 
-
-TEST_F(Vec4_F, vec4_Divide)
+TEST_F(Vec4_F, divide)
 {
 	vec4 x(24);
 	EXPECT_EQ(x /= c, vec4(24, 12, 8, 6));
@@ -125,7 +122,7 @@ TEST_F(Vec4_F, vec4_Divide)
 
 }
 
-TEST_F(Vec4_F, vec4_IncrementDecrement)
+TEST_F(Vec4_F, incrementDecrement)
 {
 	EXPECT_EQ(c++, vec4(1,2,3,4));
 	EXPECT_EQ(++c, vec4(3, 4, 5, 6));
@@ -136,22 +133,38 @@ TEST_F(Vec4_F, vec4_IncrementDecrement)
 	EXPECT_EQ(c,   vec4(1, 2, 3, 4));
 }
 
-TEST_F(Vec4_F, vec4_DotCross)
+TEST_F(Vec4_F, dotCross)
 {
 	vec4 x(-5);
 	EXPECT_FLOAT_EQ(c.Dot(x), -50);
 	EXPECT_EQ(c, vec4(1, 2, 3, 4));
 }
 
-
-TEST_F(Vec4_F, vec4_Length)
+TEST_F(Vec4_F, ength)
 {
 	// Length
 	EXPECT_FLOAT_EQ(c.Length(), 5.477225575f);
 
 	// Length Squared
 	EXPECT_FLOAT_EQ(c.LengthSquared(), 30.0f);
+}
 
+TEST_F(Vec4_F, normalize)
+{
+	vec4 x = { 5, 6, 7, 8 };
+
+	EXPECT_NEAR(x.GetNormalized().x, 0.379049021, 0.000001);
+	EXPECT_NEAR(x.GetNormalized().y, 0.454858826, 0.000001);
+	EXPECT_NEAR(x.GetNormalized().z, 0.53066863, 0.000001);
+	EXPECT_NEAR(x.GetNormalized().w, 0.606478434, 0.000001);
+
+	EXPECT_EQ(x, vec4(5, 6, 7, 8));
+
+	x.Normalize();
+	EXPECT_NEAR(x.x, 0.379049021, 0.000001);
+	EXPECT_NEAR(x.y, 0.454858826, 0.000001);
+	EXPECT_NEAR(x.z, 0.53066863, 0.000001);
+	EXPECT_NEAR(x.w, 0.606478434, 0.000001);
 }
 
 

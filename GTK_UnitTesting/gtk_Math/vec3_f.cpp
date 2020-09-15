@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "gtk/gtkMath.hpp"
 
+using namespace gtk;
+
 class Vec3_F : public ::testing::Test
 {
 protected:
@@ -18,7 +20,7 @@ protected:
 	gtk::vec3 t;
 };
 
-TEST_F(Vec3_F, vec3_boolOperators)
+TEST_F(Vec3_F, boolOperators)
 {
 	gtk::vec3 e(1);
 	EXPECT_EQ(a, e);
@@ -32,8 +34,7 @@ TEST_F(Vec3_F, vec3_boolOperators)
 
 }
 
-
-TEST_F(Vec3_F, vec3_constructors)
+TEST_F(Vec3_F, constructors)
 {
 	using namespace gtk;
 
@@ -53,7 +54,7 @@ TEST_F(Vec3_F, vec3_constructors)
 	EXPECT_FLOAT_EQ(z.b, -3.5f);
 }
 
-TEST_F(Vec3_F, vec3_Add)
+TEST_F(Vec3_F, add)
 {
 	a += c;
 	EXPECT_EQ(a, gtk::vec3(2, 3, 4));
@@ -66,8 +67,7 @@ TEST_F(Vec3_F, vec3_Add)
 	EXPECT_EQ(a, gtk::vec3(2.5, 3.5, 4.5));
 }
 
-
-TEST_F(Vec3_F, vec3_Subtract)
+TEST_F(Vec3_F, subtract)
 {
 	b -= a;
 	EXPECT_EQ(b, gtk::vec3(-0.5f));
@@ -82,7 +82,7 @@ TEST_F(Vec3_F, vec3_Subtract)
 	EXPECT_EQ(d, gtk::vec3(-1, -2, -3));
 }
 
-TEST_F(Vec3_F, vec3_Multiply)
+TEST_F(Vec3_F, multiply)
 {
 	EXPECT_EQ(a *= t, t);
 	EXPECT_EQ(a *= 2, t * 2);
@@ -92,7 +92,7 @@ TEST_F(Vec3_F, vec3_Multiply)
 	EXPECT_TRUE(d != gtk::vec3(-2, -4, -6));
 }
 
-TEST_F(Vec3_F, vec3_Divide)
+TEST_F(Vec3_F, divide)
 {
 	EXPECT_EQ( t / t, a);
 	EXPECT_EQ( t /= t, a);
@@ -105,7 +105,7 @@ TEST_F(Vec3_F, vec3_Divide)
 	EXPECT_EQ(c, gtk::vec3(0.5f, 1.0f, 1.5f));
 }
 
-TEST_F(Vec3_F, vec3_IncrementDecrement)
+TEST_F(Vec3_F, incrementDecrement)
 {
 	EXPECT_FALSE(a++ == t);
 	EXPECT_TRUE(a == t);
@@ -115,7 +115,7 @@ TEST_F(Vec3_F, vec3_IncrementDecrement)
 	EXPECT_EQ(++b, gtk::vec3(1.5f));
 }
 
-TEST_F(Vec3_F, vec3_DotCross)
+TEST_F(Vec3_F, dotCross)
 {
 	EXPECT_FLOAT_EQ(c.Dot(gtk::vec3(5, 3, 6)), 29);
 	EXPECT_EQ(c, gtk::vec3(1, 2, 3));
@@ -124,8 +124,7 @@ TEST_F(Vec3_F, vec3_DotCross)
 	EXPECT_EQ(c, gtk::vec3(1, 2, 3));
 }
 
-
-TEST_F(Vec3_F, vec3_Length)
+TEST_F(Vec3_F, length)
 {
 	// Length
 	EXPECT_FLOAT_EQ(c.Length(), 3.741657387f);
@@ -135,6 +134,21 @@ TEST_F(Vec3_F, vec3_Length)
 
 }
 
+TEST_F(Vec3_F, normalize)
+{
+	vec3 x = { 5, 6, 7 };
+
+	EXPECT_NEAR(x.GetNormalized().x, 0.476731294, 0.000001);
+	EXPECT_NEAR(x.GetNormalized().y, 0.572077553, 0.000001);
+	EXPECT_NEAR(x.GetNormalized().z, 0.667423812, 0.000001);
+
+	EXPECT_EQ(x, vec3(5, 6, 7));
+
+	x.Normalize();
+	EXPECT_NEAR(x.x, 0.476731294, 0.000001);
+	EXPECT_NEAR(x.y, 0.572077553, 0.000001);
+	EXPECT_NEAR(x.z, 0.667423812, 0.000001);
+}
 
 
 

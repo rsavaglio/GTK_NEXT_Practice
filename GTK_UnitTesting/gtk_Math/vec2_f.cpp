@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "gtk/gtkMath.hpp"
 
+#include <math.h>
+
+using namespace gtk;
+
 class Vec2_F : public ::testing::Test
 {
 protected:
@@ -18,7 +22,7 @@ protected:
 	gtk::vec2 t;
 };
 
-TEST_F(Vec2_F, vec2_boolOperators)
+TEST_F(Vec2_F, boolOperators)
 {
 	gtk::vec2 e(99.9f, -99.9f);
 	EXPECT_EQ(d, e);
@@ -31,7 +35,7 @@ TEST_F(Vec2_F, vec2_boolOperators)
 
 }
 
-TEST_F(Vec2_F, vec2_constructors)
+TEST_F(Vec2_F, constructors)
 {
 	gtk::vec2 x;
 	gtk::vec2 y(0.005f);
@@ -51,7 +55,7 @@ TEST_F(Vec2_F, vec2_constructors)
 	EXPECT_FLOAT_EQ(w.v, -99.9f);
 }
 
-TEST_F(Vec2_F, vec2_Add)
+TEST_F(Vec2_F, add)
 {
 	// Add
 	a.Add(a);
@@ -74,7 +78,7 @@ TEST_F(Vec2_F, vec2_Add)
 	
 }
 
-TEST_F(Vec2_F, vec2_AddScalar)
+TEST_F(Vec2_F, addScalar)
 {
 	// Add
 	a.AddScalar(15.0f);
@@ -100,7 +104,7 @@ TEST_F(Vec2_F, vec2_AddScalar)
 
 }
 
-TEST_F(Vec2_F, vec2_Subtract)
+TEST_F(Vec2_F, subtract)
 {
 	// -=
 	a -= c;
@@ -120,7 +124,7 @@ TEST_F(Vec2_F, vec2_Subtract)
 
 }
 
-TEST_F(Vec2_F, vec2_Multiply)
+TEST_F(Vec2_F, multiply)
 {
 	// *=
 	a *= t;
@@ -140,7 +144,7 @@ TEST_F(Vec2_F, vec2_Multiply)
 
 }
 
-TEST_F(Vec2_F, vec2_Divide)
+TEST_F(Vec2_F, divide)
 {
 	// /=
 	a /= 3;
@@ -160,7 +164,7 @@ TEST_F(Vec2_F, vec2_Divide)
 	EXPECT_FLOAT_EQ((d / a).y, -3996.0f);
 }
 
-TEST_F(Vec2_F, vec2_IncrementDecrement)
+TEST_F(Vec2_F, incrementDecrement)
 {
 	// Increment
 	EXPECT_FLOAT_EQ((c++).x,  1);
@@ -179,7 +183,7 @@ TEST_F(Vec2_F, vec2_IncrementDecrement)
 
 }
 
-TEST_F(Vec2_F, vec2_DotCross)
+TEST_F(Vec2_F, dotCross)
 {
 	// Dot
 	EXPECT_FLOAT_EQ(b.Dot(d), 0);
@@ -193,7 +197,7 @@ TEST_F(Vec2_F, vec2_DotCross)
 
 }
 
-TEST_F(Vec2_F, vec2_Length)
+TEST_F(Vec2_F, length)
 {
 	// Length
 	EXPECT_FLOAT_EQ(a.Length(), 21.21320344f);
@@ -205,6 +209,20 @@ TEST_F(Vec2_F, vec2_Length)
 
 }
 
+TEST_F(Vec2_F, normalize)
+{
+	vec2 x = { 5, 6 };
+
+	EXPECT_NEAR(x.GetNormalized().x, 0.640184399, 0.000001);
+	EXPECT_NEAR(x.GetNormalized().y, 0.768221279, 0.000001);
+
+	EXPECT_EQ(x, vec2(5, 6));
+
+	x.Normalize();
+	EXPECT_NEAR(x.x, 0.640184399, 0.000001);
+	EXPECT_NEAR(x.y, 0.768221279, 0.000001);
+
+}
 
 
 
