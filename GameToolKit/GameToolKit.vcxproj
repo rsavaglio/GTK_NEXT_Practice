@@ -138,11 +138,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="gtk\Component.h" />
+    <ClInclude Include="gtk\ComponentList.h" />
+    <ClInclude Include="gtk\GameObject.h" />
     <ClInclude Include="gtk\gtkMath.hpp" />
     <ClInclude Include="gtk\Core.h" />
     <ClInclude Include="gtk\Test.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="gtk\ComponenetList.cpp" />
+    <ClCompile Include="gtk\GameObject.cpp" />
     <ClCompile Include="gtk\Test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
