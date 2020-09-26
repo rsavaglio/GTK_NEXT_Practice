@@ -18,10 +18,13 @@
     <ClCompile Include="gtk\Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gtk\GameObject.cpp">
+    <ClCompile Include="gtk\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gtk\ComponenetList.cpp">
+    <ClCompile Include="gtk\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtk\ComponenetSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,13 +38,16 @@
     <ClInclude Include="gtk\gtkMath.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gtk\GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="gtk\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gtk\ComponentList.h">
+    <ClInclude Include="gtk\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gtk\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gtk\ComponentSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
