@@ -138,17 +138,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="gtk\Camera.h" />
     <ClInclude Include="gtk\Component.h" />
-    <ClInclude Include="gtk\ComponentSet.h" />
     <ClInclude Include="gtk\Entity.h" />
+    <ClInclude Include="gtk\Game.h" />
     <ClInclude Include="gtk\gtkMath.hpp" />
     <ClInclude Include="gtk\Core.h" />
     <ClInclude Include="gtk\Scene.h" />
     <ClInclude Include="gtk\Test.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gtk\ComponenetSet.cpp" />
+    <ClCompile Include="gtk\Camera.cpp" />
     <ClCompile Include="gtk\Entity.cpp" />
+    <ClCompile Include="gtk\Game.cpp" />
     <ClCompile Include="gtk\Scene.cpp" />
     <ClCompile Include="gtk\Test.cpp" />
   </ItemGroup>

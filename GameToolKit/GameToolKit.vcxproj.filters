@@ -24,7 +24,10 @@
     <ClCompile Include="gtk\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gtk\ComponenetSet.cpp">
+    <ClCompile Include="gtk\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtk\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,7 +50,10 @@
     <ClInclude Include="gtk\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gtk\ComponentSet.h">
+    <ClInclude Include="gtk\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gtk\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
