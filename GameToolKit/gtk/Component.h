@@ -17,8 +17,6 @@ namespace gtk {
 		virtual void Start() {}
 		virtual void Update() {}
 
-
-
 	};
 
 }

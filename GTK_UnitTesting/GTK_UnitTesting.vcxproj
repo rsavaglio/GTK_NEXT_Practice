@@ -33,9 +33,12 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClInclude Include="gtk_ECS\TestGame.h" />
+    <ClInclude Include="gtk_ECS\TestScene.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="gtk_ECS\Game_f.cpp" />
     <ClCompile Include="gtk_Math\mat2_f.cpp" />
     <ClCompile Include="gtk_Math\mat3_f.cpp" />
     <ClCompile Include="gtk_Math\mat4_f.cpp" />

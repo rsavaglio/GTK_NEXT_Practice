@@ -9,50 +9,26 @@ namespace gtk {
 
 	public:
 
-		Game() {}
+		// Deletes all scenes in the scene map
+		virtual ~Game();
 
-		virtual ~Game()
-		{
-			// Delete all scenes
-		}
+		// Override in custom game class
+		virtual void Init() = 0;
 
-		void Start()
-		{
-			// Starts active scene
-		}
+		// Starts the active scene
+		void Start();
 
-		void Update() 
-		{
-			// Update the active scene
-
-		}
+		// Updates the active scene
+		void Update(); 
 		
-		void SwitchScene(const std::string& key) 
-		{
-			// Shutdown active scene
+		// Shutdown active, change active, start active
+		void SwitchScene(const std::string& key);
 
-			// Active scene = next scene
-
-			// Start new scene
-			
-		}
 
 	protected:
 
-		virtual void SetupScenes()
-		{
-			// To be overriden
-
-			// This is where you create scenes and add them to the game
-		}
-
-		void AddScene(const std::string& key)
-		{
-			// Add scene to map
-
-			// if first scene added, set as the active scene
-
-		}
+		// Adds a new scene to the scene map
+		void AddScene(const std::string& key, Scene* newScene);
 
 	private:
 

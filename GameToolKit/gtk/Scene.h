@@ -17,19 +17,13 @@ namespace gtk {
 
 	public:
 
-		virtual ~Scene() 
-		{
-			// Delete all comps
+		// TODO
+		virtual ~Scene();
 
-			// Delete all entities
-		}
+		// Get pointer to game
+		Game* GetGame();
 
-		const Game& GetGame()
-		{
-			return m_Game;
-		}
-
-
+		// TODO
 		int CreateEntity()
 		{
 			// Create entity
@@ -38,22 +32,19 @@ namespace gtk {
 
 			// Add entity to the map
 
-			return 0;
+			return 1;
 		}
-	
+		
+
 	protected:
 
-		virtual void SetupHierarchy()
-		{
-			// To be overriden
-
-			// Used to setup entities and components
-		}
-
+		// To be overriden in custom scenes
+		// Used by game to start scenes
+		virtual void Init() = 0;
+	
 	private:
 
-		Scene(const std::string& name, const Game& game) :m_Name(name), m_Game(game) {}
-
+		// TODO
 		void Update()
 		{
 			// To be called by game
@@ -62,6 +53,7 @@ namespace gtk {
 
 		}
 
+		// TODO
 		void Shutdown()
 		{
 			// To be called by game
@@ -72,8 +64,8 @@ namespace gtk {
 		}
 
 		Camera m_Camera;
-		const std::string m_Name;
-		const Game& m_Game;
+
+		Game* m_Game;
 
 		std::unordered_map<unsigned int, Entity*> m_EntityList; // Either using a string or int as key
 		std::vector<std::unordered_map<unsigned int, Component>> m_ComponenetMaps;
