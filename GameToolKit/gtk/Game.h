@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Scene.h"
+
 #include <unordered_map>
+#include <string>
 
 namespace gtk {
 

@@ -33,6 +33,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClInclude Include="gtk_ECS\TestComponent.h" />
     <ClInclude Include="gtk_ECS\TestGame.h" />
     <ClInclude Include="gtk_ECS\TestScene.h" />
     <ClInclude Include="pch.h" />

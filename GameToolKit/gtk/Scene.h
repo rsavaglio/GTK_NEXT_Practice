@@ -23,16 +23,25 @@ namespace gtk {
 		// Get pointer to game
 		Game* GetGame();
 
-		// TODO
-		int CreateEntity()
+		unsigned int CreateEntity()
 		{
-			// Create entity
+			// Add entity to the map, set as active
+			m_EntityMap.insert({ _idProvider, true });
 
-			// Set id
+			// Might want to create a transform by default here
 
-			// Add entity to the map
+			// Return id and increment
+			return _idProvider++;
+		}
 
-			return 1;
+		void AddComponent(Component* const component)
+		{
+			// Add component to correct map with the ID
+			
+
+			// Prevent memory leak for now
+			delete component;
+			
 		}
 		
 
@@ -47,9 +56,8 @@ namespace gtk {
 		// TODO
 		void Update()
 		{
-			// To be called by game
+			// Do all things at once
 
-			// Traverse Componenet Sets and call update in each component
 
 		}
 
@@ -61,13 +69,16 @@ namespace gtk {
 			// delete componenents
 
 			// delete all entities
+
 		}
 
-		Camera m_Camera;
 
+		static unsigned int _idProvider;
+
+		Camera m_Camera;
 		Game* m_Game;
 
-		std::unordered_map<unsigned int, Entity*> m_EntityList; // Either using a string or int as key
+		std::unordered_map<unsigned int, bool> m_EntityMap;
 		std::vector<std::unordered_map<unsigned int, Component>> m_ComponenetMaps;
 
 	};

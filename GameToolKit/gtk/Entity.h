@@ -1,42 +1,41 @@
 #pragma once
 
 #include "Scene.h"
-#include "Component.h"
 
 namespace gtk {
 
-	struct Entity {
+	//struct Entity {
 
-		const unsigned int _id;
-		const Scene& _Scene;
-		bool _Active;
-
-
-		void AddComponenet(const Component& componenet)
-		{
-
-			// If componentmap type exists
-
-				// Make sure this entity doesn't already have this type on it
-
-				// Add it to the map
+	//	const unsigned int _id;
+	//	const Scene& _Scene;
+	//	bool _Active;
 
 
-			// if no map exists
+	//	void AddComponenet(const Component& componenet)
+	//	{
 
-				// Create a new map
+	//		// If componentmap type exists
 
-				// Add to list
-		}
+	//			// Make sure this entity doesn't already have this type on it
 
-	private:
+	//			// Add it to the map
 
-		Entity(const Scene& scene) : _id(_idProvider), _Scene(scene), _Active(true)
-		{
-			_idProvider++;
-		}
 
-		static unsigned int _idProvider;
+	//		// if no map exists
 
-	};
+	//			// Create a new map
+
+	//			// Add to list
+	//	}
+
+	//private:
+
+	//	Entity(const Scene& scene) : _id(_idProvider), _Scene(scene), _Active(true)
+	//	{
+	//		_idProvider++;
+	//	}
+
+	//	static unsigned int _idProvider;
+
+	//};
 }

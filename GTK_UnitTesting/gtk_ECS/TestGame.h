@@ -10,11 +10,9 @@ public:
 	virtual void Init() override
 	{
 		// Add the scenes of the game here
-		
 		Scene* testScene = new TestScene;
 		AddScene("TestScene", testScene);
 
-		
 
 	}
 

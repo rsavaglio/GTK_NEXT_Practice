@@ -2,6 +2,8 @@
 
 #include "gtk/Scene.h"
 
+#include "TestComponent.h"
+
 class TestScene : public gtk::Scene
 {
 
@@ -9,15 +11,12 @@ protected:
 
 	virtual void Init() override
 	{
-		// Think of this as the hierarchy
 
-		// Setup Entities here
+		// Create Entities and add components here
 
-		// Create Entity
-			// Add components
+		unsigned int player = CreateEntity();
 
-		// Create Entity
-			// Add components
+		AddComponent(new TestComponent(player));
 
 	}
 };

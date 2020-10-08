@@ -6,17 +6,16 @@ namespace gtk {
 	{
 	public:
 
-		// Left off here
+		const unsigned int _id;
 
-		const Entity& _Entity;
-		const Scene& _Scene;
-
-		Component(const Entity& entity, const Scene& scene) : _Entity(entity), _Scene(scene) {}
-		virtual ~Component() {}
+		Component(const int& id) : _id(id) {}
+		
+		virtual ~Component() {} // Very important
 
 		virtual void Start() {}
-		virtual void Update() {}
+		virtual void Update() {
+
+		}
 
 	};
-
 }
