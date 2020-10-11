@@ -4,9 +4,14 @@
 #include "Component.h"
 #include "Camera.h"
 #include "Game.h"
+#include "Renderer.h"
 
 #include <vector>
 #include <unordered_map>
+
+
+#define ENTITY unsigned int
+#define COMP_GROUP unsigned int
 
 
 namespace gtk {
@@ -23,25 +28,38 @@ namespace gtk {
 		// Get pointer to game
 		Game* GetGame();
 
-		unsigned int CreateEntity()
+		ENTITY CreateEntity()
 		{
 			// Add entity to the map, set as active
-			m_EntityMap.insert({ _idProvider, true });
+			m_EntityMap.insert({ _EntityIDProvider, true });
 
 			// Might want to create a transform by default here
 
 			// Return id and increment
-			return _idProvider++;
+			return _EntityIDProvider++;
 		}
 
-		void AddComponent(Component* const component)
+		COMP_GROUP CreateComponenetGroup()
+		{
+			m_ComponentMaps.push_back(new std::unordered_map<unsigned int, gtk::Component*>);
+
+			return _ComponentGroupIDProvider++;
+		}
+
+		void AddComponent(const unsigned int& group, Component* const component)
 		{
 			// Add component to correct map with the ID
+			m_ComponentMaps[group]->insert({ component->_id, component });
 			
+		}
+
+		void AddRenderer(Renderer* const renderer)
+		{
+			// Add renderer to map with the id
+
 
 			// Prevent memory leak for now
-			delete component;
-			
+			delete renderer;
 		}
 		
 
@@ -50,14 +68,17 @@ namespace gtk {
 		// To be overriden in custom scenes
 		// Used by game to start scenes
 		virtual void Init() = 0;
+
+		std::vector<std::unordered_map<unsigned int, Component*>*> m_ComponentMaps;
 	
 	private:
 
 		// TODO
 		void Update()
 		{
-			// Do all things at once
+			// Update component maps by tag
 
+			// Update renderers
 
 		}
 
@@ -68,18 +89,19 @@ namespace gtk {
 
 			// delete componenents
 
-			// delete all entities
+			// Remove all entities
+			m_EntityMap.clear();
+
 
 		}
 
+		ENTITY _EntityIDProvider = 0;
+		COMP_GROUP _ComponentGroupIDProvider = 0;
 
-		static unsigned int _idProvider;
-
-		Camera m_Camera;
 		Game* m_Game;
 
 		std::unordered_map<unsigned int, bool> m_EntityMap;
-		std::vector<std::unordered_map<unsigned int, Component>> m_ComponenetMaps;
+		std::unordered_map<unsigned int, Renderer> m_RendererMap;
 
 	};
 }

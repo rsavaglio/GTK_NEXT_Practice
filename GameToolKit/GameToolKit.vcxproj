@@ -144,6 +144,7 @@
     <ClInclude Include="gtk\Game.h" />
     <ClInclude Include="gtk\gtkMath.hpp" />
     <ClInclude Include="gtk\Core.h" />
+    <ClInclude Include="gtk\Renderer.h" />
     <ClInclude Include="gtk\Scene.h" />
     <ClInclude Include="gtk\Test.h" />
   </ItemGroup>

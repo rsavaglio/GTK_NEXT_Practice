@@ -10,7 +10,7 @@ namespace gtk {
 
 		Component(const int& id) : _id(id) {}
 		
-		virtual ~Component() {} // Very important
+		virtual ~Component() {}
 
 		virtual void Start() {}
 		virtual void Update() {

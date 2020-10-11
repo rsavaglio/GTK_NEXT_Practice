@@ -56,5 +56,8 @@
     <ClInclude Include="gtk\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gtk\Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
