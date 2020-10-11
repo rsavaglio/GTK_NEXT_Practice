@@ -3,7 +3,6 @@
 #include "Entity.h"
 #include "Component.h"
 #include "Camera.h"
-#include "Game.h"
 #include "Renderer.h"
 
 #include <vector>
@@ -76,9 +75,22 @@ namespace gtk {
 		// TODO
 		void Update()
 		{
-			// Update component maps by tag
+
+			// Loop through the vector of maps
+			for (auto& CompMap : m_ComponentMaps)
+			{
+				// Loop through comp map
+				for (auto& Comp : *CompMap) 
+				{
+					Comp.second->Update();
+				}
+			}
 
 			// Update renderers
+			for (auto& renderer : m_RendererMap)
+			{
+				renderer.second->Draw();
+			}
 
 		}
 
@@ -101,7 +113,7 @@ namespace gtk {
 		Game* m_Game;
 
 		std::unordered_map<unsigned int, bool> m_EntityMap;
-		std::unordered_map<unsigned int, Renderer> m_RendererMap;
+		std::unordered_map<unsigned int, Renderer*> m_RendererMap;
 
 	};
 }

@@ -2,6 +2,7 @@
 
 namespace gtk {
 
+
 	Scene::~Scene()
 	{
 		// Delete all entities

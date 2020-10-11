@@ -13,12 +13,12 @@ protected:
 	virtual void Init() override
 	{
 		// Add Component Group
-		COMP_GROUP CompGroupID = CreateComponenetGroup();
+		COMP_GROUP Group1 = CreateComponenetGroup();
 
 
 		// Create Entities and add components here
 		ENTITY player = CreateEntity();
-		AddComponent(CompGroupID, new TestComponent(player));
+		AddComponent(Group1, new TestComponent(player));
 		AddRenderer(new TestRenderer(player));
 
 	}
