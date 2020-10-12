@@ -4,14 +4,20 @@
 #include "Component.h"
 #include "Camera.h"
 #include "Renderer.h"
+#include "Game.h"
 
 #include <vector>
 #include <unordered_map>
 
+struct Entity
+{
+	unsigned int _id;
+};
 
-#define ENTITY unsigned int
-#define COMP_GROUP unsigned int
-
+struct ComponentGroup
+{
+	unsigned int _id;
+};
 
 namespace gtk {
 
@@ -27,7 +33,7 @@ namespace gtk {
 		// Get pointer to game
 		Game* GetGame();
 
-		ENTITY CreateEntity()
+		Entity CreateEntity()
 		{
 			// Add entity to the map, set as active
 			m_EntityMap.insert({ _EntityIDProvider, true });
@@ -38,17 +44,17 @@ namespace gtk {
 			return _EntityIDProvider++;
 		}
 
-		COMP_GROUP CreateComponenetGroup()
+		ComponentGroup CreateComponenetGroup()
 		{
 			m_ComponentMaps.push_back(new std::unordered_map<unsigned int, gtk::Component*>);
 
 			return _ComponentGroupIDProvider++;
 		}
 
-		void AddComponent(const unsigned int& group, Component* const component)
+		void AddComponent(const ComponentGroup& group, Component* const component)
 		{
 			// Add component to correct map with the ID
-			m_ComponentMaps[group]->insert({ component->_id, component });
+			m_ComponentMaps[group._id]->insert({ component->_id, component });
 			
 		}
 

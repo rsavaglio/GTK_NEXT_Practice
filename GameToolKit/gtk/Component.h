@@ -8,7 +8,7 @@ namespace gtk {
 
 		const unsigned int _id;
 
-		Component(const int& id) : _id(id) {}
+		Component(const Entity& entity) : _id(entity._id) {}
 		
 		virtual ~Component() {}
 

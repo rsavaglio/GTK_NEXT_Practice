@@ -1,0 +1,1 @@
+C:\dev\NEXT_Practice\GTK_UnitTesting\Win32\Debug\GTK_UnitTesting.vcxproj.CopyComplete

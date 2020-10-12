@@ -1,0 +1,52 @@
+﻿  Entity.cpp
+C:\dev\NEXT_Practice\GameToolKit\gtk\Game.h(33,46): error C2061: syntax error: identifier 'Scene'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Game.h(37,8): error C2143: syntax error: missing ';' before '*'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Game.h(37,8): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\dev\NEXT_Practice\GameToolKit\gtk\Game.h(37,23): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Game.h(38,35): error C2065: 'Scene': undeclared identifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Game.h(38,41): error C2059: syntax error: '>'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,22): error C3646: 'CreateEntity': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,22): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(37,3): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(47,35): error C3646: 'CreateComponenetGroup': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(47,35): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(48,3): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(116,28): error C3646: '_EntityIDProvider': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(116,28): error C2059: syntax error: '='
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(116,31): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(117,40): error C3646: '_ComponentGroupIDProvider': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(117,40): error C2059: syntax error: '='
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(117,43): error C2238: unexpected token(s) preceding ';'
+  Game.cpp
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,22): error C3646: 'CreateEntity': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,22): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(37,3): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(47,35): error C3646: 'CreateComponenetGroup': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(47,35): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(48,3): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(116,28): error C3646: '_EntityIDProvider': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(116,28): error C2059: syntax error: '='
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(116,31): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(117,40): error C3646: '_ComponentGroupIDProvider': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(117,40): error C2059: syntax error: '='
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(117,43): error C2238: unexpected token(s) preceding ';'
+  Scene.cpp
+C:\dev\NEXT_Practice\GameToolKit\gtk\Game.h(33,46): error C2061: syntax error: identifier 'Scene'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Game.h(37,8): error C2143: syntax error: missing ';' before '*'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Game.h(37,8): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\dev\NEXT_Practice\GameToolKit\gtk\Game.h(37,23): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Game.h(38,35): error C2065: 'Scene': undeclared identifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Game.h(38,41): error C2059: syntax error: '>'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,22): error C3646: 'CreateEntity': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,22): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(37,3): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(47,35): error C3646: 'CreateComponenetGroup': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(47,35): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(48,3): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(116,28): error C3646: '_EntityIDProvider': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(116,28): error C2059: syntax error: '='
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(116,31): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(117,40): error C3646: '_ComponentGroupIDProvider': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(117,40): error C2059: syntax error: '='
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(117,43): error C2238: unexpected token(s) preceding ';'
+  Generating Code...

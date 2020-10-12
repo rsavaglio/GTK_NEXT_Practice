@@ -1,0 +1,2 @@
+C:\dev\NEXT_Practice\Debug\GameToolKit.pdb
+C:\dev\NEXT_Practice\GameToolKit\Debug\GameToolKit.pdb

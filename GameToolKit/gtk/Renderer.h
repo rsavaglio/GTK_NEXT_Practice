@@ -8,7 +8,7 @@ namespace gtk {
 
 		const unsigned int _id;
 
-		Renderer(const int& id) : _id(id) {}
+		Renderer(const Entity& entity) : _id(entity._id) {}
 		virtual ~Renderer() {}
 
 		virtual void Draw() {}

@@ -7,7 +7,7 @@ class TestRenderer : public gtk::Renderer
 
 public:
 
-	TestRenderer(const unsigned int& id) : Renderer(id)
+	TestRenderer(const Entity& entity) : Renderer(entity)
 	{
 
 	}

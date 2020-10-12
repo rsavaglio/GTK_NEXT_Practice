@@ -1,0 +1,67 @@
+﻿  pch.cpp
+  Game_f.cpp
+  mat2_f.cpp
+  mat3_f.cpp
+  mat4_f.cpp
+  vec2_f.cpp
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(66,2): warning C4305: 'argument': truncation from 'double' to 'RawType'
+          with
+          [
+              RawType=float
+          ]
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(67,2): warning C4305: 'argument': truncation from 'double' to 'RawType'
+          with
+          [
+              RawType=float
+          ]
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(76,41): warning C4305: 'argument': truncation from 'double' to 'const float'
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(88,19): warning C4305: 'argument': truncation from 'double' to 'const float'
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(89,2): warning C4305: 'argument': truncation from 'double' to 'RawType'
+          with
+          [
+              RawType=float
+          ]
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(90,2): warning C4305: 'argument': truncation from 'double' to 'RawType'
+          with
+          [
+              RawType=float
+          ]
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(123,2): warning C4305: 'argument': truncation from 'double' to 'const float'
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(142,33): warning C4305: 'argument': truncation from 'double' to 'const float'
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(178,2): warning C4305: 'argument': truncation from 'double' to 'RawType'
+          with
+          [
+              RawType=float
+          ]
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(179,2): warning C4305: 'argument': truncation from 'double' to 'RawType'
+          with
+          [
+              RawType=float
+          ]
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(181,2): warning C4305: 'argument': truncation from 'double' to 'RawType'
+          with
+          [
+              RawType=float
+          ]
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(182,2): warning C4305: 'argument': truncation from 'double' to 'RawType'
+          with
+          [
+              RawType=float
+          ]
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(191,25): warning C4305: 'argument': truncation from 'double' to 'const float'
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(193,2): warning C4305: 'argument': truncation from 'double' to 'RawType'
+          with
+          [
+              RawType=float
+          ]
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec2_f.cpp(196,2): warning C4305: 'argument': truncation from 'double' to 'RawType'
+          with
+          [
+              RawType=float
+          ]
+  vec3_f.cpp
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_Math\vec3_f.cpp(51,30): warning C4305: 'argument': truncation from 'double' to 'const float'
+  vec4_f.cpp
+  Generating Code...
+GameToolKit.lib(Scene.obj) : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+  GTK_UnitTesting.vcxproj -> C:\dev\NEXT_Practice\Win32\Debug\GTK_UnitTesting.exe
