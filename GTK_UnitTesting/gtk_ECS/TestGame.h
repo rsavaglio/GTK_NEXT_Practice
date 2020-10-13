@@ -1,5 +1,5 @@
 #pragma once
-#include "gtk/Game.h"
+#include "gtk/gtk.h"
 #include "TestScene.h"
 
 class TestGame : public gtk::Game

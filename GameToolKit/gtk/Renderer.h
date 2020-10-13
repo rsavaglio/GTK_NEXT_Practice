@@ -1,6 +1,10 @@
 #pragma once
 
+#include "gtk.h"
+
 namespace gtk {
+	
+	struct Entity;
 
 	class Renderer
 	{
@@ -8,10 +12,10 @@ namespace gtk {
 
 		const unsigned int _id;
 
-		Renderer(const Entity& entity) : _id(entity._id) {}
-		virtual ~Renderer() {}
+		Renderer(const Entity& entity);
 
-		virtual void Draw() {}
+		virtual ~Renderer() {}
+		virtual void Draw() = 0;
 
 	};
 

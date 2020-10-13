@@ -1,12 +1,12 @@
 #pragma once
-#include "gtk/Component.h"
+#include "gtk/gtk.h"
 
 
 class TestComponent : public gtk::Component
 {
 public:
 
-	TestComponent(const Entity& entity) : Component(entity)
+	TestComponent(const gtk::Entity& entity) : Component(entity)
 	{
 		
 	}

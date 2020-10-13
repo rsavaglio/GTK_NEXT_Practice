@@ -1,11 +1,13 @@
 #pragma once
 
-#include "Scene.h"
+#include "gtk.h"
 
 #include <unordered_map>
 #include <string>
 
 namespace gtk {
+
+	class Scene;
 
 	class Game {
 

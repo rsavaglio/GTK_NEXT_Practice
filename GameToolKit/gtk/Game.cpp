@@ -1,7 +1,5 @@
 #include "Game.h"
 
-
-
 namespace gtk {
 
 
@@ -42,7 +40,7 @@ namespace gtk {
 	void Game::AddScene(const std::string& key, Scene* newScene)
 	{
 		// Give the new scene a pointer to this game
-		newScene->m_Game = this;
+		//newScene->m_Game = this;
 
 		// If this is the first scene
 		if (m_SceneMap.empty())

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "gtk/Renderer.h"
+#include "gtk/gtk.h"
 
 class TestRenderer : public gtk::Renderer
 {
 
 public:
 
-	TestRenderer(const Entity& entity) : Renderer(entity)
+	TestRenderer(const gtk::Entity& entity) : Renderer(entity)
 	{
 
 	}
