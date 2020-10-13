@@ -1,16 +1,16 @@
 #pragma once
 
-#include "gtk.h"
+#include "Component.h"
 
 #include <vector>
 #include <unordered_map>
 
 namespace gtk {
 
-	class Component;
-	class Renderer;
-	struct ComponentGroup;
-	struct Entity;
+	//class Component;
+	//class Renderer;
+	//struct ComponentGroup;
+	//struct Entity;
 
 	class Scene {
 

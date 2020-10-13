@@ -2,7 +2,6 @@
 
 #include "Core.h"
 
-#include "Camera.h"
 #include "Component.h"
 #include "Renderer.h"
 

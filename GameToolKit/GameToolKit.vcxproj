@@ -138,20 +138,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="gtk\Camera.h" />
     <ClInclude Include="gtk\Component.h" />
     <ClInclude Include="gtk\Game.h" />
     <ClInclude Include="gtk\gtk.h" />
     <ClInclude Include="gtk\gtkMath.hpp" />
     <ClInclude Include="gtk\Core.h" />
-    <ClInclude Include="gtk\Renderer.h" />
     <ClInclude Include="gtk\Scene.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gtk\Camera.cpp" />
-    <ClCompile Include="gtk\Component.cpp" />
     <ClCompile Include="gtk\Game.cpp" />
-    <ClCompile Include="gtk\Renderer.cpp" />
     <ClCompile Include="gtk\Scene.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -6,7 +6,9 @@ class TestComponent : public gtk::Component
 {
 public:
 
-	TestComponent(const gtk::Entity& entity) : Component(entity)
+	const unsigned int _id;
+
+	TestComponent(const gtk::Entity& entity) : _id(entity._id)
 	{
 		
 	}

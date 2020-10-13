@@ -1,7 +1,6 @@
 #pragma once
 
 #include "gtk.h"
-#include "Scene.h"
 
 namespace gtk {
 
@@ -23,16 +22,22 @@ namespace gtk {
 	class Component
 	{
 	public:
-
-		const unsigned int _id;
-
-		Component(const Entity& entity);
 		
-		// Might be able to make this pure virtual
-		virtual ~Component() {}
+		virtual ~Component() = 0;
 
 		virtual void Start() = 0;
 		virtual void Update() = 0;
 
 	};
+
+
+	class Renderer
+	{
+	public:
+
+		virtual ~Renderer() = 0;
+		virtual void Draw() = 0;
+
+	};
+
 }

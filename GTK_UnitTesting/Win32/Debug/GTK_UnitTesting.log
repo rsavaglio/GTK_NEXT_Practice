@@ -1,3 +1,20 @@
 ﻿  Game_f.cpp
-GameToolKit.lib(Scene.obj) : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
-  GTK_UnitTesting.vcxproj -> C:\dev\NEXT_Practice\Win32\Debug\GTK_UnitTesting.exe
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(24,22): error C3646: 'CreateEntity': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(24,22): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(24,24): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(25,39): error C3646: 'CreateComponenetGroup': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(25,39): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(25,41): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(27,41): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(27,41): error C2143: syntax error: missing ',' before '&'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(28,28): error C2061: syntax error: identifier 'Renderer'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,48): error C2065: 'Component': undeclared identifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,58): error C2059: syntax error: '>'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(49,36): error C2065: 'Renderer': undeclared identifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(49,45): error C2059: syntax error: '>'
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_ECS\TestScene.h(16,32): error C3861: 'CreateComponenetGroup': identifier not found
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_ECS\TestScene.h(19,24): error C3861: 'CreateEntity': identifier not found
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_ECS\TestScene.h(20,1): error C2660: 'gtk::Scene::AddComponent': function does not take 2 arguments
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(27,8): message : see declaration of 'gtk::Scene::AddComponent'
+C:\dev\NEXT_Practice\GTK_UnitTesting\gtk_ECS\TestScene.h(21,1): error C2660: 'gtk::Scene::AddRenderer': function does not take 1 arguments
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(28,8): message : see declaration of 'gtk::Scene::AddRenderer'

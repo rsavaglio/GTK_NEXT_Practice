@@ -1,1 +1,44 @@
-﻿  GameToolKit.vcxproj -> C:\dev\NEXT_Practice\Debug\GameToolKit.lib
+﻿  Component.cpp
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(24,22): error C3646: 'CreateEntity': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(24,22): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(24,24): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(25,39): error C3646: 'CreateComponenetGroup': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(25,39): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(25,41): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(27,41): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(27,41): error C2143: syntax error: missing ',' before '&'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(28,28): error C2061: syntax error: identifier 'Renderer'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,48): error C2065: 'Component': undeclared identifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,58): error C2059: syntax error: '>'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(49,36): error C2065: 'Renderer': undeclared identifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(49,45): error C2059: syntax error: '>'
+  Game.cpp
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(24,22): error C3646: 'CreateEntity': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(24,22): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(24,24): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(25,39): error C3646: 'CreateComponenetGroup': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(25,39): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(25,41): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(27,41): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(27,41): error C2143: syntax error: missing ',' before '&'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(28,28): error C2061: syntax error: identifier 'Renderer'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,48): error C2065: 'Component': undeclared identifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,58): error C2059: syntax error: '>'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(49,36): error C2065: 'Renderer': undeclared identifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(49,45): error C2059: syntax error: '>'
+  Renderer.cpp
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(24,22): error C3646: 'CreateEntity': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(24,22): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(24,24): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(25,39): error C3646: 'CreateComponenetGroup': unknown override specifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(25,39): error C2059: syntax error: '('
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(25,41): error C2238: unexpected token(s) preceding ';'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(27,41): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(27,41): error C2143: syntax error: missing ',' before '&'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(28,28): error C2061: syntax error: identifier 'Renderer'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,48): error C2065: 'Component': undeclared identifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(36,58): error C2059: syntax error: '>'
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(49,36): error C2065: 'Renderer': undeclared identifier
+C:\dev\NEXT_Practice\GameToolKit\gtk\Scene.h(49,45): error C2059: syntax error: '>'
+  Scene.cpp
+  Generating Code...
