@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gtk.h"
+#include "Scene.h"
 
 #include <unordered_map>
 #include <string>

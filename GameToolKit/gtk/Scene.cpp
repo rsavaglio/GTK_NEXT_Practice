@@ -5,9 +5,12 @@ namespace gtk {
 
 	Scene::~Scene()
 	{
+
 		// Delete all entities
 
 		// Delete all componenets
+
+		// Delete all renderers
 
 	}
 
@@ -16,7 +19,7 @@ namespace gtk {
 		// Add entity to the map, set as active
 		m_EntityMap.insert({ _EntityIDProvider, true });
 
-		// Might want to create a transform by default here
+		// Might want to create a transform here
 
 		// Return id and increment
 		return _EntityIDProvider++;
@@ -29,19 +32,17 @@ namespace gtk {
 		return _ComponentGroupIDProvider++;
 	}
 
-	void Scene::AddComponent(const ComponentGroup& group, Component* const component)
+	void Scene::AddComponent(const Entity& entity, const ComponentGroup& group, Component* const component)
 	{
 		// Add component to correct map with the ID
-		m_ComponentMaps[group._id]->insert({ component->_id, component });
+		m_ComponentMaps[group._id]->insert({ entity._id, component });
 
 	}
 
-	void Scene::AddRenderer(Renderer* const renderer)
+	void Scene::AddRenderer(const Entity& entity, Renderer* const renderer)
 	{
 		// Add renderer to map with the id
-
-		// Prevent memory leak for now
-		delete renderer;
+		m_RendererMap.insert({ entity._id, renderer });
 	}
 
 	void gtk::Scene::Update()
@@ -67,9 +68,9 @@ namespace gtk {
 
 	void gtk::Scene::Shutdown()
 	{
-		// To be called by game
+		// Delete componenents
 
-		// delete componenents
+		// Delete renderers
 
 		// Remove all entities
 		m_EntityMap.clear();

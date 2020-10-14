@@ -5,25 +5,37 @@
 namespace gtk {
 
 
-	struct Entity
+	class Entity
 	{
-		Entity(const unsigned int& id) : _id(id) {}
+		friend class Scene;
 
+	public:
 		unsigned int _id;
+
+	private:
+
+		// Call CreateEntity() from a Scene
+		Entity(const unsigned int& id);
 	};
 
-	struct ComponentGroup
+	class ComponentGroup
 	{
-		ComponentGroup(const unsigned int& id) : _id(id) {}
+		friend class Scene;
 
+	public:
 		unsigned int _id;
+
+	private:
+
+		// Call CreateComponentGroup() from a Scene
+		ComponentGroup(const unsigned int& id);
 	};
 
 	class Component
 	{
 	public:
-		
-		virtual ~Component() = 0;
+
+		virtual ~Component() {}
 
 		virtual void Start() = 0;
 		virtual void Update() = 0;
@@ -35,7 +47,7 @@ namespace gtk {
 	{
 	public:
 
-		virtual ~Renderer() = 0;
+		virtual ~Renderer() {}
 		virtual void Draw() = 0;
 
 	};

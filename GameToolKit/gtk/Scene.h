@@ -7,10 +7,10 @@
 
 namespace gtk {
 
-	//class Component;
-	//class Renderer;
-	//struct ComponentGroup;
-	//struct Entity;
+	class Entity;
+	class Component;
+	class ComponentGroup;
+	class Renderer;
 
 	class Scene {
 
@@ -24,13 +24,11 @@ namespace gtk {
 		Entity CreateEntity();
 		ComponentGroup CreateComponenetGroup();
 
-		void AddComponent(const ComponentGroup& group, Component* const component);
-		void AddRenderer(Renderer* const renderer);
+		void AddComponent(const Entity& entity, const ComponentGroup& group, Component* const component);
+		void AddRenderer(const Entity& entity, Renderer* const renderer);
 
 	protected:
 
-		// To be overriden in custom scenes
-		// Used by game to start scenes
 		virtual void Init() = 0;
 
 		std::vector<std::unordered_map<unsigned int, Component*>*> m_ComponentMaps;
@@ -38,9 +36,7 @@ namespace gtk {
 	private:
 
 		void Update();
-
 		void Shutdown();
-
 
 		unsigned int _EntityIDProvider = 0;
 		unsigned int _ComponentGroupIDProvider = 0;

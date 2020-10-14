@@ -2,10 +2,8 @@
 
 #include "Core.h"
 
-#include "Component.h"
-#include "Renderer.h"
+#include "gtkMath.hpp"
 
+#include "Component.h"
 #include "Scene.h"
 #include "Game.h"
-
-#include "gtkMath.hpp"
