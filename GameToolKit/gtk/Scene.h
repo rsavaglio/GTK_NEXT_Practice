@@ -18,7 +18,6 @@ namespace gtk {
 
 	public:
 
-		// TODO
 		virtual ~Scene();
 
 		Entity CreateEntity();

@@ -5,13 +5,7 @@ namespace gtk {
 
 	Scene::~Scene()
 	{
-
-		// Delete all entities
-
-		// Delete all componenets
-
-		// Delete all renderers
-
+		Shutdown();
 	}
 
 	Entity Scene::CreateEntity()
@@ -68,9 +62,33 @@ namespace gtk {
 
 	void gtk::Scene::Shutdown()
 	{
-		// Delete componenents
+		// Loop through comp map vector
+		for (auto& CompMap : m_ComponentMaps)
+		{
+			// Loop through comp map
+			for (auto& Comp : *CompMap)
+			{
+				// Delete each component
+				delete Comp.second;
+			}
 
-		// Delete renderers
+			// Delete the map
+			delete CompMap;
+
+			// Clear the map
+			CompMap->clear();
+			
+		}
+
+		// Clear the vecor
+		m_ComponentMaps.clear();
+
+		// Delete all renderers
+		for (auto& renderer : m_RendererMap)
+		{
+			delete renderer.second;
+		} 
+		m_RendererMap.clear();
 
 		// Remove all entities
 		m_EntityMap.clear();
