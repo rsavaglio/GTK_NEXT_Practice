@@ -16,9 +16,6 @@ namespace gtk {
 		// Deletes all scenes in the scene map
 		virtual ~Game();
 
-		// Override in custom game class
-		virtual void Init() = 0;
-
 		// Starts the active scene
 		void Start();
 
@@ -31,11 +28,13 @@ namespace gtk {
 
 	protected:
 
+		// Override in custom game class
+		virtual void Init() = 0;
+
 		// Adds a new scene to the scene map
 		void AddScene(const std::string& key, Scene* newScene);
 
-	private:
-
+		// Scenes
 		Scene* m_ActiveScene;
 		std::unordered_map<std::string, Scene*> m_SceneMap;
 

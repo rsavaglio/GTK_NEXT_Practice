@@ -13,7 +13,7 @@ namespace gtk {
 		// Add entity to the map, set as active
 		m_EntityMap.insert({ _EntityIDProvider, true });
 
-		// Might want to create a transform here
+		// Might want to create a transform here by default
 
 		// Return id and increment
 		return _EntityIDProvider++;
@@ -72,15 +72,15 @@ namespace gtk {
 				delete Comp.second;
 			}
 
-			// Delete the map
-			delete CompMap;
-
 			// Clear the map
 			CompMap->clear();
+
+			// Delete the map
+			delete CompMap;
 			
 		}
 
-		// Clear the vecor
+		// Clear the vector
 		m_ComponentMaps.clear();
 
 		// Delete all renderers

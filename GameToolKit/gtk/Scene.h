@@ -20,15 +20,15 @@ namespace gtk {
 
 		virtual ~Scene();
 
+	protected:
+
+		virtual void Init() = 0;
+
 		Entity CreateEntity();
 		ComponentGroup CreateComponenetGroup();
 
 		void AddComponent(const Entity& entity, const ComponentGroup& group, Component* const component);
 		void AddRenderer(const Entity& entity, Renderer* const renderer);
-
-	protected:
-
-		virtual void Init() = 0;
 
 		std::vector<std::unordered_map<unsigned int, Component*>*> m_ComponentMaps;
 	
