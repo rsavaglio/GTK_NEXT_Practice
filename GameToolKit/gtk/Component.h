@@ -4,7 +4,6 @@
 
 namespace gtk {
 
-
 	class Entity
 	{
 		friend class Scene;
