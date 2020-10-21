@@ -11,26 +11,25 @@ namespace gtk {
 	Entity Scene::CreateEntity()
 	{
 		// Add entity to the map, set as active
-		m_EntityMap.insert({ _EntityIDProvider, true });
-
-		// Might want to create a transform here by default
+		m_EntityMap.insert({ _EntityIDProvider, new Entity(_EntityIDProvider) });
 
 		// Return id and increment
 		return _EntityIDProvider++;
 	}
 	
-	ComponentGroup Scene::CreateComponenetGroup()
+	CompGroup Scene::CreateCompGroup()
 	{
 		m_ComponentMaps.push_back(new std::unordered_map<unsigned int, Component*>);
 
-		return _ComponentGroupIDProvider++;
+		CompGroup newCompGroup(_CompGroupIDProvider++);
+
+		return newCompGroup;
 	}
 
-	void Scene::AddComponent(const Entity& entity, const ComponentGroup& group, Component* const component)
+	void Scene::AddComponent(Component* const component)
 	{
 		// Add component to correct map with the ID
-		m_ComponentMaps[group._id]->insert({ entity._id, component });
-
+		m_ComponentMaps[component->m_GroupID]->insert({ component->m_Entity._id, component });
 	}
 
 	void Scene::AddRenderer(const Entity& entity, Renderer* const renderer)
@@ -91,6 +90,10 @@ namespace gtk {
 		m_RendererMap.clear();
 
 		// Remove all entities
+		for (auto& Entity : m_EntityMap)
+		{
+			delete Entity.second;
+		}
 		m_EntityMap.clear();
 	}
 

@@ -13,21 +13,20 @@ protected:
 	virtual void Init() override
 	{
 		// Add Component Group
-		gtk::ComponentGroup Adders = CreateComponenetGroup();
-		gtk::ComponentGroup Subtractors = CreateComponenetGroup();
+		gtk::CompGroup Adders = CreateCompGroup();
+		gtk::CompGroup Subtractors = CreateCompGroup();
 
 
 		// Create Entities and add components here
 		gtk::Entity  player = CreateEntity();
 			AddRenderer (player, new TestRenderer());
 
-			AddComponent(player, Adders, new VectorTest(true));
-			AddComponent(player, Subtractors, new VectorTest(false));
+			AddComponent(new VectorTest(player, Adders, true));
+			AddComponent(new VectorTest(player, Subtractors, false));
 
 		gtk::Entity  enemy = CreateEntity();
-			AddComponent(enemy, Adders, new VectorTest(true));
-			AddComponent(enemy, Subtractors, new VectorTest(false));
-
+			AddComponent(new VectorTest(enemy, Adders, true));
+			AddComponent(new VectorTest(enemy, Subtractors, false));
 
 	}
 };

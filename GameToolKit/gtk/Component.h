@@ -1,6 +1,9 @@
 #pragma once
 
 #include "gtk.h"
+#include "Camera.h"
+
+#include <vector>
 
 namespace gtk {
 
@@ -9,38 +12,57 @@ namespace gtk {
 		friend class Scene;
 
 	public:
-		unsigned int _id;
+		const unsigned int _id;
+		mat4 _Transform;
+
+		void SetPosition(const vec3& position) {}
+		void SetRotation(const vec3& rotation) {}
+		void SetScale(const vec3& scale) {}
 
 	private:
 
 		// Call CreateEntity() from a Scene
 		Entity(const unsigned int& id);
+
+		Entity* _Parent;
+		std::vector<Entity*> _Children;
 	};
 
-	class ComponentGroup
+
+
+	class CompGroup
 	{
 		friend class Scene;
 
 	public:
-		unsigned int _id;
+		const unsigned int _id;
 
 	private:
 
-		// Call CreateComponentGroup() from a Scene
-		ComponentGroup(const unsigned int& id);
+		// Call CreateCompGroup() from a Scene
+		CompGroup(const unsigned int& id);
 	};
 
 	class Component
 	{
 	public:
 
+		friend class Scene;
+
 		virtual ~Component() {}
+
+		Component(Entity& entity, const CompGroup& compGroup) : m_Entity(entity), m_GroupID(compGroup._id), m_Active(true) {}
 
 		virtual void Start() = 0;
 		virtual void Update() = 0;
 
-	};
+	protected:
+		
+		Entity& m_Entity;
+		const unsigned int m_GroupID;
+		bool m_Active;
 
+	};
 
 	class Renderer
 	{
@@ -50,5 +72,6 @@ namespace gtk {
 		virtual void Draw() = 0;
 
 	};
+
 
 }

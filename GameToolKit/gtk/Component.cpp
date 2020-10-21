@@ -3,8 +3,8 @@
 
 namespace gtk {
 
-	Entity::Entity(const unsigned int& id) : _id(id) {}
+	Entity::Entity(const unsigned int& id) : _id(id), _Parent(nullptr) {}
 
-	ComponentGroup::ComponentGroup(const unsigned int& id) : _id(id) {}
+	CompGroup::CompGroup(const unsigned int& id) : _id(id) {}
 
 }

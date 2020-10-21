@@ -2,29 +2,11 @@
 
 #include "gtk/gtk.h"
 
-#include "gtk/gtkMath.hpp"
-
-class TestComponent : public gtk::Component
-{
-public:
-	
-	void Start() override
-	{
-
-	}
-
-	void Update() override
-	{
-
-	}
-
-};
-
 class VectorTest : public gtk::Component
 {
 public:
 
-	VectorTest(const bool& aOs) : addOrSub(aOs), ValueToAdd(5), vec(), UpdateCount(0)
+	VectorTest(gtk::Entity& entity, const gtk::CompGroup& compGroup, const bool& aOs) : Component(entity, compGroup), addOrSub(aOs), ValueToAdd(5), vec(), UpdateCount(0)
 	{
 		if (addOrSub)
 		{

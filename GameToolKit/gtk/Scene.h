@@ -9,7 +9,7 @@ namespace gtk {
 
 	class Entity;
 	class Component;
-	class ComponentGroup;
+	class CompGroup;
 	class Renderer;
 
 	class Scene {
@@ -25,9 +25,9 @@ namespace gtk {
 		virtual void Init() = 0;
 
 		Entity CreateEntity();
-		ComponentGroup CreateComponenetGroup();
+		CompGroup CreateCompGroup();
 
-		void AddComponent(const Entity& entity, const ComponentGroup& group, Component* const component);
+		void AddComponent(Component* const component);
 		void AddRenderer(const Entity& entity, Renderer* const renderer);
 
 		std::vector<std::unordered_map<unsigned int, Component*>*> m_ComponentMaps;
@@ -38,9 +38,9 @@ namespace gtk {
 		void Shutdown();
 
 		unsigned int _EntityIDProvider = 0;
-		unsigned int _ComponentGroupIDProvider = 0;
+		unsigned int _CompGroupIDProvider = 0;
 
-		std::unordered_map<unsigned int, bool> m_EntityMap;
+		std::unordered_map<unsigned int, Entity*> m_EntityMap;
 		std::unordered_map<unsigned int, Renderer*> m_RendererMap;
 
 	};
