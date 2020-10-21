@@ -18,13 +18,13 @@ protected:
 
 
 		// Create Entities and add components here
-		gtk::Entity  player = CreateEntity();
-			AddRenderer (player, new TestRenderer());
+		gtk::Entity*  player = CreateEntity();
+			AddRenderer (new TestRenderer(player));
 
 			AddComponent(new VectorTest(player, Adders, true));
 			AddComponent(new VectorTest(player, Subtractors, false));
 
-		gtk::Entity  enemy = CreateEntity();
+		gtk::Entity*  enemy = CreateEntity();
 			AddComponent(new VectorTest(enemy, Adders, true));
 			AddComponent(new VectorTest(enemy, Subtractors, false));
 

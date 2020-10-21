@@ -2,19 +2,33 @@
 
 namespace gtk {
 
+	Scene::Scene() :m_Root(new Entity(_EntityIDProvider++, nullptr))
+	{
+
+	}
+
 
 	Scene::~Scene()
 	{
 		Shutdown();
 	}
 
-	Entity Scene::CreateEntity()
+	Entity* Scene::CreateEntity()
 	{
 		// Add entity to the map, set as active
-		m_EntityMap.insert({ _EntityIDProvider, new Entity(_EntityIDProvider) });
+		m_EntityMap.insert({ _EntityIDProvider, new Entity(_EntityIDProvider, m_Root) });
 
 		// Return id and increment
-		return _EntityIDProvider++;
+		return m_EntityMap.at(_EntityIDProvider++);
+	}
+
+	Entity* Scene::CreateEntity(Entity* const parent)
+	{
+		// Add entity to the map, set as active
+		m_EntityMap.insert({ _EntityIDProvider, new Entity(_EntityIDProvider, parent) });
+
+		// Return id and increment
+		return m_EntityMap.at(_EntityIDProvider++);
 	}
 	
 	CompGroup Scene::CreateCompGroup()
@@ -29,13 +43,13 @@ namespace gtk {
 	void Scene::AddComponent(Component* const component)
 	{
 		// Add component to correct map with the ID
-		m_ComponentMaps[component->m_GroupID]->insert({ component->m_Entity._id, component });
+		m_ComponentMaps[component->m_GroupID]->insert({ component->m_Entity->_id, component });
 	}
 
-	void Scene::AddRenderer(const Entity& entity, Renderer* const renderer)
+	void Scene::AddRenderer(Renderer* const renderer)
 	{
 		// Add renderer to map with the id
-		m_RendererMap.insert({ entity._id, renderer });
+		m_RendererMap.insert({ renderer->m_Entity->_id, renderer });
 	}
 
 	void gtk::Scene::Update()
@@ -95,6 +109,9 @@ namespace gtk {
 			delete Entity.second;
 		}
 		m_EntityMap.clear();
+
+		// Delete the root entity
+		delete m_Root;
 	}
 
 }

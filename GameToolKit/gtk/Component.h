@@ -13,6 +13,9 @@ namespace gtk {
 
 	public:
 		const unsigned int _id;
+
+		Entity* _Parent;
+		
 		mat4 _Transform;
 
 		void SetPosition(const vec3& position) {}
@@ -22,10 +25,16 @@ namespace gtk {
 	private:
 
 		// Call CreateEntity() from a Scene
-		Entity(const unsigned int& id);
+		Entity(const unsigned int& id, Entity* const parent);
 
-		Entity* _Parent;
+		bool _Active;
+
 		std::vector<Entity*> _Children;
+
+		void AddChild(Entity* const child)
+		{
+			_Children.push_back(child);
+		}
 	};
 
 
@@ -51,14 +60,14 @@ namespace gtk {
 
 		virtual ~Component() {}
 
-		Component(Entity& entity, const CompGroup& compGroup) : m_Entity(entity), m_GroupID(compGroup._id), m_Active(true) {}
+		Component(Entity* const entity, const CompGroup& compGroup) : m_Entity(entity), m_GroupID(compGroup._id), m_Active(true) {}
 
 		virtual void Start() = 0;
 		virtual void Update() = 0;
 
 	protected:
 		
-		Entity& m_Entity;
+		Entity* const m_Entity;
 		const unsigned int m_GroupID;
 		bool m_Active;
 
@@ -70,6 +79,11 @@ namespace gtk {
 
 		virtual ~Renderer() {}
 		virtual void Draw() = 0;
+
+		Renderer(Entity* const entity) : m_Entity(entity), m_Active(true) {}
+
+		Entity* const m_Entity;
+		bool m_Active;
 
 	};
 

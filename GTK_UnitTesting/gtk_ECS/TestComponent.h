@@ -6,7 +6,7 @@ class VectorTest : public gtk::Component
 {
 public:
 
-	VectorTest(gtk::Entity& entity, const gtk::CompGroup& compGroup, const bool& aOs) : Component(entity, compGroup), addOrSub(aOs), ValueToAdd(5), vec(), UpdateCount(0)
+	VectorTest(gtk::Entity* const entity, const gtk::CompGroup& compGroup, const bool& aOs) : Component(entity, compGroup), addOrSub(aOs), ValueToAdd(5), vec(), UpdateCount(0)
 	{
 		if (addOrSub)
 		{

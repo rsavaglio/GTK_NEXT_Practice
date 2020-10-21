@@ -1,2 +1,2 @@
-﻿  Game_f.cpp
+﻿GameToolKit.lib(Scene.obj) : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
   GTK_UnitTesting.vcxproj -> C:\dev\NEXT_Practice\Win32\Debug\GTK_UnitTesting.exe
