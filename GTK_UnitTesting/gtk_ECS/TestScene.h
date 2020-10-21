@@ -24,9 +24,10 @@ protected:
 			AddComponent(new VectorTest(player, Adders, true));
 			AddComponent(new VectorTest(player, Subtractors, false));
 
-		gtk::Entity*  enemy = CreateEntity();
-			AddComponent(new VectorTest(enemy, Adders, true));
-			AddComponent(new VectorTest(enemy, Subtractors, false));
+		// Hat is a child of player
+		gtk::Entity*  hat = CreateEntity(player);
+			AddComponent(new VectorTest(hat, Adders, true));
+			AddComponent(new VectorTest(hat, Subtractors, false));
 
 	}
 };

@@ -18,6 +18,9 @@ namespace gtk {
 		// Add entity to the map, set as active
 		m_EntityMap.insert({ _EntityIDProvider, new Entity(_EntityIDProvider, m_Root) });
 
+		// Add to roots children
+		m_Root->AddChild(m_EntityMap.at(_EntityIDProvider));
+
 		// Return id and increment
 		return m_EntityMap.at(_EntityIDProvider++);
 	}
@@ -26,6 +29,9 @@ namespace gtk {
 	{
 		// Add entity to the map, set as active
 		m_EntityMap.insert({ _EntityIDProvider, new Entity(_EntityIDProvider, parent) });
+
+		// Add this to parent's list of children
+		parent->AddChild(m_EntityMap.at(_EntityIDProvider));
 
 		// Return id and increment
 		return m_EntityMap.at(_EntityIDProvider++);
