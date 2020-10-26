@@ -3,6 +3,10 @@
 x64/
 GameTest/x64/
 GTK_UnitTesting/x64/
+GTK_UnitTesting/Win32/
+GameToolKit/Debug/
+Debug/
+Win32/
 
 # Files
 *.user
