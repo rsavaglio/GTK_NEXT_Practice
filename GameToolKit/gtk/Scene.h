@@ -32,6 +32,7 @@ namespace gtk {
 		void AddComponent(Component* const component);
 		void AddRenderer(Renderer* const renderer);
 
+		void ToggleEntity(Entity* const entity, bool setActive);
 		void ToggleComponent(Component* const component, bool setActive);
 		void ToggleRenderer(Renderer* const renderer, bool setActive);
 
@@ -51,7 +52,7 @@ namespace gtk {
 		std::unordered_map<unsigned int, Entity*> m_EntityMap;
 		std::unordered_map<unsigned int, Renderer*> m_RendererMap;
 
-		std::unordered_map<unsigned int, Component*> m_DisabledComponents;
+		std::vector<std::unordered_map<unsigned int, Component*>*> m_DisabledComponentMaps;
 		std::unordered_map<unsigned int, Renderer*> m_DisabledRenderers;
 
 
