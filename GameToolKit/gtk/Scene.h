@@ -32,6 +32,9 @@ namespace gtk {
 		void AddComponent(Component* const component);
 		void AddRenderer(Renderer* const renderer);
 
+		void ToggleComponent(Component* const component, bool setActive);
+		void ToggleRenderer(Renderer* const renderer, bool setActive);
+
 		std::vector<std::unordered_map<unsigned int, Component*>*> m_ComponentMaps;
 	
 	private:
@@ -43,6 +46,7 @@ namespace gtk {
 
 		unsigned int _EntityIDProvider = 0;
 		unsigned int _CompGroupIDProvider = 0;
+
 
 		std::unordered_map<unsigned int, Entity*> m_EntityMap;
 		std::unordered_map<unsigned int, Renderer*> m_RendererMap;

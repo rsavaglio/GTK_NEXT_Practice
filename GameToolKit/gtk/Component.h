@@ -54,9 +54,10 @@ namespace gtk {
 
 	class Component
 	{
+		friend class Scene;
+
 	public:
 
-		friend class Scene;
 
 		virtual ~Component() {}
 
@@ -69,12 +70,16 @@ namespace gtk {
 		
 		Entity* const m_Entity;
 		const unsigned int m_GroupID;
+
+	private:
 		bool m_Active;
 
 	};
 
 	class Renderer
 	{
+		friend class Scene;
+
 	public:
 
 		virtual ~Renderer() {}
@@ -82,7 +87,10 @@ namespace gtk {
 
 		Renderer(Entity* const entity) : m_Entity(entity), m_Active(true) {}
 
+	protected:
 		Entity* const m_Entity;
+
+	private:
 		bool m_Active;
 
 	};
