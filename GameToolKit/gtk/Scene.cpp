@@ -48,12 +48,18 @@ namespace gtk {
 
 	void Scene::AddComponent(Component* const component)
 	{
+		// Ensure no deplicate components on same entity
+		ASSERT(m_ComponentMaps[component->m_GroupID]->find(component->m_Entity->_id) == m_ComponentMaps[component->m_GroupID]->end());
+
 		// Add component to correct map with the ID
 		m_ComponentMaps[component->m_GroupID]->insert({ component->m_Entity->_id, component });
 	}
 
 	void Scene::AddRenderer(Renderer* const renderer)
 	{
+		// Ensure no duplicate renderers
+		ASSERT(m_RendererMap.find(renderer->m_Entity->_id) == m_RendererMap.end());
+
 		// Add renderer to map with the id
 		m_RendererMap.insert({ renderer->m_Entity->_id, renderer });
 	}
