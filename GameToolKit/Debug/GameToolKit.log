@@ -1,4 +1,4 @@
-﻿  Component.cpp
+﻿  Scene.cpp
 C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(89,37): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(102,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(117,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
@@ -8,25 +8,4 @@ C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(245,16): warning C4244: 'initia
 C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(349,37): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(362,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(378,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  Game.cpp
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(89,37): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(102,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(117,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(217,37): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(230,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(245,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(349,37): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(362,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(378,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  Scene.cpp
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(89,37): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(102,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(117,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(217,37): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(230,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(245,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(349,37): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(362,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\dev\NEXT_Practice\GameToolKit\gtk\gtkMath.hpp(378,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  Generating Code...
   GameToolKit.vcxproj -> C:\dev\NEXT_Practice\Debug\GameToolKit.lib
