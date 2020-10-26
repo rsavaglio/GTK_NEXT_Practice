@@ -133,7 +133,7 @@ namespace gtk {
 				m_DisabledRenderers.erase(renderer->m_Entity->_id);
 
 				// Tag renderer as active
-				renderer->m_Active = true;
+				renderer->m_Active = true; //test
 
 			}
 			else
