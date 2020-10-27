@@ -27,7 +27,7 @@ TEST_F(TestGame_F, Making_A_Game)
 	testGame.Start();
 
 	int loopCount = 0;
-	while (loopCount++ < 1000)
+	while (loopCount++ < 5000)
 	{
 		testGame.Update();
 	}

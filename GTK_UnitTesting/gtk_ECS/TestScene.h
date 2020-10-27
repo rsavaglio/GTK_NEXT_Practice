@@ -35,7 +35,7 @@ protected:
 		gtk::CompGroup SceneSwitchers = CreateCompGroup();
 
 		gtk::Entity* SS = CreateEntity();
-			SceneSwitcherComp* const SSC = new SceneSwitcherComp(SS, SceneSwitchers, this, "ToggleScene");
+			SceneSwitcherComp* const SSC = new SceneSwitcherComp(SS, SceneSwitchers, this, "TestScene");
 			AddComponent(SSC);
 
 		// Create Entities and add components here

@@ -51,8 +51,8 @@ namespace gtk {
 		Game* const m_Game;
 		Entity* const m_Root;
 
-		unsigned int _EntityIDProvider = 0;
-		unsigned int _CompGroupIDProvider = 0;
+		unsigned int m_EntityIDProvider;
+		unsigned int m_CompGroupIDProvider;
 
 
 		std::unordered_map<unsigned int, Entity*> m_EntityMap;

@@ -2,7 +2,8 @@
 
 namespace gtk {
 
-	Scene::Scene(Game* const game) :m_SwitchScene(false), m_NextScene(""), m_Game(game), m_Root(new Entity(_EntityIDProvider++, nullptr))
+	Scene::Scene(Game* const game) 
+		:m_SwitchScene(false), m_NextScene(""), m_Game(game), m_Root(new Entity(m_EntityIDProvider++, nullptr)), m_EntityIDProvider(0), m_CompGroupIDProvider(0)
 	{
 
 	}
@@ -25,25 +26,25 @@ namespace gtk {
 	Entity* Scene::CreateEntity()
 	{
 		// Add entity to the map, set as active, set root as parent
-		m_EntityMap.insert({ _EntityIDProvider, new Entity(_EntityIDProvider, m_Root) });
+		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, m_Root) });
 
 		// Add to roots children
-		m_Root->AddChild(m_EntityMap.at(_EntityIDProvider));
+		m_Root->AddChild(m_EntityMap.at(m_EntityIDProvider));
 
 		// Return id and increment
-		return m_EntityMap.at(_EntityIDProvider++);
+		return m_EntityMap.at(m_EntityIDProvider++);
 	}
 
 	Entity* Scene::CreateEntity(Entity* const parent)
 	{
 		// Add entity to the map, set as active
-		m_EntityMap.insert({ _EntityIDProvider, new Entity(_EntityIDProvider, parent) });
+		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, parent) });
 
 		// Add this to parent's list of children
-		parent->AddChild(m_EntityMap.at(_EntityIDProvider));
+		parent->AddChild(m_EntityMap.at(m_EntityIDProvider));
 
 		// Return id and increment
-		return m_EntityMap.at(_EntityIDProvider++);
+		return m_EntityMap.at(m_EntityIDProvider++);
 	}
 	
 	CompGroup Scene::CreateCompGroup()
@@ -51,7 +52,7 @@ namespace gtk {
 		m_ComponentMaps.push_back(new std::unordered_map<unsigned int, Component*>);
 		m_DisabledComponentMaps.push_back(new std::unordered_map<unsigned int, Component*>);
 
-		CompGroup newCompGroup(_CompGroupIDProvider++);
+		CompGroup newCompGroup(m_CompGroupIDProvider++);
 
 		return newCompGroup;
 	}
@@ -352,6 +353,13 @@ namespace gtk {
 		// Set switch scene flag back for next time
 		m_SwitchScene = false;
 		m_NextScene = "";
+
+		// Remove children from root
+		m_Root->_Children.clear();
+
+		// Reset id providers
+		m_EntityIDProvider = 0;
+		m_CompGroupIDProvider = 0;
 	}
 
 	
