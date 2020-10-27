@@ -23,7 +23,7 @@ namespace gtk {
 		void Update(); 
 		
 		// Shutdown active, change active, start active
-		void SwitchScene(const std::string& key);
+		void SwitchScene(std::string key);
 
 
 	protected:

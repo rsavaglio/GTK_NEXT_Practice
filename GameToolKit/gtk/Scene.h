@@ -18,8 +18,10 @@ namespace gtk {
 
 	public:
 		
-		Scene();
+		Scene(Game* const game);
 		virtual ~Scene();
+
+		void SwitchScene(std::string key);
 
 	protected:
 
@@ -43,7 +45,11 @@ namespace gtk {
 		void Update();
 		void Shutdown();
 
-		Entity* m_Root;
+		bool m_SwitchScene;
+		std::string m_NextScene;
+
+		Game* const m_Game;
+		Entity* const m_Root;
 
 		unsigned int _EntityIDProvider = 0;
 		unsigned int _CompGroupIDProvider = 0;

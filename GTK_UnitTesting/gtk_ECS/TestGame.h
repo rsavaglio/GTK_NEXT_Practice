@@ -7,10 +7,12 @@ class TestGame : public gtk::Game
 
 public:
 
-	virtual void Init() override
+	void Init() override
 	{
 		// Add the scenes of the game here
-		AddScene("TestScene", new TestScene);
+		AddScene("TestScene", new TestScene(this));
+		AddScene("ToggleScene", new ToggleScene(this));
+
 	}
 
 	int GetVecValues()

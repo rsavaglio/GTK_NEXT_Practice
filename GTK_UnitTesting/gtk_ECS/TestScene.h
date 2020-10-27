@@ -5,8 +5,25 @@
 #include "TestComponent.h"
 #include "TestRenderer.h"
 
+class SceneTemplate : public gtk::Scene
+{
+
+protected:
+
+	SceneTemplate(gtk::Game* const game) : gtk::Scene(game) {}
+
+	void Init() override
+	{
+
+
+	}
+};
+
+
 class TestScene : public gtk::Scene
 {
+public:
+	TestScene(gtk::Game* const game) : gtk::Scene(game) {}
 
 protected:
 
@@ -15,20 +32,36 @@ protected:
 		// Add Component Group
 		gtk::CompGroup Adders = CreateCompGroup();
 		gtk::CompGroup Subtractors = CreateCompGroup();
+		gtk::CompGroup SceneSwitchers = CreateCompGroup();
 
+		gtk::Entity* SS = CreateEntity();
+			SceneSwitcherComp* const SSC = new SceneSwitcherComp(SS, SceneSwitchers, this, "ToggleScene");
+			AddComponent(SSC);
 
 		// Create Entities and add components here
 		gtk::Entity*  player = CreateEntity();
-			AddComponent(new VectorTest(player, Adders, true));
-			//AddComponent(new VectorTest(player, Adders, true)); // Testing duplicates
-			AddComponent(new VectorTest(player, Subtractors, false));
+			AddComponent(new VectorTest(player, Adders, true, SSC));
+			AddComponent(new VectorTest(player, Subtractors, false, SSC));
 
 		// Hat is a child of player
 		gtk::Entity*  hat = CreateEntity(player);
 			AddRenderer(new TestRenderer(hat));
-			//AddRenderer(new TestRenderer(hat)); // Testing duplicates
-			AddComponent(new VectorTest(hat, Adders, true));
-			AddComponent(new VectorTest(hat, Subtractors, false));
+			AddComponent(new VectorTest(hat, Adders, true, SSC));
+			AddComponent(new VectorTest(hat, Subtractors, false, SSC));
 
+	}
+};
+
+
+class ToggleScene : public gtk::Scene
+{
+public:
+	ToggleScene(gtk::Game* const game) : gtk::Scene(game) {}
+
+protected:
+
+	virtual void Init() override
+	{
+		EXPECT_EQ(1, 1);
 	}
 };

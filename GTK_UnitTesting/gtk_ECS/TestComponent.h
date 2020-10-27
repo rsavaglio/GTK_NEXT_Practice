@@ -2,11 +2,61 @@
 
 #include "gtk/gtk.h"
 
+class CompTemplate : public gtk::Component
+{
+public:
+	CompTemplate(gtk::Entity* const entity, const gtk::CompGroup& compGroup) : Component(entity, compGroup) {}
+
+	void Start() override
+	{
+
+	}
+
+	void Update() override
+	{
+
+	}
+
+
+private:
+
+};
+
+class SceneSwitcherComp : public gtk::Component
+{
+public:
+	SceneSwitcherComp(gtk::Entity* const entity, const gtk::CompGroup& compGroup, gtk::Scene* const scene, std::string nextScene)
+		: Component(entity, compGroup), m_SwitchScene(false), m_NextScene(nextScene), _Scene(scene) {}
+
+	bool m_SwitchScene;
+
+
+	void Start() override
+	{
+
+	}
+
+	void Update() override
+	{
+		if (m_SwitchScene)
+		{
+			_Scene->SwitchScene(m_NextScene);
+		}
+	}
+
+
+private:
+
+	gtk::Scene* const _Scene;
+	std::string m_NextScene;
+};
+
 class VectorTest : public gtk::Component
 {
 public:
 
-	VectorTest(gtk::Entity* const entity, const gtk::CompGroup& compGroup, const bool& aOs) : Component(entity, compGroup), addOrSub(aOs), ValueToAdd(5), vec(), UpdateCount(0)
+	VectorTest(gtk::Entity* const entity, const gtk::CompGroup& compGroup, const bool& aOs, SceneSwitcherComp* const sceneSwitcher) 
+		: Component(entity, compGroup), addOrSub(aOs), ValueToAdd(5), vec(), UpdateCount(0), m_SSC(sceneSwitcher)
 	{
 		if (addOrSub)
 		{
@@ -54,6 +104,8 @@ public:
 		if (UpdateCount == 1000)
 		{
 			CheckEquals(5000, 5005);
+
+			m_SSC->m_SwitchScene = true;
 		}
 	
 	}
@@ -66,6 +118,8 @@ private:
 	gtk::vec2 vec;
 
 	int UpdateCount;
+
+	SceneSwitcherComp* const m_SSC;
 
 	void CheckEquals(MTYPE x, MTYPE y)
 	{
@@ -80,5 +134,27 @@ private:
 			EXPECT_EQ(vec.y, -y);
 		}
 	}
+
+};
+
+
+
+class ToggleComp : public gtk::Component
+{
+public:
+	ToggleComp(gtk::Entity* const entity, const gtk::CompGroup& compGroup) : Component(entity, compGroup) {}
+
+	void Start() override
+	{
+
+	}
+
+	void Update() override
+	{
+
+	}
+
+
+private:
 
 };

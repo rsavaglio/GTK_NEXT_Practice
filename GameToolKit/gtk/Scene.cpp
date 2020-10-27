@@ -2,7 +2,7 @@
 
 namespace gtk {
 
-	Scene::Scene() :m_Root(new Entity(_EntityIDProvider++, nullptr))
+	Scene::Scene(Game* const game) :m_SwitchScene(false), m_NextScene(""), m_Game(game), m_Root(new Entity(_EntityIDProvider++, nullptr))
 	{
 
 	}
@@ -11,6 +11,15 @@ namespace gtk {
 	Scene::~Scene()
 	{
 		Shutdown();
+
+		// Delete the root entity
+		delete m_Root;
+	}
+
+	void Scene::SwitchScene(std::string key)
+	{
+		m_SwitchScene = true;
+		m_NextScene = key;
 	}
 
 	Entity* Scene::CreateEntity()
@@ -269,6 +278,13 @@ namespace gtk {
 			renderer.second->Draw();
 		}
 
+
+		// This deletes all components and moves to next scene
+		// So it has to happen after all the updates for that frame
+		if (m_SwitchScene)
+		{
+			m_Game->SwitchScene(m_NextScene);
+		}
 	}
 
 	void gtk::Scene::Shutdown()
@@ -278,7 +294,7 @@ namespace gtk {
 		for (auto& CompMap : m_ComponentMaps)
 		{
 			// Loop through comp map
-			for (auto& Comp : *CompMap)
+			for (auto Comp : *CompMap)
 			{
 				// Delete each component
 				delete Comp.second;
@@ -297,7 +313,7 @@ namespace gtk {
 		for (auto& CompMap : m_DisabledComponentMaps)
 		{
 			// Loop through comp map
-			for (auto& Comp : *CompMap)
+			for (auto Comp : *CompMap)
 			{
 				// Delete each component
 				delete Comp.second;
@@ -313,29 +329,31 @@ namespace gtk {
 
 		
 		// Delete all renderers
-		for (auto& renderer : m_RendererMap)
+		for (auto renderer : m_RendererMap)
 		{
 			delete renderer.second;
 		} 
 		m_RendererMap.clear();
 
 		// Delete all disabled renderers
-		for (auto& renderer : m_DisabledRenderers)
+		for (auto renderer : m_DisabledRenderers)
 		{
 			delete renderer.second;
 		} 
 		m_DisabledRenderers.clear();
 
 		// Remove all entities
-		for (auto& Entity : m_EntityMap)
+		for (auto Entity : m_EntityMap)
 		{
 			delete Entity.second;
 		}
 		m_EntityMap.clear();
 
-		// Delete the root entity
-		delete m_Root;
+		// Set switch scene flag back for next time
+		m_SwitchScene = false;
+		m_NextScene = "";
 	}
 
+	
 }
 
