@@ -27,7 +27,7 @@ namespace gtk {
 
 		virtual void Init() = 0;
 
-		Entity* CreateEntity();
+		Entity* CreateEntity(); // Sets parent as m_Root
 		Entity* CreateEntity(Entity* const parent);
 		CompGroup CreateCompGroup();
 
@@ -53,7 +53,6 @@ namespace gtk {
 
 		unsigned int m_EntityIDProvider;
 		unsigned int m_CompGroupIDProvider;
-
 
 		std::unordered_map<unsigned int, Entity*> m_EntityMap;
 		std::unordered_map<unsigned int, Renderer*> m_RendererMap;

@@ -14,22 +14,38 @@ protected:
 	void SetUp() override {}
 	void TearDown() override {}
 
-	TestGame a;
+	SceneSwitchingGame a;
 
 };
 
-TEST_F(TestGame_F, Making_A_Game)
+TEST_F(TestGame_F, SceneSwitching)
 {
 
-	TestGame testGame;
-	testGame.Init();
+	SceneSwitchingGame ssGame;
+	ssGame.Init();
 
-	testGame.Start();
+	ssGame.Start();
 
 	int loopCount = 0;
 	while (loopCount++ < 5000)
 	{
-		testGame.Update();
+		ssGame.Update();
+	}
+
+}
+
+TEST_F(TestGame_F, TogglingEntities)
+{
+
+	ToggleGame tGame;
+	tGame.Init();
+
+	tGame.Start();
+
+	int loopCount = 0;
+	while (loopCount++ < 5000)
+	{
+		tGame.Update();
 	}
 
 }
