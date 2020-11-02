@@ -58,7 +58,6 @@ namespace gtk {
 
 	public:
 
-
 		virtual ~Component() {}
 
 		Component(Entity* const entity, const CompGroup& compGroup) : m_Entity(entity), m_GroupID(compGroup._id), m_Active(true) {}

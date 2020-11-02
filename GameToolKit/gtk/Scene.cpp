@@ -57,22 +57,26 @@ namespace gtk {
 		return newCompGroup;
 	}
 
-	void Scene::AddComponent(Component* const component)
+	Component* const Scene::AddComponent(Component* const component)
 	{
 		// Ensure no deplicate components on same entity
 		ASSERT(m_ComponentMaps[component->m_GroupID]->find(component->m_Entity->_id) == m_ComponentMaps[component->m_GroupID]->end());
 
 		// Add component to correct map with the ID
 		m_ComponentMaps[component->m_GroupID]->insert({ component->m_Entity->_id, component });
+
+		return component;
 	}
 
-	void Scene::AddRenderer(Renderer* const renderer)
+	Renderer* const Scene::AddRenderer(Renderer* const renderer)
 	{
 		// Ensure no duplicate renderers
 		ASSERT(m_RendererMap.find(renderer->m_Entity->_id) == m_RendererMap.end());
 
 		// Add renderer to map with the id
 		m_RendererMap.insert({ renderer->m_Entity->_id, renderer });
+
+		return renderer;
 	}
 
 	void gtk::Scene::ToggleEntity(Entity* const entity, bool setActive)
@@ -101,26 +105,34 @@ namespace gtk {
 				// Does the entity have a component in this group?
 				if (m_DisabledComponentMaps[i]->find(entity->_id) != m_DisabledComponentMaps[i]->end())
 				{
-					// Move it to the active map
-					m_ComponentMaps[i]->insert({ entity->_id , m_DisabledComponentMaps[i]->at(entity->_id) });
+					// Comp is tagged as active
+					if (m_DisabledComponentMaps[i]->at(entity->_id)->m_Active)
+					{
+						// Move it to the active map
+						m_ComponentMaps[i]->insert({ entity->_id , m_DisabledComponentMaps[i]->at(entity->_id) });
 
-					// Erase from disabled map
-					m_DisabledComponentMaps[i]->erase(entity->_id);
+						// Erase from disabled map
+						m_DisabledComponentMaps[i]->erase(entity->_id);
+					}
 				}
 			}
 
 			// Does entity have a renderer?
 			if (m_DisabledRenderers.find(entity->_id) != m_DisabledRenderers.end())
 			{
-				// Move it to the active map
-				m_RendererMap.insert({ entity->_id , m_DisabledRenderers.at(entity->_id) });
+				// If renderer is tagged as active
+				if (m_DisabledRenderers.at(entity->_id)->m_Active)
+				{
+					// Move it to the active map
+					m_RendererMap.insert({ entity->_id , m_DisabledRenderers.at(entity->_id) });
 
-				// Erase from disabled map
-				m_DisabledRenderers.erase(entity->_id);
+					// Erase from disabled map
+					m_DisabledRenderers.erase(entity->_id);
+				}
 			}
 
 		}
-		else
+		else // Set entitiy inactive
 		{
 			// Return if entity is already inactive
 			if (!entity->_Active) { return; }
@@ -131,7 +143,7 @@ namespace gtk {
 			// Loop through active map vector
 			for (int i = 0; i < m_ComponentMaps.size(); i++) // Maps should be in the same order between vectors
 			{
-				// Does the entity have a component in this group?
+				// Does the entity have a comp in this group?
 				if (m_ComponentMaps[i]->find(entity->_id) != m_ComponentMaps[i]->end())
 				{
 					// Move it to the disabled map
@@ -279,6 +291,9 @@ namespace gtk {
 			renderer.second->Draw();
 		}
 
+		// Scene update accessible in derived class
+		PostUpdate();
+
 
 		// This deletes all components and moves to next scene
 		// So it has to happen after all the updates for that frame
@@ -286,6 +301,7 @@ namespace gtk {
 		{
 			m_Game->SwitchScene(m_NextScene);
 		}
+
 	}
 
 	void gtk::Scene::Shutdown()

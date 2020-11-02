@@ -139,10 +139,13 @@ private:
 
 
 
-class ToggleComp : public gtk::Component
+class TogglerComp : public gtk::Component
 {
+
 public:
-	ToggleComp(gtk::Entity* const entity, const gtk::CompGroup& compGroup) : Component(entity, compGroup) {}
+	TogglerComp(gtk::Entity* const entity, const gtk::CompGroup& compGroup,
+		gtk::Scene* const scene, gtk::Entity* const entityToToggle, gtk::Component* const compToToggle, gtk::Renderer* const rendToToggle)
+		: Component(entity, compGroup), m_Scene(scene), m_UpdateCount(0), m_EntToToggle(entityToToggle), m_CompToToggle(compToToggle), m_RendToToggle(rendToToggle) {}
 
 	void Start() override
 	{
@@ -151,10 +154,162 @@ public:
 
 	void Update() override
 	{
+		if (m_UpdateCount == 10)
+		{
+			m_Scene->ToggleComponent(m_CompToToggle, false);
+			
+			// Should do nothing
+			m_Scene->ToggleComponent(m_CompToToggle, false);
+			m_Scene->ToggleRenderer(m_RendToToggle, true);
+
+		}
+
+		if (m_UpdateCount == 20)
+		{
+			m_Scene->ToggleComponent(m_CompToToggle, true);
+			m_Scene->ToggleRenderer(m_RendToToggle, false);
+
+			// Should do nothing
+			m_Scene->ToggleComponent(m_CompToToggle, true);
+			m_Scene->ToggleRenderer(m_RendToToggle, false);
+		}
+
+
+		if (m_UpdateCount == 30)
+		{
+			m_Scene->ToggleRenderer(m_RendToToggle, true);
+		}
+
+		if (m_UpdateCount == 40)
+		{
+			// Toggle entity off while comp and rend are active
+
+			// Toggle Entity
+			m_Scene->ToggleEntity(m_EntToToggle, false);
+			m_Scene->ToggleEntity(m_EntToToggle, false); // Should do nothing
+		}
+
+		if (m_UpdateCount == 50)
+		{
+			// Toggle entity off while comp and rend are active
+
+			// Toggle Entity
+			m_Scene->ToggleEntity(m_EntToToggle, true);
+			m_Scene->ToggleEntity(m_EntToToggle, true); // Should do nothing
+
+		}
+
+		if (m_UpdateCount == 60)
+		{
+
+			// Toggle Entity
+			m_Scene->ToggleEntity(m_EntToToggle, false);
+
+			// Toggle Comp
+			m_Scene->ToggleComponent(m_CompToToggle, false);
+
+		}
+
+		if (m_UpdateCount == 70)
+		{
+
+			// Toggle Entity
+			m_Scene->ToggleEntity(m_EntToToggle, true);
+		}
+
+
+		if (m_UpdateCount == 80)
+		{
+			// Toggle Comp
+			m_Scene->ToggleComponent(m_CompToToggle, true);
+		}
+
+		if (m_UpdateCount == 90)
+		{
+			// Toggle Comp
+			m_Scene->ToggleComponent(m_CompToToggle, false);
+
+			// Toggle Entity
+			m_Scene->ToggleEntity(m_EntToToggle, false);
+		}
+
+		if (m_UpdateCount == 100)
+		{
+
+			// Toggle Entity
+			m_Scene->ToggleEntity(m_EntToToggle, true);
+		}
+
+		if (m_UpdateCount == 110)
+		{
+			// Toggle Comp
+			m_Scene->ToggleComponent(m_CompToToggle, true);
+		}
+
+		if (m_UpdateCount == 120)
+		{
+			m_Scene->ToggleEntity(m_EntToToggle, false);
+
+			m_Scene->ToggleRenderer(m_RendToToggle, false);
+		}
+
+		if (m_UpdateCount == 130)
+		{
+			m_Scene->ToggleEntity(m_EntToToggle, true);
+		}
+
+		if (m_UpdateCount == 140)
+		{
+			m_Scene->ToggleRenderer(m_RendToToggle, true);
+		}
+
+		if (m_UpdateCount == 150)
+		{
+			m_Scene->ToggleRenderer(m_RendToToggle, false);
+
+			m_Scene->ToggleEntity(m_EntToToggle, false);
+		}
+
+		if (m_UpdateCount == 160)
+		{
+			m_Scene->ToggleEntity(m_EntToToggle, true);
+		}
+
+		if (m_UpdateCount == 170)
+		{
+			m_Scene->ToggleRenderer(m_RendToToggle, true);
+		}
+
+
+		m_UpdateCount++;
+	}
+
+private:
+	unsigned int m_UpdateCount;
+
+	gtk::Scene* const m_Scene;
+	gtk::Entity* const m_EntToToggle;
+	gtk::Component* const m_CompToToggle;
+	gtk::Renderer* const m_RendToToggle;
+
+
+};
+
+class ToggleMeComp : public gtk::Component
+{
+public:
+	ToggleMeComp(gtk::Entity* const entity, const gtk::CompGroup& compGroup) : Component(entity, compGroup), m_UpdateCount(0) {}
+
+	void Start() override
+	{
 
 	}
 
+	void Update() override
+	{
+		m_UpdateCount++;
+	}
 
-private:
+	unsigned int m_UpdateCount;
 
 };

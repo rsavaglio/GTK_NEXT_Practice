@@ -23,20 +23,21 @@ namespace gtk {
 
 		void SwitchScene(std::string key);
 
+		void ToggleEntity(Entity* const entity, bool setActive);
+		void ToggleComponent(Component* const component, bool setActive);
+		void ToggleRenderer(Renderer* const renderer, bool setActive);
+
 	protected:
 
 		virtual void Init() = 0;
+		virtual void PostUpdate() = 0;
 
 		Entity* CreateEntity(); // Sets parent as m_Root
 		Entity* CreateEntity(Entity* const parent);
 		CompGroup CreateCompGroup();
 
-		void AddComponent(Component* const component);
-		void AddRenderer(Renderer* const renderer);
-
-		void ToggleEntity(Entity* const entity, bool setActive);
-		void ToggleComponent(Component* const component, bool setActive);
-		void ToggleRenderer(Renderer* const renderer, bool setActive);
+		Component* const AddComponent(Component* const component);
+		Renderer* const AddRenderer(Renderer* const renderer);
 
 		std::vector<std::unordered_map<unsigned int, Component*>*> m_ComponentMaps;
 	
