@@ -12,7 +12,7 @@ public:
 
 	}
 
-	void Update() override
+	void Update(float deltaTime) override
 	{
 
 	}
@@ -36,7 +36,7 @@ public:
 
 	}
 
-	void Update() override
+	void Update(float deltaTime) override
 	{
 		if (m_SwitchScene)
 		{
@@ -72,7 +72,7 @@ public:
 	{
 	}
 
-	void Update() override
+	void Update(float deltaTime) override
 	{
 		if (addOrSub)
 		{
@@ -152,7 +152,7 @@ public:
 
 	}
 
-	void Update() override
+	void Update(float deltaTime) override
 	{
 		if (m_UpdateCount == 10)
 		{
@@ -305,7 +305,7 @@ public:
 
 	}
 
-	void Update() override
+	void Update(float deltaTime) override
 	{
 		m_UpdateCount++;
 	}

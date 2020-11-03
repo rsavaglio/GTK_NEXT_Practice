@@ -20,7 +20,7 @@ namespace gtk {
 		void Start();
 
 		// Updates the active scene
-		void Update(); 
+		void Update(float deltaTime);
 		
 		// Shutdown active, change active, start active
 		void SwitchScene(std::string key);

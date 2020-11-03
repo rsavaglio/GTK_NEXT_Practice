@@ -63,7 +63,7 @@ namespace gtk {
 		Component(Entity* const entity, const CompGroup& compGroup) : m_Entity(entity), m_GroupID(compGroup._id), m_Active(true) {}
 
 		virtual void Start() = 0;
-		virtual void Update() = 0;
+		virtual void Update(float deltaTime) = 0;
 
 	protected:
 		

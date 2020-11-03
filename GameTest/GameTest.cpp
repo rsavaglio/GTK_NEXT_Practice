@@ -11,6 +11,65 @@
 #include "gtk/gtk.h"
 
 //------------------------------------------------------------------------
+// Data
+//------------------------------------------------------------------------
+
+
+
+//------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
+// Called before first update. Do any initial setup here.
+//------------------------------------------------------------------------
+void Init()
+{
+	// TODO: Game init here
+}
+
+//------------------------------------------------------------------------
+// Update your simulation here. deltaTime is the elapsed time since the last update in ms.
+// This will be called at no greater frequency than the value of APP_MAX_FRAME_RATE
+//------------------------------------------------------------------------
+void Update(float deltaTime)
+{
+	
+	// TODO: Call Game's update here
+	// TODO: Pass deltaTime in
+
+
+
+}
+
+//------------------------------------------------------------------------
+// Add your display calls here (DrawLine,Print, DrawSprite.) 
+// See App.h 
+//------------------------------------------------------------------------
+void Render()
+{	
+	// TODO: Seperate the game shutdown stuff
+
+}
+
+
+//------------------------------------------------------------------------
+// Add your shutdown code here. Called when the APP_QUIT_KEY is pressed.
+// Just before the app exits.
+//------------------------------------------------------------------------
+void Shutdown()
+{	
+	// TODO: Game Shutdown
+
+
+}
+
+
+
+
+
+
+/*
+
+//------------------------------------------------------------------------
 // Example data....
 //------------------------------------------------------------------------
 CSimpleSprite *testSprite;
@@ -31,7 +90,7 @@ void Init()
 {
 	//------------------------------------------------------------------------
 	// Example Sprite Code....
-	
+
 
 	testSprite = App::CreateSprite(".\\TestData\\Test.bmp", 8, 4);
 	testSprite->SetPosition(400.0f, 400.0f);
@@ -43,7 +102,7 @@ void Init()
 	testSprite->SetScale(2.0f);
 
 	testSprite2 = App::CreateSprite(".\\TestData\\Ships.bmp", 2, 12);
-	testSprite2->SetPosition(400.0f, 400.0f);	
+	testSprite2->SetPosition(400.0f, 400.0f);
 	testSprite2->SetFrame(2);
 	testSprite2->SetScale(1.0f);
 	//------------------------------------------------------------------------
@@ -125,11 +184,11 @@ void Update(float deltaTime)
 }
 
 //------------------------------------------------------------------------
-// Add your display calls here (DrawLine,Print, DrawSprite.) 
-// See App.h 
+// Add your display calls here (DrawLine,Print, DrawSprite.)
+// See App.h
 //------------------------------------------------------------------------
 void Render()
-{	
+{
 
 	//------------------------------------------------------------------------
 	// Example Line Drawing.
@@ -169,10 +228,15 @@ void Render()
 // Just before the app exits.
 //------------------------------------------------------------------------
 void Shutdown()
-{	
+{
 	//------------------------------------------------------------------------
 	// Example Sprite Code....
 	delete testSprite;
 	delete testSprite2;
 	//------------------------------------------------------------------------
 }
+
+
+
+
+*/

@@ -272,7 +272,7 @@ namespace gtk {
 		}
 	}
 
-	void gtk::Scene::Update()
+	void gtk::Scene::Update(float deltaTime)
 	{
 
 		// Loop through the vector of maps
@@ -281,7 +281,7 @@ namespace gtk {
 			// Loop through comp map
 			for (auto& Comp : *CompMap)
 			{
-				Comp.second->Update();
+				Comp.second->Update(deltaTime);
 			}
 		}
 

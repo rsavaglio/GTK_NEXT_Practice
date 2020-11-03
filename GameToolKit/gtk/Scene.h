@@ -43,7 +43,7 @@ namespace gtk {
 	
 	private:
 
-		void Update();
+		void Update(float deltaTime);
 		void Shutdown();
 
 		bool m_SwitchScene;

@@ -19,10 +19,10 @@ namespace gtk {
 		m_ActiveScene->Init();
 	}
 
-	void Game::Update()
+	void Game::Update(float deltaTime)
 	{
 		// Update the active scene
-		m_ActiveScene->Update();
+		m_ActiveScene->Update(deltaTime);
 	}
 
 	void Game::SwitchScene(std::string key)
