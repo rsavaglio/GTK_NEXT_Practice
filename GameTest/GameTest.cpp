@@ -10,11 +10,13 @@
 //------------------------------------------------------------------------
 #include "gtk/gtk.h"
 
+#include "Game/Games.h"
+
 //------------------------------------------------------------------------
 // Data
 //------------------------------------------------------------------------
 
-
+GameTemplate gameTemp;
 
 //------------------------------------------------------------------------
 
@@ -23,7 +25,8 @@
 //------------------------------------------------------------------------
 void Init()
 {
-	// TODO: Game init here
+	// Creates scenes and starts the first scene
+	gameTemp.Init();
 }
 
 //------------------------------------------------------------------------
@@ -32,12 +35,8 @@ void Init()
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
-	
-	// TODO: Call Game's update here
-	// TODO: Pass deltaTime in
-
-
-
+	// Updates all active components in the active scene
+	gameTemp.Update(deltaTime);
 }
 
 //------------------------------------------------------------------------
@@ -46,8 +45,8 @@ void Update(float deltaTime)
 //------------------------------------------------------------------------
 void Render()
 {	
-	// TODO: Seperate the game shutdown stuff
-
+	// Calls draw in active renderers in active scene
+	gameTemp.Render();
 }
 
 
@@ -57,13 +56,10 @@ void Render()
 //------------------------------------------------------------------------
 void Shutdown()
 {	
-	// TODO: Game Shutdown
-
+	// When game goes out of scope everything is deleted.
+	// May want to change this for more control?
 
 }
-
-
-
 
 
 

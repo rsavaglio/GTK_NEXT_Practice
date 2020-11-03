@@ -285,12 +285,6 @@ namespace gtk {
 			}
 		}
 
-		// Update renderers
-		for (auto& renderer : m_RendererMap)
-		{
-			renderer.second->Draw();
-		}
-
 		// Scene update accessible in derived class
 		PostUpdate();
 
@@ -302,6 +296,15 @@ namespace gtk {
 			m_Game->SwitchScene(m_NextScene);
 		}
 
+	}
+
+	void gtk::Scene::Render()
+	{
+		// Update renderers
+		for (auto& renderer : m_RendererMap)
+		{
+			renderer.second->Draw();
+		}
 	}
 
 	void gtk::Scene::Shutdown()

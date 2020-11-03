@@ -21,6 +21,12 @@ namespace gtk {
 
 		// Updates the active scene
 		void Update(float deltaTime);
+
+		// Calls Draw on active scene's renderers
+		void Render();
+
+		// Deletes all scenes
+		void Shutdown();
 		
 		// Shutdown active, change active, start active
 		void SwitchScene(std::string key);

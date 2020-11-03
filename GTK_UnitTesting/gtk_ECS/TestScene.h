@@ -35,6 +35,7 @@ protected:
 
 class TestScene : public gtk::Scene
 {
+
 public:
 	TestScene(gtk::Game* const game) : gtk::Scene(game) {}
 
@@ -104,7 +105,7 @@ protected:
 		{
 			EXPECT_EQ(tmc->m_UpdateCount, comp);
 
-			EXPECT_EQ(tmr->m_DrawCount, rend);
+			EXPECT_TRUE(tmr->m_DrawCount == rend || tmr->m_DrawCount == rend - 1);
 		}
 	}
 

@@ -5,12 +5,7 @@ namespace gtk {
 
 	Game::~Game()
 	{
-		// Interate over the scene map
-		for (auto& scene : m_SceneMap) 
-		{
-			// Delete each scene
-			delete scene.second;
-		}
+		Shutdown();
 	}
 
 	void Game::Start()
@@ -23,6 +18,21 @@ namespace gtk {
 	{
 		// Update the active scene
 		m_ActiveScene->Update(deltaTime);
+	}
+
+	void Game::Render()
+	{
+		m_ActiveScene->Render();
+	}
+
+	void Game::Shutdown()
+	{
+		// Interate over the scene map
+		for (auto& scene : m_SceneMap) 
+		{
+			// Delete each scene
+			delete scene.second;
+		}
 	}
 
 	void Game::SwitchScene(std::string key)
