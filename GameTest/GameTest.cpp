@@ -16,7 +16,7 @@
 // Data
 //------------------------------------------------------------------------
 
-GameTemplate gameTemp;
+PracGame game;
 
 //------------------------------------------------------------------------
 
@@ -26,7 +26,8 @@ GameTemplate gameTemp;
 void Init()
 {
 	// Creates scenes and starts the first scene
-	gameTemp.Init();
+	game.Init();
+	game.Start();
 }
 
 //------------------------------------------------------------------------
@@ -36,7 +37,8 @@ void Init()
 void Update(float deltaTime)
 {
 	// Updates all active components in the active scene
-	gameTemp.Update(deltaTime);
+
+	game.Update(deltaTime);
 }
 
 //------------------------------------------------------------------------
@@ -46,7 +48,7 @@ void Update(float deltaTime)
 void Render()
 {	
 	// Calls draw in active renderers in active scene
-	gameTemp.Render();
+	game.Render();
 }
 
 

@@ -17,7 +17,14 @@ public:
 	}
 };
 
-class TestGame : public gtk::Game
+class PracGame : public gtk::Game
 {
 
+public:
+
+	void Init() override
+	{
+		// Add the scenes of the game here
+		AddScene("PracScene", new PracScene(this));
+	}
 };

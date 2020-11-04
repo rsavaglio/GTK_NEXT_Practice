@@ -18,7 +18,27 @@ namespace gtk {
 		
 		mat4 _Transform;
 
-		void SetPosition(const vec3& position) {}
+		void SetPosition(const float& x, const float& y, const float& z) 
+		{
+			_Transform(0, 0) = x;
+			_Transform(0, 1) = y;
+			_Transform(0, 2) = z;
+		}
+
+		void SetPosition(const vec3& pos)
+		{
+			_Transform(0, 0) = pos.x;
+			_Transform(0, 2) = pos.y;
+			_Transform(0, 1) = pos.z;
+		}
+
+		void SetPosition(const mat4& pos)
+		{
+			_Transform(0, 0) = pos(0, 0);
+			_Transform(0, 2) = pos(0, 1);
+			_Transform(0, 1) = pos(0, 2);
+		}
+
 		void SetRotation(const vec3& rotation) {}
 		void SetScale(const vec3& scale) {}
 
@@ -82,6 +102,7 @@ namespace gtk {
 	public:
 
 		virtual ~Renderer() {}
+		virtual void Start() = 0;
 		virtual void Draw() = 0;
 
 		Renderer(Entity* const entity) : m_Entity(entity), m_Active(true) {}

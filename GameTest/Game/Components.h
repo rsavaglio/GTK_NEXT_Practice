@@ -1,5 +1,6 @@
 #pragma once
 #include "gtk/gtk.h"
+#include "app/app.h"
 
 class CompTemplate : public gtk::Component
 {
@@ -18,5 +19,58 @@ public:
 
 
 private:
+
+};
+
+class PlayerController : public gtk::Component
+{
+public:
+	PlayerController(gtk::Entity* const entity, const gtk::CompGroup& compGroup, float speed) 
+		: Component(entity, compGroup), m_Speed(speed) {}
+
+	void Start() override
+	{
+
+	}
+
+	void Update(float deltaTime) override
+	{
+
+		/*
+		if (App::GetController().GetLeftThumbStickX() > 0.5f)
+		{
+			//testSprite->SetAnimation(ANIM_RIGHT);
+
+			m_Entity->_Transform(0, 0) += 1.0f;
+		}
+		if (App::GetController().GetLeftThumbStickX() < -0.5f)
+		{
+			//testSprite->SetAnimation(ANIM_LEFT);
+
+			m_Entity->_Transform(0, 0) -= 1.0f;
+		}
+		if (App::GetController().GetLeftThumbStickY() > 0.5f)
+		{
+			//testSprite->SetAnimation(ANIM_FORWARDS);
+			
+			m_Entity->_Transform(0, 1) += 1.0f;
+		}
+		if (App::GetController().GetLeftThumbStickY() < -0.5f)
+		{
+			//testSprite->SetAnimation(ANIM_BACKWARDS);
+
+			m_Entity->_Transform(0, 1) -= 1.0f;
+		} */
+
+		m_Entity->_Transform(0, 0) += (App::GetController().GetLeftThumbStickX() * m_Speed);
+		m_Entity->_Transform(0, 1) += (App::GetController().GetLeftThumbStickY() * m_Speed);
+
+
+	}
+
+
+private:
+
+	float m_Speed;
 
 };
