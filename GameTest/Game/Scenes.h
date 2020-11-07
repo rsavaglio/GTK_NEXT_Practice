@@ -53,9 +53,13 @@ protected:
 		CompGroup controllers = CreateCompGroup();
 
 		Entity* player = CreateEntity();
-			player->SetPosition(400.0f, 400.0f, 0);
+			player->SetPosition(1.0f, 400.0f, 0);
 			AddComponent(new PlayerController(player, controllers, 10.0f));
 			AddRenderer(new SpriteRenderer(player, App::CreateSprite(".\\TestData\\Test.bmp", 8, 4)));
+		
+
+		Entity* cube = CreateEntity();
+			AddRenderer(new CubeRenderer(cube));
 
 	}
 

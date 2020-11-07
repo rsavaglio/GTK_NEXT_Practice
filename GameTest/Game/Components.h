@@ -35,37 +35,8 @@ public:
 
 	void Update(float deltaTime) override
 	{
-
-		/*
-		if (App::GetController().GetLeftThumbStickX() > 0.5f)
-		{
-			//testSprite->SetAnimation(ANIM_RIGHT);
-
-			m_Entity->_Transform(0, 0) += 1.0f;
-		}
-		if (App::GetController().GetLeftThumbStickX() < -0.5f)
-		{
-			//testSprite->SetAnimation(ANIM_LEFT);
-
-			m_Entity->_Transform(0, 0) -= 1.0f;
-		}
-		if (App::GetController().GetLeftThumbStickY() > 0.5f)
-		{
-			//testSprite->SetAnimation(ANIM_FORWARDS);
-			
-			m_Entity->_Transform(0, 1) += 1.0f;
-		}
-		if (App::GetController().GetLeftThumbStickY() < -0.5f)
-		{
-			//testSprite->SetAnimation(ANIM_BACKWARDS);
-
-			m_Entity->_Transform(0, 1) -= 1.0f;
-		} */
-
 		m_Entity->_Transform(0, 0) += (App::GetController().GetLeftThumbStickX() * m_Speed);
 		m_Entity->_Transform(0, 1) += (App::GetController().GetLeftThumbStickY() * m_Speed);
-
-
 	}
 
 
