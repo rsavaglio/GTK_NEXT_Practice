@@ -2,62 +2,11 @@
 
 #include "gtk.h"
 #include "Camera.h"
+#include "Entity.h"
 
 #include <vector>
 
 namespace gtk {
-
-	class Entity
-	{
-		friend class Scene;
-
-	public:
-		const unsigned int _id;
-
-		Entity* _Parent;
-		
-		mat4 _Transform;
-
-		void SetPosition(const float& x, const float& y, const float& z) 
-		{
-			_Transform(0, 0) = x;
-			_Transform(0, 1) = y;
-			_Transform(0, 2) = z;
-		}
-
-		void SetPosition(const vec3& pos)
-		{
-			_Transform(0, 0) = pos.x;
-			_Transform(0, 2) = pos.y;
-			_Transform(0, 1) = pos.z;
-		}
-
-		void SetPosition(const mat4& pos)
-		{
-			_Transform(0, 0) = pos(0, 0);
-			_Transform(0, 2) = pos(0, 1);
-			_Transform(0, 1) = pos(0, 2);
-		}
-
-		void SetRotation(const vec3& rotation) {}
-		void SetScale(const vec3& scale) {}
-
-	private:
-
-		// Call CreateEntity() from a Scene
-		Entity(const unsigned int& id, Entity* const parent);
-
-		bool _Active;
-
-		std::vector<Entity*> _Children;
-
-		void AddChild(Entity* const child)
-		{
-			_Children.push_back(child);
-		}
-	};
-
-
 
 	class CompGroup
 	{

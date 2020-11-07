@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Component.h"
+#include "Entity.h"
+#include "Camera.h"
 
 #include <vector>
 #include <unordered_map>
@@ -27,6 +29,8 @@ namespace gtk {
 		void ToggleComponent(Component* const component, bool setActive);
 		void ToggleRenderer(Renderer* const renderer, bool setActive);
 
+		Camera m_Camera;
+
 	protected:
 
 		virtual void Init() = 0;
@@ -46,6 +50,8 @@ namespace gtk {
 		void Update(float deltaTime);
 		void Render();
 		void Shutdown();
+
+		void UpdateSceneGraph();
 
 		bool m_SwitchScene;
 		std::string m_NextScene;

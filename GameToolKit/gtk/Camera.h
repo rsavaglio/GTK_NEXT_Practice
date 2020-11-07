@@ -9,16 +9,13 @@ namespace gtk {
 	{
 	public:
 
-		Camera(const bool& perspective) {}
+		Camera() : m_View(1), m_Proj(1) {}
 
-		void SetFOV() {}
-		void SetDepth() {}
-
-		// Other camera functions here
+		mat4 m_View;
+		mat4 m_Proj;
+		
 
 	private:
-
-		//Transform transform;
 
 	};
 }

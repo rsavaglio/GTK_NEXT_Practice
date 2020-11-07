@@ -35,8 +35,8 @@ public:
 
 	void Update(float deltaTime) override
 	{
-		m_Entity->_Transform(0, 0) += (App::GetController().GetLeftThumbStickX() * m_Speed);
-		m_Entity->_Transform(0, 1) += (App::GetController().GetLeftThumbStickY() * m_Speed);
+		m_Entity->SetPosX(m_Entity->GetPos().x + (App::GetController().GetLeftThumbStickX() * m_Speed));
+		m_Entity->SetPosY(m_Entity->GetPos().y + (App::GetController().GetLeftThumbStickY() * m_Speed));
 	}
 
 

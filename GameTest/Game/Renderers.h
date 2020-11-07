@@ -43,7 +43,7 @@ public:
 	void Draw() override
 	{
 		// Set Position Based on Entity
-		m_Sprite->SetPosition(m_Entity->_Transform(0,0), m_Entity->_Transform(0, 1));
+		m_Sprite->SetPosition(m_Entity->GetPos().x, m_Entity->GetPos().y);
 		//m_Sprite->SetAngle();
 		m_Sprite->SetScale(2);
 
@@ -79,7 +79,8 @@ public:
 
 		_ibo({0, 1, 1, 2, 2, 3, 3, 0, 
 			  4, 5, 5, 6, 6, 7, 7, 4,
-			  0, 4, 1, 5, 2, 6, 3, 7})
+			  0, 4, 1, 5, 2, 6, 3, 7}),
+		_anim(0)
 	{}
 
 	void Start() override
@@ -106,10 +107,11 @@ public:
 
 		// Rotate
 
-		// Convert angle to radians
-		float rx = 0.0f;
-		float ry = 0.785f;
-		float rz = 0.0f;
+		float rad = PI / 180; // Converts degrees to rad
+
+		float rx = (0.0f + _anim) * rad;
+		float ry = (45.0f + _anim++) * rad;
+		float rz = 45.0f;
 
 		gtk::mat4 R = { cos(ry) * cos(rz),
 				 sin(rx) * sin(ry) * cos(rz) + cos(rx) * sin(rz),
@@ -136,19 +138,22 @@ public:
 						0.0f, 0.0f, sz, 0.0f,
 						0.0f, 0.0f, 0.0f, 1.0f };
 
+		gtk::mat4 M = T * R * S;
 
 		for (int i = 0; i < 24; i += 2)
 		{
 			s = { _vbo[_ibo[i]].x, _vbo[_ibo[i]].y, _vbo[_ibo[i]].z, 1 };
 			e = { _vbo[_ibo[i + 1]].x, _vbo[_ibo[i+ 1]].y, _vbo[_ibo[i + 1]].z, 1 };
 
-			s = T * R * S * s;
-			e = T * R * S * e;
+			// TODO: MVP here
+
+			s = M * s;
+			e = M * e;
 
 			App::DrawLine(
 				s.x, s.y, 
 				e.x, e.y,
-				0.8f, 0.2f, 0.2f);
+				0.9f, 0.5f, 0.2f);
 		}
 	}
 
@@ -156,4 +161,6 @@ public:
 private:
 	std::array<gtk::vec4, 8> _vbo;
 	std::array<int, 24> _ibo;
+
+	float _anim;
 };

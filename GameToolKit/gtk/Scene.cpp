@@ -288,6 +288,8 @@ namespace gtk {
 		// Scene update accessible in derived class
 		PostUpdate();
 
+		// Updates all pos, rot, scale
+		UpdateSceneGraph();
 
 		// This deletes all components and moves to next scene
 		// So it has to happen after all the updates for that frame
@@ -379,6 +381,13 @@ namespace gtk {
 		// Reset id providers
 		m_EntityIDProvider = 0;
 		m_CompGroupIDProvider = 0;
+	}
+
+	void gtk::Scene::UpdateSceneGraph()
+	{
+		// Traverse entities and update their TRS
+
+
 	}
 
 	
