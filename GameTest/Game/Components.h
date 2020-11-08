@@ -1,6 +1,7 @@
 #pragma once
 #include "gtk/gtk.h"
 #include "app/app.h"
+#include "gtk/gtkMath.hpp"
 
 class CompTemplate : public gtk::Component
 {
@@ -43,5 +44,32 @@ public:
 private:
 
 	float m_Speed;
+
+};
+
+class RotaterComp : public gtk::Component
+{
+public:
+	RotaterComp(gtk::Entity* const entity, const gtk::CompGroup& compGroup, const gtk::vec3& rotVals) 
+		: Component(entity, compGroup), animX(rotVals.x), animY(rotVals.y), animZ(rotVals.z) {}
+
+	void Start() override
+	{
+
+	}
+
+	void Update(float deltaTime) override
+	{
+		m_Entity->SetRot(m_Entity->GetRot().x + animX,
+						 m_Entity->GetRot().y + animY,
+						 m_Entity->GetRot().z + animZ);
+	}
+
+
+private:
+
+	float animX;
+	float animY;
+	float animZ;
 
 };

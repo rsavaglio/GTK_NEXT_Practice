@@ -3,7 +3,7 @@
 namespace gtk {
 
 	Scene::Scene(Game* const game) 
-		:m_SwitchScene(false), m_NextScene(""), m_Game(game), m_Root(new Entity(m_EntityIDProvider++, nullptr)), m_EntityIDProvider(0), m_CompGroupIDProvider(0)
+		:m_Camera(), m_SwitchScene(false), m_NextScene(""), m_Game(game), m_Root(new Entity(m_EntityIDProvider++, nullptr)), m_EntityIDProvider(0), m_CompGroupIDProvider(0)
 	{
 
 	}
@@ -163,6 +163,11 @@ namespace gtk {
 				// Erase from active map
 				m_RendererMap.erase(entity->_id);
 			}
+		}
+
+		for (auto& child : entity->_Children)
+		{
+			ToggleEntity(child, setActive);
 		}
 	}
 
@@ -386,7 +391,10 @@ namespace gtk {
 	void gtk::Scene::UpdateSceneGraph()
 	{
 		// Traverse entities and update their TRS
-
+		for (auto& child : m_Root->_Children)
+		{
+			child->UpdateTRS();
+		}
 
 	}
 

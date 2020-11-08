@@ -8,13 +8,19 @@ namespace gtk {
 
 	void Entity::SetPos(const float& x, const float& y, const float& z)
 	{
-		_Pos = vec3(x, y, z);
+		_Pos = vec4(x, y, z, 1);
 		_Dirty = true;
 	}
 
 	void Entity::SetPos(const vec3& pos)
 	{
-		_Pos = pos;
+		_Pos = vec4(pos.x, pos.y, pos.z, 1);
+		_Dirty = true;
+	}
+
+	void Entity::SetPos(const vec4& pos)
+	{
+		_Pos = vec4(pos.x, pos.y, pos.z, 1);
 		_Dirty = true;
 	}
 
@@ -34,21 +40,26 @@ namespace gtk {
 		_Dirty = true;
 	}
 
-	const vec3& Entity::GetPos()
+	const vec4& Entity::GetPos()
 	{
 		return _Pos;
 	}
 
 	void Entity::SetRot(const float& x, const float& y, const float& z)
 	{
-		_Rot = vec3(x, y, z);
+		_Rot = vec4(x, y, z, 1);
 		_Dirty = true;
 	}
 
-
-	void Entity::SetRot(const vec3& Rot)
+	void Entity::SetRot(const vec3& rot)
 	{
-		_Rot = Rot;
+		_Rot = vec4(rot.x, rot.y, rot.z, 1);
+		_Dirty = true;
+	}
+
+	void Entity::SetRot(const vec4& rot)
+	{
+		_Rot = vec4(rot.x, rot.y, rot.z, 1);
 		_Dirty = true;
 	}
 
@@ -68,20 +79,26 @@ namespace gtk {
 		_Dirty = true;
 	}
 
-	const vec3& Entity::GetRot()
+	const vec4& Entity::GetRot()
 	{
 		return _Rot;
 	}
 
 	void Entity::SetScale(const float& x, const float& y, const float& z)
 	{
-		_Scale = vec3(x, y, z);
+		_Scale = vec4(x, y, z, 1);
 		_Dirty = true;
 	}
 
 	void Entity::SetScale(const vec3& scale)
 	{
-		_Scale = scale;
+		_Scale = vec4(scale.x, scale.y, scale.z, 1);
+		_Dirty = true;
+	}
+	
+	void Entity::SetScale(const vec4& scale)
+	{
+		_Scale = vec4(scale.x, scale.y, scale.z, 1);
 		_Dirty = true;
 	}
 
@@ -101,10 +118,56 @@ namespace gtk {
 		_Dirty = true;
 	}
 
-	const vec3& Entity::GetScale()
+	const vec4& Entity::GetScale()
 	{
 		return _Scale;
 	}
 
+	void Entity::UpdateTRS()
+	{
+
+		// Translate
+		gtk::mat4 T = { 1.0f, 0.0f, 0.0f, 0.0f,
+		   0.0f, 1.0f, 0.0f, 0.0f,
+		   0.0f, 0.0f, 1.0f, 0.0f,
+			_Pos.x, _Pos.y, _Pos.z, 1.0f };
+
+		// Rotate
+
+		float rx = _Rot.x * (3.14159265359f / 180.0f);
+		float ry = _Rot.y * (3.14159265359f / 180.0f);
+		float rz = _Rot.z * (3.14159265359f / 180.0f);
+
+
+		gtk::mat4 R = { cosf(ry) * cosf(rz),
+						 sinf(rx) * sinf(ry) * cosf(rz) + cosf(rx) * sinf(rz),
+						-cosf(rx) * sinf(ry) * cosf(rz) + sinf(rx) * sinf(rz),
+						 0.0f,
+						-cosf(ry) * sinf(rz),
+						-sinf(rx) * sinf(ry) * sinf(rz) + cosf(rx) * cosf(rz),
+						 cosf(rx) * sinf(ry) * sinf(rz) + sinf(rx) * cosf(rz),
+						 0.0f,
+						 sinf(ry),
+						-sinf(rx) * cosf(ry),
+						 cosf(rx) * cosf(ry),
+						 0.0f,
+						 0.0f, 0.0f, 0.0f, 1.0f };
+
+		// Scale
+		gtk::mat4 S = { _Scale.x, 0.0f, 0.0f, 0.0f,
+						0.0f, _Scale.y, 0.0f, 0.0f,
+						0.0f, 0.0f, _Scale.z, 0.0f,
+						0.0f, 0.0f, 0.0f, 1.0f };
+
+		_TRS = _Parent->_TRS * T * R * S;
+
+		_Dirty = false;
+
+		// Update Children's TRS
+		for (auto& child : _Children)
+		{
+			child->UpdateTRS();
+		}
+	}
 
 }

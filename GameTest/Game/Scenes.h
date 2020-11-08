@@ -59,7 +59,22 @@ protected:
 		
 
 		Entity* cube = CreateEntity();
+			cube->SetPos(500.0f, 400.0f, 10.0f);
+			cube->SetRotY(45.0f);
+			cube->SetScale(100.0f, 100.0f, 100.0f);
+			AddComponent(new RotaterComp(cube, controllers, gtk::vec3(1.0f, 1.0f, 0)));
 			AddRenderer(new CubeRenderer(cube));
+
+		Entity* childCube = CreateEntity(cube);
+			childCube->SetPos(1.5f, 1.5f, 1.0f);
+			childCube->SetScale(0.5f, 0.5f, 0.5f);
+			AddComponent(new RotaterComp(childCube, controllers, gtk::vec3(0, 1.0f, 0)));
+			AddRenderer(new CubeRenderer(childCube));
+
+		Entity* babyCube = CreateEntity(childCube);
+			babyCube->SetPos(1.5f, 1.5f, 1.5f);
+			babyCube->SetScale(0.5f, 0.5f, 0.5f);
+			AddRenderer(new CubeRenderer(babyCube));
 
 	}
 

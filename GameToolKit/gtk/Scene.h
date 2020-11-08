@@ -25,7 +25,9 @@ namespace gtk {
 
 		void SwitchScene(std::string key);
 
+		// TODO: Toggle all children of the entity
 		void ToggleEntity(Entity* const entity, bool setActive);
+
 		void ToggleComponent(Component* const component, bool setActive);
 		void ToggleRenderer(Renderer* const renderer, bool setActive);
 

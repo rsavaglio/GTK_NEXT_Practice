@@ -90,13 +90,14 @@ protected:
 		Entity* ToggleMeElmo = CreateEntity();
 			tmc = new ToggleMeComp(ToggleMeElmo, g_TogMe);
 			AddComponent(tmc);
-
 			tmr = new ToggleMeRend(ToggleMeElmo);
 			AddRenderer(tmr);
 
 
 		Entity* Toggler = CreateEntity();
 			AddComponent(new TogglerComp(Toggler, g_Tog, this, ToggleMeElmo, tmc, tmr));
+			
+		// TODO: Add a child to be toggled when parent is toggled
 	}
 
 	void CheckValues(unsigned int updateCount, unsigned int comp, unsigned int rend)
