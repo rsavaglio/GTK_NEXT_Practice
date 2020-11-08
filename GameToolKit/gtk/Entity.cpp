@@ -9,35 +9,35 @@ namespace gtk {
 	void Entity::SetPos(const float& x, const float& y, const float& z)
 	{
 		_Pos = vec4(x, y, z, 1);
-		_Dirty = true;
+		Soil();
 	}
 
 	void Entity::SetPos(const vec3& pos)
 	{
 		_Pos = vec4(pos.x, pos.y, pos.z, 1);
-		_Dirty = true;
+		Soil();
 	}
 
 	void Entity::SetPos(const vec4& pos)
 	{
 		_Pos = vec4(pos.x, pos.y, pos.z, 1);
-		_Dirty = true;
+		Soil();
 	}
 
 	void Entity::SetPosX(float x)
 	{
 		_Pos.x = x;
-		_Dirty = true;
+		Soil();
 	}
 	void Entity::SetPosY(float y)
 	{
 		_Pos.y = y;
-		_Dirty = true;
+		Soil();
 	}
 	void Entity::SetPosZ(float z)
 	{
 		_Pos.z = z;
-		_Dirty = true;
+		Soil();
 	}
 
 	const vec4& Entity::GetPos()
@@ -48,35 +48,35 @@ namespace gtk {
 	void Entity::SetRot(const float& x, const float& y, const float& z)
 	{
 		_Rot = vec4(x, y, z, 1);
-		_Dirty = true;
+		Soil();
 	}
 
 	void Entity::SetRot(const vec3& rot)
 	{
 		_Rot = vec4(rot.x, rot.y, rot.z, 1);
-		_Dirty = true;
+		Soil();
 	}
 
 	void Entity::SetRot(const vec4& rot)
 	{
 		_Rot = vec4(rot.x, rot.y, rot.z, 1);
-		_Dirty = true;
+		Soil();
 	}
 
 	void Entity::SetRotX(float x)
 	{
 		_Rot.x = x;
-		_Dirty = true;
+		Soil();
 	}
 	void Entity::SetRotY(float y)
 	{
 		_Rot.y = y;
-		_Dirty = true;
+		Soil();
 	}
 	void Entity::SetRotZ(float z)
 	{
 		_Rot.z = z;
-		_Dirty = true;
+		Soil();
 	}
 
 	const vec4& Entity::GetRot()
@@ -87,35 +87,35 @@ namespace gtk {
 	void Entity::SetScale(const float& x, const float& y, const float& z)
 	{
 		_Scale = vec4(x, y, z, 1);
-		_Dirty = true;
+		Soil();
 	}
 
 	void Entity::SetScale(const vec3& scale)
 	{
 		_Scale = vec4(scale.x, scale.y, scale.z, 1);
-		_Dirty = true;
+		Soil();
 	}
 	
 	void Entity::SetScale(const vec4& scale)
 	{
 		_Scale = vec4(scale.x, scale.y, scale.z, 1);
-		_Dirty = true;
+		Soil();
 	}
 
 	void Entity::SetScaleX(float x)
 	{
 		_Scale.x = x;
-		_Dirty = true;
+		Soil();
 	}
 	void Entity::SetScaleY(float y)
 	{
 		_Scale.y = y;
-		_Dirty = true;
+		Soil();
 	}
 	void Entity::SetScaleZ(float z)
 	{
 		_Scale.z = z;
-		_Dirty = true;
+		Soil();
 	}
 
 	const vec4& Entity::GetScale()
@@ -125,48 +125,61 @@ namespace gtk {
 
 	void Entity::UpdateTRS()
 	{
+		if (_Dirty)
+		{
+			// Translate
+			gtk::mat4 T = { 1.0f, 0.0f, 0.0f, 0.0f,
+			   0.0f, 1.0f, 0.0f, 0.0f,
+			   0.0f, 0.0f, 1.0f, 0.0f,
+				_Pos.x, _Pos.y, _Pos.z, 1.0f };
 
-		// Translate
-		gtk::mat4 T = { 1.0f, 0.0f, 0.0f, 0.0f,
-		   0.0f, 1.0f, 0.0f, 0.0f,
-		   0.0f, 0.0f, 1.0f, 0.0f,
-			_Pos.x, _Pos.y, _Pos.z, 1.0f };
+			// Rotate
 
-		// Rotate
-
-		float rx = _Rot.x * (3.14159265359f / 180.0f);
-		float ry = _Rot.y * (3.14159265359f / 180.0f);
-		float rz = _Rot.z * (3.14159265359f / 180.0f);
+			float rx = _Rot.x * (3.14159265359f / 180.0f);
+			float ry = _Rot.y * (3.14159265359f / 180.0f);
+			float rz = _Rot.z * (3.14159265359f / 180.0f);
 
 
-		gtk::mat4 R = { cosf(ry) * cosf(rz),
-						 sinf(rx) * sinf(ry) * cosf(rz) + cosf(rx) * sinf(rz),
-						-cosf(rx) * sinf(ry) * cosf(rz) + sinf(rx) * sinf(rz),
-						 0.0f,
-						-cosf(ry) * sinf(rz),
-						-sinf(rx) * sinf(ry) * sinf(rz) + cosf(rx) * cosf(rz),
-						 cosf(rx) * sinf(ry) * sinf(rz) + sinf(rx) * cosf(rz),
-						 0.0f,
-						 sinf(ry),
-						-sinf(rx) * cosf(ry),
-						 cosf(rx) * cosf(ry),
-						 0.0f,
-						 0.0f, 0.0f, 0.0f, 1.0f };
+			gtk::mat4 R = { cosf(ry) * cosf(rz),
+							 sinf(rx) * sinf(ry) * cosf(rz) + cosf(rx) * sinf(rz),
+							-cosf(rx) * sinf(ry) * cosf(rz) + sinf(rx) * sinf(rz),
+							 0.0f,
+							-cosf(ry) * sinf(rz),
+							-sinf(rx) * sinf(ry) * sinf(rz) + cosf(rx) * cosf(rz),
+							 cosf(rx) * sinf(ry) * sinf(rz) + sinf(rx) * cosf(rz),
+							 0.0f,
+							 sinf(ry),
+							-sinf(rx) * cosf(ry),
+							 cosf(rx) * cosf(ry),
+							 0.0f,
+							 0.0f, 0.0f, 0.0f, 1.0f };
 
-		// Scale
-		gtk::mat4 S = { _Scale.x, 0.0f, 0.0f, 0.0f,
-						0.0f, _Scale.y, 0.0f, 0.0f,
-						0.0f, 0.0f, _Scale.z, 0.0f,
-						0.0f, 0.0f, 0.0f, 1.0f };
+			// Scale
+			gtk::mat4 S = { _Scale.x, 0.0f, 0.0f, 0.0f,
+							0.0f, _Scale.y, 0.0f, 0.0f,
+							0.0f, 0.0f, _Scale.z, 0.0f,
+							0.0f, 0.0f, 0.0f, 1.0f };
 
-		_TRS = _Parent->_TRS * T * R * S;
+			_TRS = _Parent->_TRS * T * R * S;
 
-		_Dirty = false;
+			_Dirty = false;
 
+		}
+		
 		// Update Children's TRS
 		for (auto& child : _Children)
 		{
 			child->UpdateTRS();
+		}
+	}
+
+	void Entity::Soil()
+	{
+		_Dirty = true;
+
+		for (auto& child : _Children)
+		{
+			child->Soil();
 		}
 	}
 

@@ -45,14 +45,13 @@ namespace gtk {
 		void SetScaleZ(float z);
 		const vec4& GetScale();
 
-
-
 	private:
 
 		// Call CreateEntity() from a Scene
 		Entity(const unsigned int& id, Entity* const parent);
 
 		void UpdateTRS();
+		void Soil();
 
 		bool _Active;
 
