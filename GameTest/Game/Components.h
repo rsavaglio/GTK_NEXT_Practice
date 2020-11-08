@@ -38,6 +38,16 @@ public:
 	{
 		m_Entity->SetPosX(m_Entity->GetPos().x + (App::GetController().GetLeftThumbStickX() * m_Speed));
 		m_Entity->SetPosY(m_Entity->GetPos().y + (App::GetController().GetLeftThumbStickY() * m_Speed));
+
+		m_Entity->_Scene->m_Camera.SetPos(
+			m_Entity->_Scene->m_Camera.GetPos().x + (App::GetController().GetLeftThumbStickX() * m_Speed), 
+			m_Entity->_Scene->m_Camera.GetPos().y + (App::GetController().GetLeftThumbStickY() * m_Speed), 1);
+
+		m_Entity->_Scene->m_Camera.SetRot(
+			m_Entity->_Scene->m_Camera.GetRot().x + (App::GetController().GetRightThumbStickY() * m_Speed),
+			m_Entity->_Scene->m_Camera.GetRot().y + (App::GetController().GetRightThumbStickX() * m_Speed), 1);
+
+
 	}
 
 

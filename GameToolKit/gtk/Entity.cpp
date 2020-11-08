@@ -2,8 +2,8 @@
 
 namespace gtk {
 
-	Entity::Entity(const unsigned int& id, Entity* const parent)
-		: _id(id), _Parent(parent), _Active(true), _Children(),
+	Entity::Entity(const unsigned int& id, Entity* const parent, Scene* const scene)
+		: _id(id), _Parent(parent), _Scene(scene), _Active(true), _Children(),
 		_Dirty(true), _Pos(), _Rot(), _Scale(1.0f), _TRS(1) {}
 
 	void Entity::SetPos(const float& x, const float& y, const float& z)

@@ -5,7 +5,9 @@
 #include <math.h>
 
 namespace gtk {
-	
+
+	class Scene;
+
 	class Entity
 	{
 		friend class Scene;
@@ -15,6 +17,7 @@ namespace gtk {
 		const unsigned int _id;
 
 		Entity* const _Parent;
+		Scene* const _Scene;
 
 		mat4 GetWorldTranform()
 		{
@@ -48,7 +51,7 @@ namespace gtk {
 	private:
 
 		// Call CreateEntity() from a Scene
-		Entity(const unsigned int& id, Entity* const parent);
+		Entity(const unsigned int& id, Entity* const parent, Scene* const scene);
 
 		void UpdateTRS();
 		void Soil();

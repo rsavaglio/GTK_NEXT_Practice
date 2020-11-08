@@ -3,7 +3,7 @@
 namespace gtk {
 
 	Scene::Scene(Game* const game) 
-		:m_Camera(), m_SwitchScene(false), m_NextScene(""), m_Game(game), m_Root(new Entity(m_EntityIDProvider++, nullptr)), m_EntityIDProvider(0), m_CompGroupIDProvider(0)
+		:m_Camera(), m_SwitchScene(false), m_NextScene(""), m_Game(game), m_Root(new Entity(m_EntityIDProvider++, nullptr, this)), m_EntityIDProvider(0), m_CompGroupIDProvider(0)
 	{
 
 	}
@@ -26,7 +26,7 @@ namespace gtk {
 	Entity* Scene::CreateEntity()
 	{
 		// Add entity to the map, set as active, set root as parent
-		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, m_Root) });
+		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, m_Root, this) });
 
 		// Add to roots children
 		m_Root->AddChild(m_EntityMap.at(m_EntityIDProvider));
@@ -38,7 +38,7 @@ namespace gtk {
 	Entity* Scene::CreateEntity(Entity* const parent)
 	{
 		// Add entity to the map, set as active
-		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, parent) });
+		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, parent, this) });
 
 		// Add this to parent's list of children
 		parent->AddChild(m_EntityMap.at(m_EntityIDProvider));
@@ -295,6 +295,7 @@ namespace gtk {
 
 		// Updates all pos, rot, scale
 		UpdateSceneGraph();
+		m_Camera.Update();
 
 		// This deletes all components and moves to next scene
 		// So it has to happen after all the updates for that frame

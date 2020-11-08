@@ -1,7 +1,6 @@
 #pragma once
 
 #include "gtk/gtk.h"
-
 #include "app\app.h"
 
 #include <array>
@@ -98,9 +97,10 @@ public:
 			s = { _vbo[_ibo[i]].x, _vbo[_ibo[i]].y, _vbo[_ibo[i]].z, 1 };
 			e = { _vbo[_ibo[i + 1]].x, _vbo[_ibo[i+ 1]].y, _vbo[_ibo[i + 1]].z, 1 };
 
-			// TODO: Use camera view and proj here too
-			s = m_Entity->GetWorldTranform() * s;
-			e = m_Entity->GetWorldTranform() * e;
+			gtk::mat4 modelView = m_Entity->_Scene->m_Camera.GetView() * m_Entity->GetWorldTranform();
+
+			s = modelView * s;
+			e = modelView * e;
 
 			App::DrawLine(
 				s.x, s.y, 
@@ -111,6 +111,7 @@ public:
 
 
 private:
+
 	std::array<gtk::vec4, 8> _vbo;
 	std::array<int, 24> _ibo;
 
