@@ -65,7 +65,7 @@ namespace gtk {
 	private:
 
 		Camera() :m_Dirty(true), m_Pos(0), m_Rot(0, 0, 0), m_WorldUp(0, 1, 0), m_View(1), m_Proj(1),
-		l(0), r(1024), t(768), b(0), n(0), f(-100){}
+		l(0), r(1024), t(768), b(0), n(0), f(50), fov(120){}
 
 		void CalculateView()
 		{
@@ -106,12 +106,13 @@ namespace gtk {
 
 			// TODO: Fix rotation
 
-			m_View = T * R * O;
+			m_View = T * R;
 
 		}
 
 		void CalculateProj()
 		{
+			/*
 			m_Proj =
 			{
 				2/(r-l), 0, 0, -((r+l)/(r-l)),
@@ -119,6 +120,22 @@ namespace gtk {
 				0, 0, -(2/(f-n)), -((f+n)/(f-n)),
 				0,0,0,1
 			};
+
+			*/
+
+			float a = r / t;
+			float d = 1 / (tan((fov * (3.14159265359f / 180.0f)) / 2));
+
+
+			m_Proj =
+			{
+				1/(f*d), 0, 0, 0,
+				0, 1 / (f * d), 0, 0,
+				0, 0, 1/f, 0,
+				0,0,0,1
+			};
+
+
 		}
 
 		void Update()
@@ -151,6 +168,8 @@ namespace gtk {
 		float b;
 		float n;
 		float f;
+
+		float fov;
 	};
 }
 

@@ -39,6 +39,9 @@ void Update(float deltaTime)
 	// Updates all active components in the active scene
 
 	game.Update(deltaTime);
+
+	float f = GLUT_WINDOW_WIDTH;
+	float s = GLUT_WINDOW_HEIGHT;
 }
 
 //------------------------------------------------------------------------

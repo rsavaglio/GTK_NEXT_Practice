@@ -104,10 +104,15 @@ public:
 			s = (proj * view * model) * s;
 			e = (proj * view * model) * e;
 
-			App::DrawLine(
-				s.x, s.y, 
-				e.x, e.y,
-				0.9f, 0.5f, 0.2f);
+			if (e.z > 4.0f) // clip
+			{
+				App::DrawLine(
+					s.x / s.z, s.y / s.z,
+					e.x / e.z, e.y / e.z,
+					0.9f, 0.5f, 0.2f);
+			}
+
+
 		}
 	}
 
