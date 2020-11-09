@@ -76,8 +76,8 @@ protected:
 			babyCube->SetScale(0.5f, 0.5f, 0.5f);
 			AddRenderer(new CubeRenderer(babyCube));
 
-			m_Camera.SetPos(0, 0, 1000.0f);
-			//m_Camera.SetRot(0, 0, 0);
+			m_Camera.SetPos(0, 0, -500.0f);
+			
 
 	}
 

@@ -65,7 +65,7 @@ namespace gtk {
 	private:
 
 		Camera() :m_Dirty(true), m_Pos(0), m_Rot(0, 0, 0), m_WorldUp(0, 1, 0), m_View(1), m_Proj(1),
-		l(0), r(1024), t(768), b(0), n(0), f(50), fov(120){}
+		l(0), r(1024), t(768), b(0), n(1), f(100), fov(80){}
 
 		void CalculateView()
 		{
@@ -129,10 +129,10 @@ namespace gtk {
 
 			m_Proj =
 			{
-				1/(f*d), 0, 0, 0,
-				0, 1 / (f * d), 0, 0,
-				0, 0, 1/f, 0,
-				0,0,0,1
+				d/a, 0, 0, 0,
+				0, d, 0, 0,
+				0, 0, (n+f)/(n-f), -1,
+				0,0,(2*n*f)/(n-f),0
 			};
 
 

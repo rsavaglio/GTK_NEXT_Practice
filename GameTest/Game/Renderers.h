@@ -104,7 +104,7 @@ public:
 			s = (proj * view * model) * s;
 			e = (proj * view * model) * e;
 
-			if (e.z > 4.0f) // clip
+			if (e.z > 175.0f) // clip
 			{
 				App::DrawLine(
 					s.x / s.z, s.y / s.z,
