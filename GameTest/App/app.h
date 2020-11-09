@@ -15,7 +15,7 @@
 #define APP_NATIVE_TO_VIRTUAL_COORDS(_x_,_y_)			_x_ = ((_x_ + 1.0f) * APP_VIRTUAL_WIDTH) / 2.0f; _y_ = ((_y_ + 1.0f) * APP_VIRTUAL_HEIGHT) / 2.0f;
 
 //---------------------------------------------------------------------------------
-// App namespace: These are the IO calls you can use for you game.
+// App namespace: These are the IO calls you can use for your game.
 //---------------------------------------------------------------------------------
 namespace App
 {

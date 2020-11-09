@@ -53,13 +53,13 @@ protected:
 		CompGroup controllers = CreateCompGroup();
 
 		Entity* player = CreateEntity();
-			player->SetPos(1.0f, 400.0f, 0);
+			player->SetPos(0.0f, 0.0f, 0.0f);
 			AddComponent(new PlayerController(player, controllers, 10.0f));
 			AddRenderer(new SpriteRenderer(player, App::CreateSprite(".\\TestData\\Test.bmp", 8, 4)));
 		
 
 		Entity* cube = CreateEntity();
-			cube->SetPos(500.0f, 400.0f, 10.0f);
+			cube->SetPos(0.0f, 0.0f, 0.0f);
 			cube->SetRotY(45.0f);
 			cube->SetScale(100.0f, 100.0f, 100.0f);
 			AddComponent(new RotaterComp(cube, controllers, gtk::vec3(0.0f, 1.0f, 0)));
@@ -75,6 +75,9 @@ protected:
 			babyCube->SetPos(1.5f, 1.5f, 1.5f);
 			babyCube->SetScale(0.5f, 0.5f, 0.5f);
 			AddRenderer(new CubeRenderer(babyCube));
+
+			m_Camera.SetPos(0, 0, 0);
+			m_Camera.SetRot(0, 0, 0);
 
 	}
 

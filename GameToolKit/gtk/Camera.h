@@ -2,6 +2,7 @@
 
 #include "Component.h"
 #include "gtkMath.hpp"
+#include <math.h>
 
 namespace gtk {
 
@@ -56,9 +57,15 @@ namespace gtk {
 			return m_View;
 		}
 
+		mat4 GetProj()
+		{
+			return m_Proj;
+		}
+
 	private:
 
-		Camera() :m_Dirty(true), m_Pos(0), m_Rot(0, 0, 0), m_WorldUp(0, 1, 0), m_View(1) {}
+		Camera() :m_Dirty(true), m_Pos(0), m_Rot(0, 0, 0), m_WorldUp(0, 1, 0), m_View(1), m_Proj(1),
+		l(0), r(1024), t(768), b(0), n(0), f(-100){}
 
 		void CalculateView()
 		{
@@ -68,7 +75,7 @@ namespace gtk {
 			gtk::mat4 T = { 1.0f, 0.0f, 0.0f, 0.0f,
 							0.0f, 1.0f, 0.0f, 0.0f,
 							0.0f, 0.0f, 1.0f, 0.0f,
-							-m_Pos.x,-m_Pos.y, -m_Pos.z, 1.0f };
+							-m_Pos.x, -m_Pos.y, m_Pos.z, 1.0f };
 
 			// Rotate
 
@@ -91,10 +98,27 @@ namespace gtk {
 							 0.0f,
 							 0.0f, 0.0f, 0.0f, 1.0f };
 
-			R.SetInverse();
+			// Omega
+			mat4 O = { 0, 0, 1, 0,
+					  0, 1, 0, 0,
+					  -1, 0, 0, 0,
+					  0, 0, 0, 1 };
 
-			m_View = T * R;
+			// TODO: Fix rotation
 
+			m_View = T * R * O;
+
+		}
+
+		void CalculateProj()
+		{
+			m_Proj =
+			{
+				2/(r-l), 0, 0, -((r+l)/(r-l)),
+				0, 2/(t-b), 0, -((t+b)/(t-b)),
+				0, 0, -(2/(f-n)), -((f+n)/(f-n)),
+				0,0,0,1
+			};
 		}
 
 		void Update()
@@ -102,6 +126,7 @@ namespace gtk {
 			if (m_Dirty)
 			{
 				CalculateView();
+				CalculateProj();
 				m_Dirty = true;
 			}
 		}
@@ -116,9 +141,16 @@ namespace gtk {
 		vec3 m_Pos;
 		vec3 m_Rot;
 		vec3 m_WorldUp;
-		
-		mat4 m_View;
 
+		mat4 m_View;
+		mat4 m_Proj;
+
+		float l;
+		float r;
+		float t;
+		float b;
+		float n;
+		float f;
 	};
 }
 

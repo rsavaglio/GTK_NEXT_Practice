@@ -44,7 +44,7 @@ public:
 		// Set Position Based on Entity
 		m_Sprite->SetPosition(m_Entity->GetPos().x, m_Entity->GetPos().y);
 		//m_Sprite->SetAngle();
-		m_Sprite->SetScale(2);
+		m_Sprite->SetScale(0.01f);
 
 
 		// Draw sprite
@@ -97,10 +97,12 @@ public:
 			s = { _vbo[_ibo[i]].x, _vbo[_ibo[i]].y, _vbo[_ibo[i]].z, 1 };
 			e = { _vbo[_ibo[i + 1]].x, _vbo[_ibo[i+ 1]].y, _vbo[_ibo[i + 1]].z, 1 };
 
-			gtk::mat4 modelView = m_Entity->_Scene->m_Camera.GetView() * m_Entity->GetWorldTranform();
+			gtk::mat4 model = m_Entity->GetWorldTranform();
+			gtk::mat4 view = m_Entity->_Scene->m_Camera.GetView();
+			gtk::mat4 proj = m_Entity->_Scene->m_Camera.GetProj();
 
-			s = modelView * s;
-			e = modelView * e;
+			s = (proj * view * model) * s;
+			e = (proj * view * model) * e;
 
 			App::DrawLine(
 				s.x, s.y, 
