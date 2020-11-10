@@ -99,14 +99,48 @@ namespace gtk {
 							 0.0f, 0.0f, 0.0f, 1.0f };
 
 			// Omega
-			mat4 O = { 0, 0, 1, 0,
-					  0, 1, 0, 0,
-					  -1, 0, 0, 0,
-					  0, 0, 0, 1 };
+			mat4 O = { 1, 0, 0, 0,
+					   0, 1, 0, 0,
+						0, 0, -1, 0,
+						0, 0, 0, 1 };
 
 			// TODO: Fix rotation
 
-			m_View = T * R;
+			m_View = R * T;
+
+		}
+
+		void CalculateView2()
+		{
+
+			// Create orientation vectors
+			// Translate
+			gtk::mat4 T = { 1.0f, 0.0f, 0.0f, 0.0f,
+							0.0f, 1.0f, 0.0f, 0.0f,
+							0.0f, 0.0f, 1.0f, 0.0f,
+							-m_Pos.x, -m_Pos.y, -m_Pos.z, 1.0f };
+
+			vec3 up = { 0, 1, 0 };
+
+			vec3 dir = { 0, 0, 1 };
+			
+
+			//up.Normalize();
+
+			vec3 side = { 1, 0, 0 };
+
+			mat4 R =
+			{
+				side.x, side.y, side.z, 0,
+				up.x, up.y, up.z, 0,
+				dir.x, dir.y, dir.z, 0,
+				0,0,0,1
+			}; 
+
+			R.SetInverse();
+
+			m_View = R * T;
+			
 
 		}
 

@@ -77,6 +77,7 @@ protected:
 			AddRenderer(new CubeRenderer(babyCube));
 
 			m_Camera.SetPos(0, 0, -500.0f);
+			m_Camera.SetRot(0, 0, 1);
 			
 
 	}

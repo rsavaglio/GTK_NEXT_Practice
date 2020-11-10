@@ -45,9 +45,9 @@ public:
 			m_Entity->_Scene->m_Camera.GetPos().z + (App::GetController().GetLeftThumbStickY() * m_Speed));
 
 		m_Entity->_Scene->m_Camera.SetRot(
-			m_Entity->_Scene->m_Camera.GetRot().x + (App::GetController().GetRightThumbStickY() * m_Speed),
+			m_Entity->_Scene->m_Camera.GetRot().x - (App::GetController().GetRightThumbStickY() * m_Speed),
 			m_Entity->_Scene->m_Camera.GetRot().y + (App::GetController().GetRightThumbStickX() * m_Speed),
-			m_Entity->_Scene->m_Camera.GetRot().y);
+			m_Entity->_Scene->m_Camera.GetRot().z);
 
 
 	}
