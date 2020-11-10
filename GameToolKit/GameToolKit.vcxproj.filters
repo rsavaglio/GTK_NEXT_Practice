@@ -21,9 +21,6 @@
     <ClCompile Include="gtk\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gtk\Component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="gtk\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

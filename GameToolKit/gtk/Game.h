@@ -40,6 +40,8 @@ namespace gtk {
 		// Adds a new scene to the scene map
 		void AddScene(const std::string& key, Scene* newScene);
 
+	protected:
+
 		// Scenes
 		Scene* m_ActiveScene;
 		std::unordered_map<std::string, Scene*> m_SceneMap;

@@ -57,28 +57,10 @@ protected:
 			AddComponent(new PlayerController(player, controllers, 10.0f));
 			AddRenderer(new SpriteRenderer(player, App::CreateSprite(".\\TestData\\Test.bmp", 8, 4)));
 		
+		MakeCubeStack(vec3(0), controllers);
 
-		Entity* cube = CreateEntity();
-			cube->SetPos(0.0f, 0.0f, 0.0f);
-			cube->SetRotY(45.0f);
-			cube->SetScale(100.0f, 100.0f, 100.0f);
-			AddComponent(new RotaterComp(cube, controllers, gtk::vec3(0.0f, 1.0f, 0)));
-			AddRenderer(new CubeRenderer(cube));
 
-		Entity* childCube = CreateEntity(cube);
-			childCube->SetPos(1.5f, 1.5f, 1.0f);
-			childCube->SetScale(0.5f, 0.5f, 0.5f);
-			AddComponent(new RotaterComp(childCube, controllers, gtk::vec3(0, 1.0f, 0)));
-			AddRenderer(new CubeRenderer(childCube));
-
-		Entity* babyCube = CreateEntity(childCube);
-			babyCube->SetPos(1.5f, 1.5f, 1.5f);
-			babyCube->SetScale(0.5f, 0.5f, 0.5f);
-			AddRenderer(new CubeRenderer(babyCube));
-
-			m_Camera.SetPos(0, 0, -500.0f);
-			m_Camera.SetRot(0, 0, 1);
-			
+		m_Camera.SetPos(0, 0, -500.0f);
 
 	}
 
@@ -86,5 +68,32 @@ protected:
 	void PostUpdate() override
 	{
 
+	}
+
+private:
+
+	void MakeCubeStack(gtk::vec3 position, const gtk::CompGroup& group)
+	{
+		using namespace gtk;
+
+		Entity* cube = CreateEntity();
+			cube->SetPos(position);
+			cube->SetRotY(45.0f);
+			cube->SetScale(100.0f, 100.0f, 100.0f);
+			AddComponent(new RotaterComp(cube, group, gtk::vec3(0.0f, 1.0f, 0)));
+			AddRenderer(new CubeRenderer(cube));
+
+		Entity* childCube = CreateEntity(cube);
+			childCube->SetPos(1.5f, 1.5f, 1.0f);
+			childCube->SetScale(0.5f, 0.5f, 0.5f);
+			AddComponent(new RotaterComp(childCube, group, gtk::vec3(0, 1.0f, 0)));
+			AddRenderer(new CubeRenderer(childCube));
+
+		Entity* babyCube = CreateEntity(childCube);
+			babyCube->SetPos(1.5f, 1.5f, 1.5f);
+			babyCube->SetScale(0.5f, 0.5f, 0.5f);
+			AddRenderer(new CubeRenderer(babyCube));
+
+	
 	}
 };

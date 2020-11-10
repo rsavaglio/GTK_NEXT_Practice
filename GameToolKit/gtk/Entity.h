@@ -14,15 +14,7 @@ namespace gtk {
 
 	public:
 
-		const unsigned int _id;
-
-		Entity* const _Parent;
-		Scene* const _Scene;
-
-		mat4 GetWorldTranform()
-		{
-			return _TRS;
-		}
+		const mat4& GetWorldTranform();
 
 		void SetPos(const float& x, const float& y, const float& z);
 		void SetPos(const vec3& pos);
@@ -48,31 +40,32 @@ namespace gtk {
 		void SetScaleZ(float z);
 		const vec4& GetScale();
 
+	public:
+
+		const unsigned int _id;
+
+		Entity* const _Parent;
+		Scene* const _Scene;
+
 	private:
 
 		// Call CreateEntity() from a Scene
 		Entity(const unsigned int& id, Entity* const parent, Scene* const scene);
+		void AddChild(Entity* const child);
 
 		void UpdateTRS();
 		void Soil();
 
-		bool _Active;
+	private:
 
 		std::vector<Entity*> _Children;
 
-		void AddChild(Entity* const child)
-		{
-			_Children.push_back(child);
-		}
+		bool _Active; // Update comps and draw
+		bool _Dirty;  // Update transform
 
-		// Dirty Flag
-		bool _Dirty;
-
-		// Tranform Data
 		vec4 _Pos;
 		vec4 _Rot;
 		vec4 _Scale;
-
 		mat4 _TRS;
 
 	};

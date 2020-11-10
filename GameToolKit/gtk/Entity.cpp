@@ -3,8 +3,14 @@
 namespace gtk {
 
 	Entity::Entity(const unsigned int& id, Entity* const parent, Scene* const scene)
-		: _id(id), _Parent(parent), _Scene(scene), _Active(true), _Children(),
+		: _id(id), _Parent(parent), _Scene(scene), _Children(), _Active(true),
 		_Dirty(true), _Pos(), _Rot(), _Scale(1.0f), _TRS(1) {}
+
+	
+	const mat4& Entity::GetWorldTranform()
+	{
+		return _TRS;
+	}
 
 	void Entity::SetPos(const float& x, const float& y, const float& z)
 	{
@@ -181,6 +187,11 @@ namespace gtk {
 		{
 			child->Soil();
 		}
+	}
+
+	void Entity::AddChild(Entity* const child)
+	{
+		_Children.push_back(child);
 	}
 
 }

@@ -17,8 +17,7 @@ namespace gtk {
 
 	private:
 
-		// Call CreateCompGroup() from a Scene
-		CompGroup(const unsigned int& id);
+		CompGroup(const unsigned int& id) : _id(id) {}
 	};
 
 	class Component
@@ -27,9 +26,10 @@ namespace gtk {
 
 	public:
 
+		Component(Entity* const entity, const CompGroup& compGroup) : m_Entity(entity), m_GroupID(compGroup._id), m_Active(true) {}
 		virtual ~Component() {}
 
-		Component(Entity* const entity, const CompGroup& compGroup) : m_Entity(entity), m_GroupID(compGroup._id), m_Active(true) {}
+	protected:
 
 		virtual void Start() = 0;
 		virtual void Update(float deltaTime) = 0;
@@ -40,6 +40,7 @@ namespace gtk {
 		const unsigned int m_GroupID;
 
 	private:
+
 		bool m_Active;
 
 	};
@@ -50,11 +51,13 @@ namespace gtk {
 
 	public:
 
+		Renderer(Entity* const entity) : m_Entity(entity), m_Active(true) {}
 		virtual ~Renderer() {}
+
+	protected:
+
 		virtual void Start() = 0;
 		virtual void Draw() = 0;
-
-		Renderer(Entity* const entity) : m_Entity(entity), m_Active(true) {}
 
 	protected:
 		Entity* const m_Entity;

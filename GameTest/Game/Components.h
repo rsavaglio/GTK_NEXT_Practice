@@ -36,6 +36,11 @@ public:
 
 	void Update(float deltaTime) override
 	{
+
+		// Need a better solution for this
+		// Base comp should just have these functions
+
+
 		m_Entity->SetPosX(m_Entity->GetPos().x + (App::GetController().GetLeftThumbStickX() * m_Speed));
 		m_Entity->SetPosY(m_Entity->GetPos().y + (App::GetController().GetLeftThumbStickY() * m_Speed));
 

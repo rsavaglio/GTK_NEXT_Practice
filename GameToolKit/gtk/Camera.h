@@ -26,7 +26,6 @@ namespace gtk {
 
 			Soil();
 		}
-
 		const vec3& GetPos()
 		{
 			return m_Pos;
@@ -46,7 +45,6 @@ namespace gtk {
 
 			Soil();
 		}
-
 		const vec3& GetRot()
 		{
 			return m_Rot;
@@ -56,7 +54,6 @@ namespace gtk {
 		{
 			return m_View;
 		}
-
 		mat4 GetProj()
 		{
 			return m_Proj;
@@ -70,15 +67,13 @@ namespace gtk {
 		void CalculateView()
 		{
 
-			// Create orientation vectors
-						// Translate
+			// Translate
 			gtk::mat4 T = { 1.0f, 0.0f, 0.0f, 0.0f,
 							0.0f, 1.0f, 0.0f, 0.0f,
 							0.0f, 0.0f, 1.0f, 0.0f,
 							-m_Pos.x, -m_Pos.y, m_Pos.z, 1.0f };
 
 			// Rotate
-
 			float rx = m_Rot.x * (3.14159265359f / 180.0f);
 			float ry = m_Rot.y * (3.14159265359f / 180.0f);
 			float rz = m_Rot.z * (3.14159265359f / 180.0f);
@@ -98,55 +93,16 @@ namespace gtk {
 							 0.0f,
 							 0.0f, 0.0f, 0.0f, 1.0f };
 
-			// Omega
-			mat4 O = { 1, 0, 0, 0,
-					   0, 1, 0, 0,
-						0, 0, -1, 0,
-						0, 0, 0, 1 };
-
-			// TODO: Fix rotation
 
 			m_View = R * T;
 
-		}
-
-		void CalculateView2()
-		{
-
-			// Create orientation vectors
-			// Translate
-			gtk::mat4 T = { 1.0f, 0.0f, 0.0f, 0.0f,
-							0.0f, 1.0f, 0.0f, 0.0f,
-							0.0f, 0.0f, 1.0f, 0.0f,
-							-m_Pos.x, -m_Pos.y, -m_Pos.z, 1.0f };
-
-			vec3 up = { 0, 1, 0 };
-
-			vec3 dir = { 0, 0, 1 };
-			
-
-			//up.Normalize();
-
-			vec3 side = { 1, 0, 0 };
-
-			mat4 R =
-			{
-				side.x, side.y, side.z, 0,
-				up.x, up.y, up.z, 0,
-				dir.x, dir.y, dir.z, 0,
-				0,0,0,1
-			}; 
-
-			R.SetInverse();
-
-			m_View = R * T;
-			
+			// TODO: Update to use forward vector
 
 		}
 
 		void CalculateProj()
 		{
-			/*
+			/*  ORTHO
 			m_Proj =
 			{
 				2/(r-l), 0, 0, -((r+l)/(r-l)),
@@ -186,6 +142,8 @@ namespace gtk {
 		{
 			m_Dirty = true;
 		}
+
+	private:
 
 		bool m_Dirty;
 
