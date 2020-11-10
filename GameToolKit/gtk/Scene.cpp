@@ -3,7 +3,10 @@
 namespace gtk {
 
 	Scene::Scene(Game* const game) 
-		:m_Camera(), m_SwitchScene(false), m_NextScene(""), m_Game(game), m_Root(new Entity(m_EntityIDProvider++, nullptr, this)), m_EntityIDProvider(0), m_CompGroupIDProvider(0)
+		:m_Camera(), 
+		m_SwitchScene(false), m_NextScene(""), 
+		m_Game(game), m_Root(new Entity(m_EntityIDProvider++, nullptr, this)),
+		m_EntityIDProvider(0), m_CompGroupIDProvider(0)
 	{
 
 	}

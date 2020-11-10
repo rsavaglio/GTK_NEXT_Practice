@@ -49,7 +49,6 @@ public:
 			m_Entity->_Scene->m_Camera.GetRot().y + (App::GetController().GetRightThumbStickX() * m_Speed),
 			m_Entity->_Scene->m_Camera.GetRot().z);
 
-
 	}
 
 
