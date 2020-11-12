@@ -8,6 +8,11 @@
 
 namespace gtk {
 
+
+	//////////////////////////////////////////
+	//				Components				//		
+	//////////////////////////////////////////
+
 	class CompGroup
 	{
 		friend class Scene;
@@ -26,7 +31,8 @@ namespace gtk {
 
 	public:
 
-		Component(Entity* const entity, const CompGroup& compGroup) : m_Entity(entity), m_GroupID(compGroup._id), m_Active(true) {}
+		Component(Entity* const entity, const CompGroup& compGroup) 
+			: m_Entity(entity), m_GroupID(compGroup._id), m_Active(true) {}
 		virtual ~Component() {}
 
 	protected:
@@ -45,13 +51,34 @@ namespace gtk {
 
 	};
 
+	//////////////////////////////////////////
+	//				Renderers				//		
+	//////////////////////////////////////////
+
+	class RenderLayer
+	{
+		friend class Scene;
+
+	public:
+		const unsigned int _id;
+
+	protected:
+
+
+
+	private:
+
+		RenderLayer(const unsigned int& id) : _id(id) {}
+	};
+
 	class Renderer
 	{
 		friend class Scene;
 
 	public:
 
-		Renderer(Entity* const entity) : m_Entity(entity), m_Active(true) {}
+		Renderer(Entity* const entity,  const RenderLayer& renderLayer) 
+			: m_Entity(entity), m_LayerID(renderLayer._id), m_Active(true) {}
 		virtual ~Renderer() {}
 
 	protected:
@@ -61,11 +88,12 @@ namespace gtk {
 
 	protected:
 		Entity* const m_Entity;
+		const unsigned int m_LayerID;
 
 	private:
 		bool m_Active;
 
 	};
-
+	
 
 }

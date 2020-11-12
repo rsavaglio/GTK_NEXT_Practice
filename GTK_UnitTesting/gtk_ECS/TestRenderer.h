@@ -7,7 +7,7 @@ class RendTemplate : public gtk::Renderer
 
 public:
 
-	RendTemplate(gtk::Entity* const entity) : Renderer(entity) {}
+	RendTemplate(gtk::Entity* const entity, const gtk::RenderLayer& rendLayer) : Renderer(entity, rendLayer) {}
 
 	void Start() override
 	{
@@ -27,7 +27,7 @@ class TestRenderer : public gtk::Renderer
 
 public:
 
-	TestRenderer(gtk::Entity* const entity) : Renderer(entity) {}
+	TestRenderer(gtk::Entity* const entity, const gtk::RenderLayer& rendLayer) : Renderer(entity, rendLayer) {}
 
 	void Start() override
 	{
@@ -47,7 +47,7 @@ class ToggleMeRend : public gtk::Renderer
 
 public:
 
-	ToggleMeRend(gtk::Entity* const entity) : Renderer(entity), m_DrawCount(0) {}
+	ToggleMeRend(gtk::Entity* const entity, const gtk::RenderLayer& rendLayer) : Renderer(entity, rendLayer), m_DrawCount(0) {}
 
 	void Start() override
 	{

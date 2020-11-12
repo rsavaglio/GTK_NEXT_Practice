@@ -18,10 +18,11 @@ protected:
 		using namespace gtk;
 
 		CompGroup compGroup = CreateCompGroup();
+		RenderLayer rendLayer = CreateRenderLayer();
 
 		Entity* entity = CreateEntity();
 			AddComponent(new CompTemplate(entity, compGroup));
-			AddRenderer(new ToggleMeRend(entity));
+			AddRenderer(new ToggleMeRend(entity, rendLayer));
 
 	}
 
@@ -43,10 +44,13 @@ protected:
 
 	virtual void Init() override
 	{
-		// Add Component Group
+
 		gtk::CompGroup Adders = CreateCompGroup();
 		gtk::CompGroup Subtractors = CreateCompGroup();
 		gtk::CompGroup SceneSwitchers = CreateCompGroup();
+
+		gtk::RenderLayer rendLayer = CreateRenderLayer();
+
 
 		gtk::Entity* SS = CreateEntity();
 			SceneSwitcherComp* const SSC = new SceneSwitcherComp(SS, SceneSwitchers, this, "TestScene");
@@ -59,7 +63,7 @@ protected:
 
 		// Hat is a child of player
 		gtk::Entity*  hat = CreateEntity(player);
-			AddRenderer(new TestRenderer(hat));
+			AddRenderer(new TestRenderer(hat, rendLayer));
 			AddComponent(new VectorTest(hat, Adders, true, SSC));
 			AddComponent(new VectorTest(hat, Subtractors, false, SSC));
 
@@ -86,18 +90,19 @@ protected:
 		CompGroup g_Tog = CreateCompGroup();
 		CompGroup g_TogMe = CreateCompGroup();
 
+		RenderLayer rendLayer = CreateRenderLayer();
+
 
 		Entity* ToggleMeElmo = CreateEntity();
 			tmc = new ToggleMeComp(ToggleMeElmo, g_TogMe);
 			AddComponent(tmc);
-			tmr = new ToggleMeRend(ToggleMeElmo);
+			tmr = new ToggleMeRend(ToggleMeElmo, rendLayer);
 			AddRenderer(tmr);
 
 
 		Entity* Toggler = CreateEntity();
 			AddComponent(new TogglerComp(Toggler, g_Tog, this, ToggleMeElmo, tmc, tmr));
 			
-		// TODO: Add a child to be toggled when parent is toggled
 	}
 
 	void CheckValues(unsigned int updateCount, unsigned int comp, unsigned int rend)

@@ -11,7 +11,8 @@ class RendTemplate : public gtk::Renderer
 
 public:
 
-	RendTemplate(gtk::Entity* const entity) : Renderer(entity) {}
+	RendTemplate(gtk::Entity* const entity, const gtk::RenderLayer& rendLayer) 
+		: Renderer(entity, rendLayer) {}
 
 	void Start() override
 	{
@@ -31,8 +32,8 @@ class SpriteRenderer : public gtk::Renderer
 
 public:
 
-	SpriteRenderer(gtk::Entity* const entity, CSimpleSprite* const sprite) 
-		: Renderer(entity), m_Sprite(sprite) {}
+	SpriteRenderer(gtk::Entity* const entity, const gtk::RenderLayer rendLayer, CSimpleSprite* const sprite) 
+		: Renderer(entity, rendLayer), m_Sprite(sprite) {}
 
 	void Start() override
 	{
@@ -46,10 +47,8 @@ public:
 		//m_Sprite->SetAngle();
 		m_Sprite->SetScale(0.01f);
 
-
 		// Draw sprite
 		m_Sprite->Draw();
-
 	}
 
 	CSimpleSprite* const m_Sprite;
@@ -64,7 +63,8 @@ class CubeRenderer : public gtk::Renderer
 
 public:
 
-	CubeRenderer(gtk::Entity* const entity) : Renderer(entity),
+	CubeRenderer(gtk::Entity* const entity, const gtk::RenderLayer& rendLayer)
+		: Renderer(entity, rendLayer),
 		_vbo({
 			gtk::vec4( 1.0f, 1.0f,-1.0f, 1.0f),
 			gtk::vec4(-1.0f, 1.0f,-1.0f, 1.0f),

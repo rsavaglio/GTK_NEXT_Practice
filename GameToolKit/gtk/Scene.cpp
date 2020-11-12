@@ -2,11 +2,11 @@
 
 namespace gtk {
 
-	Scene::Scene(Game* const game) 
-		:m_Camera(), 
-		m_SwitchScene(false), m_NextScene(""), 
+	Scene::Scene(Game* const game)
+		:m_Camera(),
+		m_SwitchScene(false), m_NextScene(""),
 		m_Game(game), m_Root(new Entity(m_EntityIDProvider++, nullptr, this)),
-		m_EntityIDProvider(0), m_CompGroupIDProvider(0)
+		m_EntityIDProvider(0), m_CompGroupIDProvider(0), m_RenderLayerIDProvider(0)
 	{
 
 	}
@@ -60,6 +60,16 @@ namespace gtk {
 		return newCompGroup;
 	}
 
+	RenderLayer Scene::CreateRenderLayer()
+	{
+		m_RendererMaps.push_back(new std::unordered_map<unsigned int, Renderer*>);
+		m_DisabledRendererMaps.push_back(new std::unordered_map<unsigned int, Renderer*>);
+
+		RenderLayer newRenderLayer(m_RenderLayerIDProvider++);
+
+		return newRenderLayer;
+	}
+
 	Component* const Scene::AddComponent(Component* const component)
 	{
 		// Ensure no deplicate components on same entity
@@ -73,11 +83,11 @@ namespace gtk {
 
 	Renderer* const Scene::AddRenderer(Renderer* const renderer)
 	{
-		// Ensure no duplicate renderers
-		ASSERT(m_RendererMap.find(renderer->m_Entity->_id) == m_RendererMap.end());
+		// Ensure no deplicate renderer on same entity
+		ASSERT(m_RendererMaps[renderer->m_LayerID]->find(renderer->m_Entity->_id) == m_RendererMaps[renderer->m_LayerID]->end());
 
-		// Add renderer to map with the id
-		m_RendererMap.insert({ renderer->m_Entity->_id, renderer });
+		// Add component to correct map with the ID
+		m_RendererMaps[renderer->m_LayerID]->insert({ renderer->m_Entity->_id, renderer });
 
 		return renderer;
 	}
@@ -120,17 +130,22 @@ namespace gtk {
 				}
 			}
 
-			// Does entity have a renderer?
-			if (m_DisabledRenderers.find(entity->_id) != m_DisabledRenderers.end())
-			{
-				// If renderer is tagged as active
-				if (m_DisabledRenderers.at(entity->_id)->m_Active)
-				{
-					// Move it to the active map
-					m_RendererMap.insert({ entity->_id , m_DisabledRenderers.at(entity->_id) });
 
-					// Erase from disabled map
-					m_DisabledRenderers.erase(entity->_id);
+			// Loop through disabled map vector
+			for (int i = 0; i < m_DisabledRendererMaps.size(); i++) // Maps should be in the same order between vectors
+			{
+				// Does the entity have a renderer in this layer?
+				if (m_DisabledRendererMaps[i]->find(entity->_id) != m_DisabledRendererMaps[i]->end())
+				{
+					// Renderer is tagged as active
+					if (m_DisabledRendererMaps[i]->at(entity->_id)->m_Active)
+					{
+						// Move it to the active map
+						m_RendererMaps[i]->insert({ entity->_id , m_DisabledRendererMaps[i]->at(entity->_id) });
+
+						// Erase from disabled map
+						m_DisabledRendererMaps[i]->erase(entity->_id);
+					}
 				}
 			}
 
@@ -143,7 +158,7 @@ namespace gtk {
 			// Tag as inactive
 			entity->_Active = false;
 
-			// Loop through active map vector
+			// Loop through active comp map vector
 			for (int i = 0; i < m_ComponentMaps.size(); i++) // Maps should be in the same order between vectors
 			{
 				// Does the entity have a comp in this group?
@@ -157,15 +172,20 @@ namespace gtk {
 				}
 			}
 
-			// Does entity have a renderer?
-			if (m_RendererMap.find(entity->_id) != m_RendererMap.end())
+			// Loop through active renderer map vector
+			for (int i = 0; i < m_RendererMaps.size(); i++) // Maps should be in the same order between vectors
 			{
-				// Move it to the disabled map
-				m_DisabledRenderers.insert({ entity->_id , m_RendererMap.at(entity->_id) });
+				// Does the entity have a renderer in this layer?
+				if (m_RendererMaps[i]->find(entity->_id) != m_RendererMaps[i]->end())
+				{
+					// Move it to the disabled map
+					m_DisabledRendererMaps[i]->insert({ entity->_id , m_RendererMaps[i]->at(entity->_id) });
 
-				// Erase from active map
-				m_RendererMap.erase(entity->_id);
+					// Erase from active map
+					m_RendererMaps[i]->erase(entity->_id);
+				}
 			}
+
 		}
 
 		for (auto& child : entity->_Children)
@@ -238,11 +258,12 @@ namespace gtk {
 				// Return if already active
 				if (renderer->m_Active) { return; }
 
-				// Move the renderer back into the active component map
-				m_RendererMap.insert({ renderer->m_Entity->_id, m_DisabledRenderers.at(renderer->m_Entity->_id) });
+				// Move the renderer back into the active renderer map
+				m_RendererMaps[renderer->m_LayerID]->
+					insert({ renderer->m_Entity->_id, m_DisabledRendererMaps[renderer->m_LayerID]->at(renderer->m_Entity->_id) });
 
 				// Erase renderer from disabled map
-				m_DisabledRenderers.erase(renderer->m_Entity->_id);
+				m_DisabledRendererMaps[renderer->m_LayerID]->erase(renderer->m_Entity->_id);
 
 				// Tag renderer as active
 				renderer->m_Active = true;
@@ -254,10 +275,11 @@ namespace gtk {
 				if (!renderer->m_Active) { return; }
 
 				// Move the renderer to the disabled map
-				m_DisabledRenderers.insert({ renderer->m_Entity->_id, m_RendererMap.at(renderer->m_Entity->_id) });
+				m_DisabledRendererMaps[renderer->m_LayerID]->
+					insert({ renderer->m_Entity->_id, m_RendererMaps[renderer->m_LayerID]->at(renderer->m_Entity->_id) });
 
-				// Remove the renderer from component maps
-				m_RendererMap.erase(renderer->m_Entity->_id);
+				// Remove the renderer from renderer maps
+				m_RendererMaps[renderer->m_LayerID]->erase(renderer->m_Entity->_id);
 
 				// Tag renderer not active
 				renderer->m_Active = false;
@@ -301,7 +323,7 @@ namespace gtk {
 		m_Camera.Update();
 
 		// This deletes all components and moves to next scene
-		// So it has to happen after all the updates for that frame
+		// So it has to happen last
 		if (m_SwitchScene)
 		{
 			m_Game->SwitchScene(m_NextScene);
@@ -311,10 +333,14 @@ namespace gtk {
 
 	void gtk::Scene::Render()
 	{
-		// Update renderers
-		for (auto& renderer : m_RendererMap)
+		// Loop through the vector of maps
+		for (auto& RenderLayer : m_RendererMaps)
 		{
-			renderer.second->Draw();
+			// Loop through render map
+			for (auto& Rend : *RenderLayer)
+			{
+				Rend.second->Draw();
+			}
 		}
 	}
 
@@ -358,20 +384,42 @@ namespace gtk {
 
 		} m_DisabledComponentMaps.clear(); // Clear the vector
 
-		
-		// Delete all renderers
-		for (auto renderer : m_RendererMap)
+		// Loop through renderer map vector
+		for (auto& RendMap : m_RendererMaps)
 		{
-			delete renderer.second;
-		} 
-		m_RendererMap.clear();
+			// Loop through render map
+			for (auto Rend : *RendMap)
+			{
+				// Delete each renderer
+				delete Rend.second;
+			}
 
-		// Delete all disabled renderers
-		for (auto renderer : m_DisabledRenderers)
+			// Clear the map
+			RendMap->clear();
+
+			// Delete the map
+			delete RendMap;
+
+		} m_RendererMaps.clear(); // Clear the vector
+
+
+		// Loop through disabled render map vector
+		for (auto& RendMap : m_DisabledRendererMaps)
 		{
-			delete renderer.second;
-		} 
-		m_DisabledRenderers.clear();
+			// Loop through rend map
+			for (auto Rend : *RendMap)
+			{
+				// Delete each component
+				delete Rend.second;
+			}
+
+			// Clear the map
+			RendMap->clear();
+
+			// Delete the map
+			delete RendMap;
+
+		} m_DisabledRendererMaps.clear(); // Clear the vector
 
 		// Remove all entities
 		for (auto Entity : m_EntityMap)
@@ -390,6 +438,7 @@ namespace gtk {
 		// Reset id providers
 		m_EntityIDProvider = 0;
 		m_CompGroupIDProvider = 0;
+		m_RenderLayerIDProvider = 0;
 	}
 
 	void gtk::Scene::UpdateSceneGraph()

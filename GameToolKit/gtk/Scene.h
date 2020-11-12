@@ -44,7 +44,7 @@ namespace gtk {
 		// Scene setup functions
 
 		CompGroup CreateCompGroup();
-		// TODO: CreateRenderLayer();
+		RenderLayer CreateRenderLayer();
 
 		Entity* CreateEntity(); // Sets parent as m_Root
 		Entity* CreateEntity(Entity* const parent);
@@ -58,11 +58,12 @@ namespace gtk {
 		// Scene Object containers
 		std::unordered_map<unsigned int, Entity*> m_EntityMap;
 		
-		std::vector<std::unordered_map<unsigned int, Component*>*> m_ComponentMaps;
-		std::unordered_map<unsigned int, Renderer*> m_RendererMap;
 
+		std::vector<std::unordered_map<unsigned int, Component*>*> m_ComponentMaps;
 		std::vector<std::unordered_map<unsigned int, Component*>*> m_DisabledComponentMaps;
-		std::unordered_map<unsigned int, Renderer*> m_DisabledRenderers;
+
+		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_RendererMaps;
+		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_DisabledRendererMaps;
 	
 	private:
 
@@ -87,6 +88,7 @@ namespace gtk {
 
 		unsigned int m_EntityIDProvider;
 		unsigned int m_CompGroupIDProvider;
+		unsigned int m_RenderLayerIDProvider;
 
 	};
 }
