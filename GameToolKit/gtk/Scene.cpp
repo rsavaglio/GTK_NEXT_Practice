@@ -3,7 +3,7 @@
 namespace gtk {
 
 	Scene::Scene(Game* const game)
-		:m_Camera(),
+		:m_MainCam(nullptr),
 		m_SwitchScene(false), m_NextScene(""),
 		m_Game(game), m_Root(new Entity(m_EntityIDProvider++, nullptr, this)),
 		m_EntityIDProvider(0), m_CompGroupIDProvider(0), m_RenderLayerIDProvider(0)
@@ -90,6 +90,36 @@ namespace gtk {
 		m_RendererMaps[renderer->m_LayerID]->insert({ renderer->m_Entity->_id, renderer });
 
 		return renderer;
+	}
+
+	Camera* const Scene::AddCamera(Camera* const camera)
+	{
+		// Set first camera as main camera
+		if (m_Cameras.size() == 0)
+		{
+			m_MainCam = camera;
+		}
+		// Only one camera per entity
+		else 
+		{
+			ASSERT(m_Cameras.find(camera->m_id) == m_Cameras.end());
+		}
+
+		m_Cameras.find(camera->m_id) == m_Cameras.end();
+
+		return camera;
+	}
+
+	void Scene::SetMainCam(unsigned int id) 
+	{
+		ASSERT(m_Cameras.find(id) != m_Cameras.end());
+
+		m_MainCam = m_Cameras.find(id)->second;
+	}
+
+	Camera* const Scene::GetMainCam()
+	{
+		return m_MainCam;
 	}
 
 	void gtk::Scene::ToggleEntity(Entity* const entity, bool setActive)
@@ -304,6 +334,7 @@ namespace gtk {
 
 	void gtk::Scene::Update(float deltaTime)
 	{
+		ASSERT(m_Cameras.size() > 0);
 
 		// Loop through the vector of maps
 		for (auto& CompMap : m_ComponentMaps)
@@ -320,7 +351,6 @@ namespace gtk {
 
 		// Updates all pos, rot, scale
 		UpdateSceneGraph();
-		m_Camera.Update();
 
 		// This deletes all components and moves to next scene
 		// So it has to happen last
@@ -331,8 +361,16 @@ namespace gtk {
 
 	}
 
-	void gtk::Scene::Render()
+	void gtk::Scene::Render(float width, float height)
 	{
+
+		// Calculate view and proj
+		for (auto& cam : m_Cameras)
+		{
+			cam.second->CalculateView();
+			cam.second->CalculateProj(width, height);
+		}
+
 		// Loop through the vector of maps
 		for (auto& RenderLayer : m_RendererMaps)
 		{

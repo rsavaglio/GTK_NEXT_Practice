@@ -29,11 +29,9 @@ namespace gtk {
 		// Toggles
 		void ToggleEntity(Entity* const entity, bool setActive);
 		void ToggleComponent(Component* const component, bool setActive);
-		void ToggleRenderer(Renderer* const renderer, bool setActive);
+		void ToggleRenderer(Renderer* const renderer, bool setActive); 
 
-	public: 
-
-		Camera m_Camera;
+		Camera* const GetMainCam();
 
 	protected:
 
@@ -51,7 +49,10 @@ namespace gtk {
 
 		Component* const AddComponent(Component* const component);
 		Renderer* const AddRenderer(Renderer* const renderer);
-		
+		Camera* const AddCamera(Camera* const camera);
+
+		void SetMainCam(unsigned int id);
+
 
 	protected:
 
@@ -64,11 +65,14 @@ namespace gtk {
 
 		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_RendererMaps;
 		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_DisabledRendererMaps;
+
+		std::unordered_map<unsigned int, Camera*> m_Cameras;
+		Camera* m_MainCam;
 	
 	private:
 
 		void Update(float deltaTime);
-		void Render();
+		void Render(float width, float height);
 		void Shutdown();
 
 		// Traverse all entities
@@ -84,7 +88,6 @@ namespace gtk {
 
 		// Scene graph root
 		Entity* const m_Root;
-		
 
 		unsigned int m_EntityIDProvider;
 		unsigned int m_CompGroupIDProvider;

@@ -20,9 +20,9 @@ namespace gtk {
 		m_ActiveScene->Update(deltaTime);
 	}
 
-	void Game::Render()
+	void Game::Render(float width, float height)
 	{
-		m_ActiveScene->Render();
+		m_ActiveScene->Render(width, height);
 	}
 
 	void Game::Shutdown()

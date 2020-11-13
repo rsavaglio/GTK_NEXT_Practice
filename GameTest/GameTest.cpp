@@ -51,7 +51,7 @@ void Update(float deltaTime)
 void Render()
 {	
 	// Calls draw in active renderers in active scene
-	game.Render();
+	game.Render(1024.0f, 768.0f);
 }
 
 

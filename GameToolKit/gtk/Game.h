@@ -23,7 +23,7 @@ namespace gtk {
 		void Update(float deltaTime);
 
 		// Calls Draw on active scene's renderers
-		void Render();
+		void Render(float width, float height);
 
 		// Deletes all scenes
 		void Shutdown();

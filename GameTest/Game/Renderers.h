@@ -11,8 +11,8 @@ class RendTemplate : public gtk::Renderer
 
 public:
 
-	RendTemplate(gtk::Entity* const entity, const gtk::RenderLayer& rendLayer) 
-		: Renderer(entity, rendLayer) {}
+	RendTemplate(gtk::Entity* const entity, gtk::Camera* const cam, const gtk::RenderLayer& rendLayer) 
+		: Renderer(entity, cam, rendLayer) {}
 
 	void Start() override
 	{
@@ -32,8 +32,8 @@ class SpriteRenderer : public gtk::Renderer
 
 public:
 
-	SpriteRenderer(gtk::Entity* const entity, const gtk::RenderLayer rendLayer, CSimpleSprite* const sprite) 
-		: Renderer(entity, rendLayer), m_Sprite(sprite) {}
+	SpriteRenderer(gtk::Entity* const entity, gtk::Camera* const cam, const gtk::RenderLayer rendLayer, CSimpleSprite* const sprite) 
+		: Renderer(entity, cam, rendLayer), m_Sprite(sprite) {}
 
 	void Start() override
 	{
@@ -63,8 +63,8 @@ class CubeRenderer : public gtk::Renderer
 
 public:
 
-	CubeRenderer(gtk::Entity* const entity, const gtk::RenderLayer& rendLayer)
-		: Renderer(entity, rendLayer),
+	CubeRenderer(gtk::Entity* const entity, gtk::Camera* const camera, const gtk::RenderLayer& rendLayer)
+		: Renderer(entity, camera, rendLayer),
 		_vbo({
 			gtk::vec4( 1.0f, 1.0f,-1.0f, 1.0f),
 			gtk::vec4(-1.0f, 1.0f,-1.0f, 1.0f),
@@ -98,8 +98,10 @@ public:
 			e = { _vbo[_ibo[i + 1]].x, _vbo[_ibo[i+ 1]].y, _vbo[_ibo[i + 1]].z, 1 };
 
 			gtk::mat4 model = m_Entity->GetWorldTranform();
-			gtk::mat4 view = m_Entity->_Scene->m_Camera.GetView();
-			gtk::mat4 proj = m_Entity->_Scene->m_Camera.GetProj();
+			gtk::mat4 view = m_Entity->_Scene->GetMainCam()->GetView();
+			gtk::mat4 proj = m_Entity->_Scene->GetMainCam()->GetProj();
+
+	
 
 			s = (proj * view * model) * s;
 			e = (proj * view * model) * e;
