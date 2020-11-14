@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "TestGame.h"
 
-
 using namespace gtk;
 
 class TestGame_F : public ::testing::Test

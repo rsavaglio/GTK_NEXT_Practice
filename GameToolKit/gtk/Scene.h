@@ -81,8 +81,7 @@ namespace gtk {
 		void Render(float width, float height);
 		void Shutdown();
 
-		// Traverse all entities
-		// Updates transforms
+		// Traverse all entities and update TRS
 		void UpdateSceneGraph();
 
 	private:

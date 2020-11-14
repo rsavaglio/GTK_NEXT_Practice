@@ -8,6 +8,13 @@
 
 namespace gtk {
 
+	//////////////////////////////////////////
+	//				SceneObjects			//		
+	//////////////////////////////////////////
+
+	// Base class for anything that is added to Entities
+	// These are the functions available when creating custom classes
+
 	class SceneObject
 	{
 		friend class Scene;
@@ -25,6 +32,11 @@ namespace gtk {
 
 		const unsigned int& ID() const;
 
+		void Parent() {}
+		void TRS() {}
+
+		void Instantiate() {} // How could this work?
+
 	protected:
 		
 		virtual inline void Init(const unsigned int& id, Scene* scene);
@@ -36,11 +48,6 @@ namespace gtk {
 		unsigned int _id;
 		Scene* _scene;
 	
-		inline void SetPos() {}
-		inline void SetRot() {}
-		inline void SetScale() {}
-
-		inline void SetForward() {}
 	
 	};
 
@@ -154,58 +161,19 @@ namespace gtk {
 
 	public:
 		
-		Camera(float near, float far);
+		Camera(const float& near, const float& far);
 
 		virtual ~Camera() {}
 
 
 		// View and Projection
-		mat4 GetView()
-		{
-			return m_View;
-		}
-		mat4 GetProj()
-		{
-			return m_Proj;
-		}
+		mat4 GetView();
+		mat4 GetProj();
 
 	protected:
 
-		void CalculateView()
-		{
-
-			// Translate
-			gtk::mat4 T = { 1.0f, 0.0f, 0.0f, 0.0f,
-							0.0f, 1.0f, 0.0f, 0.0f,
-							0.0f, 0.0f, 1.0f, 0.0f,
-							Pos().x, Pos().y, Pos().z, 1.0f };
-
-
-			// Rotate
-			float rx = Rot().x * (3.14159265359f / 180.0f);
-			float ry = Rot().y * (3.14159265359f / 180.0f);
-			float rz = Rot().z * (3.14159265359f / 180.0f);
-
-
-			gtk::mat4 R = { cosf(ry) * cosf(rz),
-							 sinf(rx) * sinf(ry) * cosf(rz) + cosf(rx) * sinf(rz),
-							-cosf(rx) * sinf(ry) * cosf(rz) + sinf(rx) * sinf(rz),
-							 0.0f,
-							-cosf(ry) * sinf(rz),
-							-sinf(rx) * sinf(ry) * sinf(rz) + cosf(rx) * cosf(rz),
-							 cosf(rx) * sinf(ry) * sinf(rz) + sinf(rx) * cosf(rz),
-							 0.0f,
-							 sinf(ry),
-							-sinf(rx) * cosf(ry),
-							 cosf(rx) * cosf(ry),
-							 0.0f,
-							 0.0f, 0.0f, 0.0f, 1.0f };
-
-
-			m_View = R * T;
-
-		}
-		virtual void CalculateProj(float width, float height) = 0;
+		void CalculateView();
+		virtual void CalculateProj(const float& width, const float& height) = 0;
 
 	protected:
 
@@ -222,7 +190,7 @@ namespace gtk {
 
 	public:
 
-		PerspectiveCam(float near, float far, float fov)
+		PerspectiveCam(const float& near, const float& far, const float& fov)
 			: Camera(near, far), m_fov(fov) {}
 
 
@@ -233,7 +201,7 @@ namespace gtk {
 
 	protected:
 
-		void CalculateProj(float width, float height) override
+		void CalculateProj(const float& width, const float& height) override
 		{
 			float a = width / height;
 			float d = 1 / (tanf((m_fov * (3.14159265359f / 180.0f)) / 2));
@@ -259,10 +227,10 @@ namespace gtk {
 
 	public:
 
-		OrthoCam(float near, float far)
+		OrthoCam(const float& near, const float& far)
 			: Camera(near, far) {}
 
-		void CalculateProj(float width, float height) override
+		void CalculateProj(const float& width, const float& height) override
 		{
 			m_Proj =
 			{
