@@ -1,7 +1,6 @@
 #pragma once
 
 #include "gtkMath.hpp"
-#include "Entity.h"
 #include "Scene.h"
 
 #include <vector>
@@ -9,20 +8,19 @@
 namespace gtk {
 
 	//////////////////////////////////////////
-	//				SceneObjects			//		
+	//				Components				//		
 	//////////////////////////////////////////
 
 	// Base class for anything that is added to Entities
-	// These are the functions available when creating custom classes
 
-	class SceneObject
+	class Component
 	{
 		friend class Scene;
 
 	public:
 
-		SceneObject();
-		virtual ~SceneObject() {}
+		Component();
+		virtual ~Component() {}
 
 		const vec3& Pos() { return vec3(0); }
 		const vec3& Rot() { return vec3(0); }
@@ -52,11 +50,11 @@ namespace gtk {
 	};
 
 	//////////////////////////////////////////
-	//				Components				//		
+	//				Behaviors				//		
 	//////////////////////////////////////////
 
 
-	class CompGroup
+	class UpdateGroup
 	{
 		friend class Scene;
 
@@ -65,22 +63,21 @@ namespace gtk {
 
 	private:
 
-		CompGroup(const unsigned int& id) : _id(id) {}
+		UpdateGroup(const unsigned int& id) : _id(id) {}
 	};
 
-	class Component : public SceneObject
+	class Behavior : public Component
 	{
 		friend class Scene;
 
 	public:
 
-		Component() 
+		Behavior() 
 			: m_GroupID(0), m_Active(true) {}
-		virtual ~Component() {}
+		virtual ~Behavior() {}
 
 		const bool& Active(const bool& setActive);
 		const bool& Active();
-
 
 		virtual int Trigger(const int& code) = 0;
 
@@ -96,66 +93,12 @@ namespace gtk {
 
 	};
 
+
 	//////////////////////////////////////////
-	//				Renderers				//		
+	//				Cameras  				//		
 	//////////////////////////////////////////
 
-	class RenderLayer
-	{
-		friend class Scene;
-
-	public:
-		const unsigned int _id;
-
-	protected:
-
-
-
-	private:
-
-		RenderLayer(const unsigned int& id) : _id(id) {}
-	};
-
-	class Camera;
-
-	class Renderer : public SceneObject
-	{
-		friend class Scene;
-
-	public:
-
-		Renderer()
-			: m_LayerID(), m_Camera(nullptr), m_Active(true) {}
-		virtual ~Renderer() {}
-
-		const bool& Active(const bool& setActive);
-
-		const bool& Active();
-
-	protected:
-
-		virtual void Start() = 0;
-		virtual void Draw() = 0;
-
-
-		void SetCamera(const Camera& camera) {}
-		const mat4& GetView() {}
-		const mat4& GetProj() {}
-
-
-	protected:
-
-		unsigned int m_LayerID;
-
-	private:
-
-		const Camera* m_Camera; // Read only
-		bool m_Active;
-
-	};
-
-
-	class Camera : public SceneObject
+	class Camera : public Component
 	{
 		friend class Scene;
 
@@ -194,27 +137,11 @@ namespace gtk {
 			: Camera(near, far), m_fov(fov) {}
 
 
-		void SetFOV(float fov)
-		{
-			m_fov = fov;
-		}
+		void SetFOV(float fov);
 
 	protected:
 
-		void CalculateProj(const float& width, const float& height) override
-		{
-			float a = width / height;
-			float d = 1 / (tanf((m_fov * (3.14159265359f / 180.0f)) / 2));
-
-
-			m_Proj =
-			{
-				d / a, 0, 0, 0,
-				0, d, 0, 0,
-				0, 0, (n + f) / (n - f), -1,
-				0,0,(2 * n * f) / (n - f),0
-			};
-		}
+		void CalculateProj(const float& width, const float& height) override;
 
 	private:
 
@@ -230,18 +157,62 @@ namespace gtk {
 		OrthoCam(const float& near, const float& far)
 			: Camera(near, far) {}
 
-		void CalculateProj(const float& width, const float& height) override
-		{
-			m_Proj =
-			{
-				2 / (width - 0), 0, 0, -((width + 0) / (width - 0)),
-				0, 2 / (height - 0), 0, -((height + 0) / (height - 0)),
-				0, 0, -(2 / (f - n)), -((f + n) / (f - n)),
-				0,0,0,1
-			};
-		}
+		void CalculateProj(const float& width, const float& height) override;
 
 	private:
+
+	};
+
+
+	//////////////////////////////////////////
+	//				Renderers				//		
+	//////////////////////////////////////////
+
+	class RenderLayer
+	{
+		friend class Scene;
+
+	public:
+		const unsigned int _id;
+
+	private:
+
+		RenderLayer(const unsigned int& id) : _id(id) {}
+	};
+
+	class Renderer : public Component
+	{
+		friend class Scene;
+
+	public:
+
+		Renderer()
+			: m_LayerID(), m_Camera(nullptr), m_Active(true) {}
+		virtual ~Renderer() {}
+
+		const bool& Active(const bool& setActive);
+
+		const bool& Active();
+
+	protected:
+
+		virtual void Start() = 0;
+		virtual void Draw() = 0;
+
+
+		void SetCamera(const Camera& camera) {}
+		const mat4& GetView() {}
+		const mat4& GetProj() {}
+
+
+	protected:
+
+		unsigned int m_LayerID;
+
+	private:
+
+		const Camera* m_Camera; // Read only
+		bool m_Active;
 
 	};
 

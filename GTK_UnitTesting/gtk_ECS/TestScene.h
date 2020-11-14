@@ -17,11 +17,11 @@ protected:
 	{
 		using namespace gtk;
 
-		CompGroup group = CreateCompGroup();
+		UpdateGroup group = CreateUpdateGroup();
 		RenderLayer layer = CreateRenderLayer();
 
 		Entity& entity = CreateEntity();
-			AddComponent(entity, group, new CompTemplate());
+			AddBehavior(entity, group, new CompTemplate());
 			AddRenderer(entity, layer, new ToggleMeRend());
 
 	}
@@ -44,26 +44,26 @@ protected:
 	{
 		using namespace gtk;
 
-		gtk::CompGroup Adders = CreateCompGroup();
-		gtk::CompGroup Subtractors = CreateCompGroup();
-		gtk::CompGroup SceneSwitchers = CreateCompGroup();
+		gtk::UpdateGroup Adders = CreateUpdateGroup();
+		gtk::UpdateGroup Subtractors = CreateUpdateGroup();
+		gtk::UpdateGroup SceneSwitchers = CreateUpdateGroup();
 
 		gtk::RenderLayer layer = CreateRenderLayer();
 
 
 		gtk::Entity& SS = CreateEntity();
-		gtk::Component& SSC = AddComponent(SS, SceneSwitchers, new SceneSwitcherComp(*this, "TestScene"));
+		gtk::Behavior& SSC = AddBehavior(SS, SceneSwitchers, new SceneSwitcherComp(*this, "TestScene"));
 
 		// Create Entities and add components here
 		gtk::Entity& player = CreateEntity();
-		AddComponent(player, Adders, new VectorTest(true, SSC));
-		AddComponent(player, Subtractors, new VectorTest(false, SSC));
+		AddBehavior(player, Adders, new VectorTest(true, SSC));
+		AddBehavior(player, Subtractors, new VectorTest(false, SSC));
 
 		// Hat is a child of player
 		gtk::Entity& hat = CreateEntity(player);
 		AddRenderer(hat, layer, new TestRenderer());
-		AddComponent(hat, Adders, new VectorTest(true, SSC));
-		AddComponent(hat, Subtractors, new VectorTest(false, SSC));
+		AddBehavior(hat, Adders, new VectorTest(true, SSC));
+		AddBehavior(hat, Subtractors, new VectorTest(false, SSC));
 
 	}
 	virtual void PostUpdate() override
@@ -84,22 +84,22 @@ protected:
 	{
 		using namespace gtk;
 
-		CompGroup g_Tog = CreateCompGroup();
-		CompGroup g_TogMe = CreateCompGroup();
+		UpdateGroup g_Tog = CreateUpdateGroup();
+		UpdateGroup g_TogMe = CreateUpdateGroup();
 
 		RenderLayer layer = CreateRenderLayer();
 
 		Entity& ToggleMeElmo = CreateEntity();
 
 			p_tmc = new ToggleMeComp();
-			Component& tmc = AddComponent(ToggleMeElmo, g_TogMe, p_tmc);
+			Behavior& tmc = AddBehavior(ToggleMeElmo, g_TogMe, p_tmc);
 
 			p_tmr = new ToggleMeRend();
 			Renderer& tmr = AddRenderer(ToggleMeElmo, layer, p_tmr);
 
 
 		Entity& Toggler = CreateEntity();
-			AddComponent(Toggler, g_Tog, new TogglerComp(ToggleMeElmo, tmc, tmr));
+			AddBehavior(Toggler, g_Tog, new TogglerComp(ToggleMeElmo, tmc, tmr));
 			
 	}
 

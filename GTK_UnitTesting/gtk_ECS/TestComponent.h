@@ -2,7 +2,7 @@
 
 #include "gtk/gtk.h"
 
-class CompTemplate : public gtk::Component
+class CompTemplate : public gtk::Behavior
 {
 public:
 	CompTemplate() {}
@@ -27,7 +27,7 @@ private:
 
 };
 
-class SceneSwitcherComp : public gtk::Component
+class SceneSwitcherComp : public gtk::Behavior
 {
 public:
 	SceneSwitcherComp(gtk::Scene& scene, std::string nextScene)
@@ -57,11 +57,11 @@ private:
 	std::string m_NextScene;
 };
 
-class VectorTest : public gtk::Component
+class VectorTest : public gtk::Behavior
 {
 public:
 
-	VectorTest(const bool& aOs, Component& sceneSwitcher) 
+	VectorTest(const bool& aOs, Behavior& sceneSwitcher) 
 		: addOrSub(aOs), ValueToAdd(5), vec(), UpdateCount(0), m_SSC(sceneSwitcher)
 	{
 		if (addOrSub)
@@ -131,7 +131,7 @@ private:
 
 	int UpdateCount;
 
-	Component& m_SSC;
+	Behavior& m_SSC;
 
 	void CheckEquals(MTYPE x, MTYPE y)
 	{
@@ -151,12 +151,12 @@ private:
 
 
 
-class TogglerComp : public gtk::Component
+class TogglerComp : public gtk::Behavior
 {
 
 public:
 	TogglerComp(
-		gtk::Entity& entityToToggle, gtk::Component& compToToggle, gtk::Renderer& rendToToggle)
+		gtk::Entity& entityToToggle, gtk::Behavior& compToToggle, gtk::Renderer& rendToToggle)
 		: m_UpdateCount(0), m_EntToToggle(entityToToggle), m_CompToToggle(compToToggle), m_RendToToggle(rendToToggle) {}
 
 	void Start() override
@@ -306,11 +306,11 @@ private:
 	unsigned int m_UpdateCount;
 
 	gtk::Entity& m_EntToToggle;
-	gtk::Component& m_CompToToggle;
+	gtk::Behavior& m_CompToToggle;
 	gtk::Renderer& m_RendToToggle;
 };
 
-class ToggleMeComp : public gtk::Component
+class ToggleMeComp : public gtk::Behavior
 {
 public:
 	ToggleMeComp() : m_UpdateCount(0) {}

@@ -8,13 +8,13 @@
 
 namespace gtk {
 
-	class Component;
-	class CompGroup;
+	class Behavior;
+	class UpdateGroup;
 	class Renderer;
 	class RenderLayer;
 	class Game;
 	class Camera;
-	class SceneObject;
+	class Component;
 
 	class Scene {
 
@@ -30,7 +30,7 @@ namespace gtk {
 
 		// Toggles
 		void ToggleEntity(Entity& entity, bool setActive);
-		void ToggleComponent(Component& component, bool setActive);
+		void ToggleBehavior(Behavior& behavior, bool setActive);
 		void ToggleRenderer(Renderer& renderer, bool setActive);
 
 		Camera& GetMainCam();
@@ -45,13 +45,13 @@ namespace gtk {
 
 		// Scene setup functions
 
-		CompGroup CreateCompGroup();
+		UpdateGroup CreateUpdateGroup();
 		RenderLayer CreateRenderLayer();
 
 		Entity& CreateEntity(); // Sets parent as m_Root
 		Entity& CreateEntity(Entity& parent);
 
-		Component& AddComponent(Entity& entity, const CompGroup& group, Component* const component);
+		Behavior& AddBehavior(Entity& entity, const UpdateGroup& group, Behavior* const behavior);
 
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Renderer* const renderer);
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, const Camera& camera, Renderer* const renderer);
@@ -66,23 +66,29 @@ namespace gtk {
 		// Scene Object containers
 		std::unordered_map<unsigned int, Entity*> m_EntityMap;
 
-		std::vector<std::unordered_map<unsigned int, Component*>*> m_ComponentMaps;
-		std::vector<std::unordered_map<unsigned int, Component*>*> m_DisabledComponentMaps;
+		std::vector<std::unordered_map<unsigned int, Behavior*>*> m_BehaviorMaps;
+		std::vector<std::unordered_map<unsigned int, Behavior*>*> m_DisabledBehaviorMaps;
 
 		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_RendererMaps;
 		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_DisabledRendererMaps;
 
-		std::unordered_map<unsigned int, Camera*> m_Cameras;
+		std::unordered_map<unsigned int, Camera*> m_CameraMap;
 		Camera* m_MainCam;
 	
 	private:
 
-		void Update(float deltaTime);
-		void Render(float width, float height);
+		void Update(const float& deltaTime);
+		void Render(const float& width, const float& height);
 		void Shutdown();
 
 		// Traverse all entities and update TRS
 		void UpdateSceneGraph();
+
+		template <class T>
+		void MapVectorShredder(std::vector<std::unordered_map<unsigned int, T*>*>& vectorMap);
+
+		template <class T>
+		void MapShredder(std::unordered_map<unsigned int, T*>& map);
 
 	private:
 
@@ -95,7 +101,7 @@ namespace gtk {
 		Entity m_Root;
 
 		unsigned int m_EntityIDProvider;
-		unsigned int m_CompGroupIDProvider;
+		unsigned int m_UpdateGroupIDProvider;
 		unsigned int m_RenderLayerIDProvider;
 
 	};

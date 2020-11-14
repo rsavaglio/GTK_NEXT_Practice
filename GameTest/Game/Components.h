@@ -3,10 +3,10 @@
 #include "app/app.h"
 #include "gtk/gtkMath.hpp"
 
-class CompTemplate : public gtk::Component
+class CompTemplate : public gtk::Behavior
 {
 public:
-	CompTemplate(gtk::Entity* const entity, const gtk::CompGroup& compGroup) : Component(entity, compGroup) {}
+	CompTemplate(gtk::Entity* const entity, const gtk::UpdateGroup& compGroup) : Behavior(entity, compGroup) {}
 
 	void Start() override
 	{
@@ -23,11 +23,11 @@ private:
 
 };
 
-class PlayerController : public gtk::Component
+class PlayerController : public gtk::Behavior
 {
 public:
-	PlayerController(gtk::Entity* const entity, const gtk::CompGroup& compGroup, float speed) 
-		: Component(entity, compGroup), m_Speed(speed) {}
+	PlayerController(gtk::Entity* const entity, const gtk::UpdateGroup& compGroup, float speed) 
+		: Behavior(entity, compGroup), m_Speed(speed) {}
 
 	void Start() override
 	{
@@ -54,11 +54,11 @@ private:
 
 };
 
-class RotaterComp : public gtk::Component
+class RotaterComp : public gtk::Behavior
 {
 public:
-	RotaterComp(gtk::Entity* const entity, const gtk::CompGroup& compGroup, const gtk::vec3& rotVals) 
-		: Component(entity, compGroup), animX(rotVals.x), animY(rotVals.y), animZ(rotVals.z) {}
+	RotaterComp(gtk::Entity* const entity, const gtk::UpdateGroup& compGroup, const gtk::vec3& rotVals) 
+		: Behavior(entity, compGroup), animX(rotVals.x), animY(rotVals.y), animZ(rotVals.z) {}
 
 	void Start() override
 	{

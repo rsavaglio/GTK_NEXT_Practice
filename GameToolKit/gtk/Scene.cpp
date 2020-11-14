@@ -8,7 +8,7 @@ namespace gtk {
 		:m_MainCam(nullptr),
 		m_SwitchScene(false), m_NextScene(""),
 		m_Game(game), m_Root(m_EntityIDProvider++, nullptr, *this),
-		m_EntityIDProvider(0), m_CompGroupIDProvider(0), m_RenderLayerIDProvider(0)
+		m_EntityIDProvider(0), m_UpdateGroupIDProvider(0), m_RenderLayerIDProvider(0)
 	{
 
 	}
@@ -48,14 +48,14 @@ namespace gtk {
 		return *m_EntityMap.at(m_EntityIDProvider++);
 	}
 	
-	CompGroup Scene::CreateCompGroup()
+	UpdateGroup Scene::CreateUpdateGroup()
 	{
-		m_ComponentMaps.push_back(new std::unordered_map<unsigned int, Component*>);
-		m_DisabledComponentMaps.push_back(new std::unordered_map<unsigned int, Component*>);
+		m_BehaviorMaps.push_back(new std::unordered_map<unsigned int, Behavior*>);
+		m_DisabledBehaviorMaps.push_back(new std::unordered_map<unsigned int, Behavior*>);
 
-		CompGroup newCompGroup(m_CompGroupIDProvider++);
+		UpdateGroup newBehaviorGroup(m_UpdateGroupIDProvider++);
 
-		return newCompGroup;
+		return newBehaviorGroup;
 	}
 
 	RenderLayer Scene::CreateRenderLayer()
@@ -68,21 +68,22 @@ namespace gtk {
 		return newRenderLayer;
 	}
 
-	Component& Scene::AddComponent(Entity& entity, const CompGroup& group, Component* const component)
+	Behavior& Scene::AddBehavior(Entity& entity, const UpdateGroup& group, Behavior* const behavior)
 	{
 		// Set scene object data
-		component->Init(entity._id, this);
+		behavior->Init(entity._id, this);
 
-		// Set component data
-		component->m_GroupID = group._id;
+		// Set behavior data
+		behavior->m_GroupID = group._id;
 
-		// Ensure no deplicate components on same entity
-		ASSERT(m_ComponentMaps[group._id]->find(entity._id) == m_ComponentMaps[group._id]->end());
+		// Ensure no deplicate behaviors on same entity
+		ASSERT(m_BehaviorMaps[group._id]->find(entity._id) == m_BehaviorMaps[group._id]->end());
+		ASSERT(m_DisabledBehaviorMaps[group._id]->find(entity._id) == m_DisabledBehaviorMaps[group._id]->end());
 
-		// Add component to correct map with the ID
-		m_ComponentMaps[group._id]->insert({ entity._id, component });
+		// Add behavior to correct map with the ID
+		m_BehaviorMaps[group._id]->insert({ entity._id, behavior });
 
-		return *component;
+		return *behavior;
 	}
 
 	Renderer& Scene::AddRenderer(Entity& entity, const RenderLayer& layer, const Camera& camera, Renderer* const renderer)
@@ -96,6 +97,7 @@ namespace gtk {
 
 		// Ensure no deplicate renderer on same entity
 		ASSERT(m_RendererMaps[layer._id]->find(entity._id) == m_RendererMaps[layer._id]->end());
+		ASSERT(m_DisabledRendererMaps[layer._id]->find(entity._id) == m_DisabledRendererMaps[layer._id]->end());
 
 		// Add renderer to correct map with the ID
 		m_RendererMaps[layer._id]->insert({ entity._id, renderer });
@@ -114,6 +116,7 @@ namespace gtk {
 
 		// Ensure no deplicate renderer on same entity
 		ASSERT(m_RendererMaps[layer._id]->find(entity._id) == m_RendererMaps[layer._id]->end());
+		ASSERT(m_DisabledRendererMaps[layer._id]->find(entity._id) == m_DisabledRendererMaps[layer._id]->end());
 
 		// Add renderer to correct map with the ID
 		m_RendererMaps[layer._id]->insert({ entity._id, renderer });
@@ -121,33 +124,34 @@ namespace gtk {
 		return *renderer;
 	}
 
+	// TODO: Make sure this works with m_MainCam correctly
 	Camera& Scene::AddCamera(Entity& entity, Camera* const camera)
 	{
 		// Set scene object data
 		camera->Init(entity._id, this);
 
 		// If first camera
-		if (m_Cameras.size() == 0)
+		if (m_CameraMap.size() == 0)
 		{
 			m_MainCam = camera;
 		}
 		// Only one camera per entity
 		else 
 		{
-			ASSERT(m_Cameras.find(entity._id) == m_Cameras.end());
+			ASSERT(m_CameraMap.find(entity._id) == m_CameraMap.end());
 		}
 
 		// Add camera to map
-		m_Cameras.insert({ entity._id, camera });
+		m_CameraMap.insert({ entity._id, camera });
 
 		return *camera;
 	}
 
 	void Scene::SetMainCam(unsigned int id) 
 	{
-		ASSERT(m_Cameras.find(id) != m_Cameras.end());
+		ASSERT(m_CameraMap.find(id) != m_CameraMap.end());
 
-		m_MainCam = m_Cameras.find(id)->second;
+		m_MainCam = m_CameraMap.find(id)->second;
 	}
 
 	Camera& Scene::GetMainCam()
@@ -164,14 +168,14 @@ namespace gtk {
 
 	void gtk::Scene::ToggleEntity(Entity& entity, bool setActive)
 	{
-		// Disabled components and renderers are moved to disabled maps, where they are not updated.
 		// Update is only called on components and renderers in the active maps.
-		// This avoids having to check each if components are active each time they are updated. 
+		// Disabled components and renderers are moved to disabled maps, where they are not updated.
+		// This avoids having to check each if component is active each time they are updated. 
 
-		// Disabling an entity essentially just disables all of its components and its renderer.
+		// Disabling an entity essentially just disables all of its components.
 		// However, components' active tags are preserved.
 
-		// So when setting an entity to active, only components tagged as active get moved
+		// When setting an entity to active, only components tagged as active get moved
 		// to the active maps.
 
 		if (setActive)
@@ -183,19 +187,19 @@ namespace gtk {
 			entity._Active = true;
 
 			// Loop through disabled map vector
-			for (unsigned int i = 0; i < m_DisabledComponentMaps.size(); i++) // Maps should be in the same order between vectors
+			for (unsigned int i = 0; i < m_DisabledBehaviorMaps.size(); i++) // Maps should be in the same order between vectors
 			{
-				// Does the entity have a component in this group?
-				if (m_DisabledComponentMaps[i]->find(entity._id) != m_DisabledComponentMaps[i]->end())
+				// Does the entity have a behavior in this group?
+				if (m_DisabledBehaviorMaps[i]->find(entity._id) != m_DisabledBehaviorMaps[i]->end())
 				{
-					// Comp is tagged as active
-					if (m_DisabledComponentMaps[i]->at(entity._id)->m_Active)
+					// Behavior is tagged as active
+					if (m_DisabledBehaviorMaps[i]->at(entity._id)->m_Active)
 					{
 						// Move it to the active map
-						m_ComponentMaps[i]->insert({ entity._id , m_DisabledComponentMaps[i]->at(entity._id) });
+						m_BehaviorMaps[i]->insert({ entity._id , m_DisabledBehaviorMaps[i]->at(entity._id) });
 
 						// Erase from disabled map
-						m_DisabledComponentMaps[i]->erase(entity._id);
+						m_DisabledBehaviorMaps[i]->erase(entity._id);
 					}
 				}
 			}
@@ -228,17 +232,17 @@ namespace gtk {
 			// Tag as inactive
 			entity._Active = false;
 
-			// Loop through active comp map vector
-			for (unsigned int i = 0; i < m_ComponentMaps.size(); i++) // Maps should be in the same order between vectors
+			// Loop through active behavior map vector
+			for (unsigned int i = 0; i < m_BehaviorMaps.size(); i++) // Maps should be in the same order between vectors
 			{
-				// Does the entity have a comp in this group?
-				if (m_ComponentMaps[i]->find(entity._id) != m_ComponentMaps[i]->end())
+				// Does the entity have a behavior in this group?
+				if (m_BehaviorMaps[i]->find(entity._id) != m_BehaviorMaps[i]->end())
 				{
 					// Move it to the disabled map
-					m_DisabledComponentMaps[i]->insert({ entity._id , m_ComponentMaps[i]->at(entity._id) });
+					m_DisabledBehaviorMaps[i]->insert({ entity._id , m_BehaviorMaps[i]->at(entity._id) });
 
 					// Erase from active map
-					m_ComponentMaps[i]->erase(entity._id);
+					m_BehaviorMaps[i]->erase(entity._id);
 				}
 			}
 
@@ -258,16 +262,19 @@ namespace gtk {
 
 		}
 
+		// TODO: Test toggling children
+
+		// Repeat on children
 		for (auto& child : entity._Children)
 		{
 			ToggleEntity(*child, setActive);
 		}
 	}
 
-	void gtk::Scene::ToggleComponent(Component& component, bool setActive)
+	void gtk::Scene::ToggleBehavior(Behavior& behavior, bool setActive)
 	{
-		unsigned int id = component.ID();
-		unsigned int group = component.m_GroupID;
+		unsigned int id = behavior.ID();
+		unsigned int group = behavior.m_GroupID;
 
 		// Does the id/entity even exist?
 		ASSERT(m_EntityMap.find(id) != m_EntityMap.end());
@@ -275,55 +282,55 @@ namespace gtk {
 		// Get entity
 		Entity* entity = m_EntityMap.at(id);
 
-		// If the entity is active we move the component between maps based on requested state
+		// If the entity is active we move the behavior between maps based on requested state
 		if (entity->_Active)
 		{
 
 			if (setActive)
 			{
 				// Return if already active
-				if (component.m_Active) { return; }
+				if (behavior.m_Active) { return; }
 
-				// Move the component back into the active component map
-				m_ComponentMaps[group]->
-					insert({ id, m_DisabledComponentMaps[group]->at(id) });
+				// Move the behavior back into the active behavior map
+				m_BehaviorMaps[group]->
+					insert({ id, m_DisabledBehaviorMaps[group]->at(id) });
 
-				// Erase component from disabled map
-				m_DisabledComponentMaps[group]->erase(id);
+				// Erase behavior from disabled map
+				m_DisabledBehaviorMaps[group]->erase(id);
 
-				// Tag component as active
-				component.m_Active = true;
+				// Tag behavior as active
+				behavior.m_Active = true;
 
 			}
 			else
 			{
 				// Return if already disabled
-				if (!component.m_Active) { return; }
+				if (!behavior.m_Active) { return; }
 
-				// Move the component to the disabled map
-				m_DisabledComponentMaps[group]->
-					insert({ id, m_ComponentMaps[group]->at(id) });
+				// Move the behavior to the disabled map
+				m_DisabledBehaviorMaps[group]->
+					insert({ id, m_BehaviorMaps[group]->at(id) });
 
-				// Remove the component from component maps
-				m_ComponentMaps[group]->erase(id);
+				// Remove the behavior from behavior maps
+				m_BehaviorMaps[group]->erase(id);
 
-				// Tag component not active
-				component.m_Active = false;
+				// Tag behavior not active
+				behavior.m_Active = false;
 			}
 
 		}
-		else // If the entity is not active, we don't move the component but tag it correctly
+		else // If the entity is not active, we don't move the behavior but tag it correctly
 		{
 			if (setActive)
 			{
-				// Tag component as active
-				component.m_Active = true;
+				// Tag behavior as active
+				behavior.m_Active = true;
 
 			}
 			else
 			{
-				// Tag component not active
-				component.m_Active = false;
+				// Tag behavior not active
+				behavior.m_Active = false;
 			}
 		}
 	}
@@ -392,17 +399,19 @@ namespace gtk {
 		}
 	}
 
-	void gtk::Scene::Update(float deltaTime)
+	void gtk::Scene::Update(const float& deltaTime)
 	{
+
+		// TODO: Ensure a camera exists
 		//ASSERT(m_Cameras.size() > 0);
 
 		// Loop through the vector of maps
-		for (auto& CompMap : m_ComponentMaps)
+		for (auto& BehMap : m_BehaviorMaps)
 		{
-			// Loop through comp map
-			for (auto& Comp : *CompMap)
+			// Loop through behavior map
+			for (auto& behavior : *BehMap)
 			{
-				Comp.second->Update(deltaTime);
+				behavior.second->Update(deltaTime);
 			}
 		}
 
@@ -412,7 +421,7 @@ namespace gtk {
 		// Updates all pos, rot, scale
 		UpdateSceneGraph();
 
-		// This deletes all components and moves to next scene
+		// This deletes all behaviors and moves to next scene
 		// So it has to happen last
 		if (m_SwitchScene)
 		{
@@ -421,11 +430,11 @@ namespace gtk {
 
 	}
 
-	void gtk::Scene::Render(float width, float height)
+	void gtk::Scene::Render(const float& width, const float& height)
 	{
 
 		// Calculate view and proj
-		for (auto& cam : m_Cameras)
+		for (auto& cam : m_CameraMap)
 		{
 			cam.second->CalculateView();
 			cam.second->CalculateProj(width, height);
@@ -444,98 +453,27 @@ namespace gtk {
 
 	void gtk::Scene::Shutdown()
 	{
+		// Shred map vectors
+		MapVectorShredder(m_BehaviorMaps);
+		MapVectorShredder(m_DisabledBehaviorMaps);
 
-		// Loop through comp map vector
-		for (auto& CompMap : m_ComponentMaps)
-		{
-			// Loop through comp map
-			for (auto Comp : *CompMap)
-			{
-				// Delete each component
-				delete Comp.second;
-			}
-
-			// Clear the map
-			CompMap->clear();
-
-			// Delete the map
-			delete CompMap;
-			
-		} m_ComponentMaps.clear(); // Clear the vector
-
-
-		// Loop through disabled comp map vector
-		for (auto& CompMap : m_DisabledComponentMaps)
-		{
-			// Loop through comp map
-			for (auto Comp : *CompMap)
-			{
-				// Delete each component
-				delete Comp.second;
-			}
-
-			// Clear the map
-			CompMap->clear();
-
-			// Delete the map
-			delete CompMap;
-
-		} m_DisabledComponentMaps.clear(); // Clear the vector
-
-		// Loop through renderer map vector
-		for (auto& RendMap : m_RendererMaps)
-		{
-			// Loop through render map
-			for (auto Rend : *RendMap)
-			{
-				// Delete each renderer
-				delete Rend.second;
-			}
-
-			// Clear the map
-			RendMap->clear();
-
-			// Delete the map
-			delete RendMap;
-
-		} m_RendererMaps.clear(); // Clear the vector
-
-
-		// Loop through disabled render map vector
-		for (auto& RendMap : m_DisabledRendererMaps)
-		{
-			// Loop through rend map
-			for (auto Rend : *RendMap)
-			{
-				// Delete each component
-				delete Rend.second;
-			}
-
-			// Clear the map
-			RendMap->clear();
-
-			// Delete the map
-			delete RendMap;
-
-		} m_DisabledRendererMaps.clear(); // Clear the vector
-
-		// Remove all entities
-		for (auto Entity : m_EntityMap)
-		{
-			delete Entity.second;
-		}
-		m_EntityMap.clear();
+		MapVectorShredder(m_RendererMaps);
+		MapVectorShredder(m_DisabledRendererMaps);
+		
+		// Shred maps
+		MapShredder(m_CameraMap);
+		MapShredder(m_EntityMap);
 
 		// Set switch scene flag back for next time
 		m_SwitchScene = false;
 		m_NextScene = "";
 
-		// Remove children from root
+		// Remove children from root entity
 		m_Root._Children.clear();
 
 		// Reset id providers
 		m_EntityIDProvider = 0;
-		m_CompGroupIDProvider = 0;
+		m_UpdateGroupIDProvider = 0;
 		m_RenderLayerIDProvider = 0;
 	}
 
@@ -547,6 +485,42 @@ namespace gtk {
 			child->UpdateTRS();
 		}
 
+	}
+
+	template <class T>
+	void Scene::MapVectorShredder(std::vector<std::unordered_map<unsigned int, T*>*>& mapVector)
+	{
+		// Loop through map vector
+		for (auto& CompMap : mapVector)
+		{
+			// Loop through map
+			for (auto comp : *CompMap)
+			{
+				// Delete each component
+				delete comp.second;
+			}
+
+			// Clear the map
+			CompMap->clear();
+
+			// Delete the map
+			delete CompMap;
+
+		}
+		
+		mapVector.clear(); // Clear the vector
+	}
+
+	template <class T>
+	void Scene::MapShredder(std::unordered_map<unsigned int, T*>& map)
+	{
+		// Loop through map
+		for (auto obj : map)
+		{
+			// Delete each object
+			delete obj.second;
+		}
+		map.clear();
 	}
 
 	
