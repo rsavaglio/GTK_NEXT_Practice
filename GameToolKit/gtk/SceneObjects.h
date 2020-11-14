@@ -39,7 +39,8 @@ namespace gtk {
 		const vec3& Scale(const vec3& pos);
 		const vec3& Scale(const vec3& pos, const bool& add);
 
-		const unsigned int& ID() const;
+		const bool& Active(const bool& setActive);
+		const bool& Active();
 
 		Entity& Parent();
 		const mat4& TRS();
@@ -53,14 +54,15 @@ namespace gtk {
 
 	protected:
 		
-		virtual inline void Init(const unsigned int& id, Scene* scene, Entity* ent);
+		virtual inline void Init(Scene* scene, Entity* ent);
 
 		Scene& GetScene();
 		Entity& GetEntity();
 
+		bool _Active;
+
 	private:
 
-		unsigned int _id;
 		Scene* _scene;
 		Entity* _ent;
 
@@ -70,31 +72,16 @@ namespace gtk {
 	//				Behaviors				//		
 	//////////////////////////////////////////
 
-
-	class UpdateGroup
-	{
-		friend class Scene;
-
-	public:
-		const unsigned int _id;
-
-	private:
-
-		UpdateGroup(const unsigned int& id) : _id(id) {}
-	};
-
 	class Behavior : public SceneObject
 	{
 		friend class Scene;
 
 	public:
 
-		Behavior() 
-			: m_GroupID(0), m_Active(true) {}
+		Behavior() {}
 		virtual ~Behavior() {}
 
-		const bool& Active(const bool& setActive);
-		const bool& Active();
+
 
 		virtual int Trigger(const int& code) = 0;
 
@@ -104,10 +91,6 @@ namespace gtk {
 		virtual void Update(const float& deltaTime) = 0;
 
 	private:
-
-		unsigned int m_GroupID;
-		bool m_Active;
-
 	};
 
 
@@ -206,9 +189,6 @@ namespace gtk {
 			: m_LayerID(), m_Camera(nullptr), m_Active(true) {}
 		virtual ~Renderer() {}
 
-		const bool& Active(const bool& setActive);
-		const bool& Active();
-
 	protected:
 
 		virtual void Start() = 0;
@@ -244,18 +224,10 @@ namespace gtk {
 
 		const mat4& GetTRS();
 
-		const bool& Active(const bool& setActive);
-		const bool& Active();
-
-	public:
-
-		const unsigned int _id;
-
-
 	private:
 
 		// Call CreateEntity() from a Scene
-		Entity(const unsigned int& id, Entity* parent, Scene& scene);
+		Entity(Entity* parent, Scene& scene);
 		void AddChild(Entity* child);
 
 		void UpdateRootTRS();
@@ -271,7 +243,7 @@ namespace gtk {
 
 		std::vector<Entity*> _Children;
 
-		bool _Active; // Update comps and draw
+
 		bool _Dirty;  // Update transform
 
 		vec3 _Pos;

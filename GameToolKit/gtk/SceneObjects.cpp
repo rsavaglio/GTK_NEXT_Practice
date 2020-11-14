@@ -2,10 +2,22 @@
 
 namespace gtk {
 
-	
+
 	//// Component
 
-	SceneObject::SceneObject() : _id(0), _scene(nullptr), _ent(nullptr) {}
+	SceneObject::SceneObject() : _Active(true), _scene(nullptr), _ent(nullptr) {}
+
+	const bool& SceneObject::Active(const bool& setActive)
+	{
+		_Active = setActive;
+
+		return _Active;
+	}
+
+	const bool& SceneObject::Active()
+	{
+		return _Active;
+	}
 
 	const vec3& SceneObject::Pos()
 	{
@@ -64,11 +76,6 @@ namespace gtk {
 		return _ent->_Scale;
 	}
 
-	const unsigned int& SceneObject::ID() const
-	{
-		return _id;
-	}
-
 	Entity& SceneObject::Parent()
 	{
 		if (_ent->_Parent != nullptr)
@@ -92,9 +99,8 @@ namespace gtk {
 		_scene->SwitchScene(name);
 	}
 
-	inline void SceneObject::Init(const unsigned int& id, Scene* scene, Entity* ent)
+	inline void SceneObject::Init(Scene* scene, Entity* ent)
 	{
-		_id = id;
 		_scene = scene;
 		_ent = ent;
 	}
@@ -103,7 +109,7 @@ namespace gtk {
 	{
 		return *_scene;
 	}
-	
+
 	Entity& SceneObject::GetEntity()
 	{
 		return *_ent;
@@ -111,17 +117,6 @@ namespace gtk {
 
 	//// Behavior
 
-	const bool& Behavior::Active(const bool& setActive) 
-	{
-		GetScene().ToggleBehavior(*this, setActive);
-
-		return setActive;
-	}
-
-	const bool& Behavior::Active()
-	{
-		return m_Active;
-	}
 
 	//// Camera
 
@@ -206,27 +201,10 @@ namespace gtk {
 		};
 	}
 
-
-	//// Renderer
-
-	const bool& Renderer::Active(const bool& setActive)
-	{
-		GetScene().ToggleRenderer(*this, setActive);
-
-		return setActive;
-	}
-
-	const bool& Renderer::Active()
-	{
-		return m_Active;
-	}
-
-
-
 	//// Entity
 
-	Entity::Entity(const unsigned int& id, Entity* parent, Scene& scene)
-		: _id(id), _Parent(parent), _Scene(scene), _Children(), _Active(true),
+	Entity::Entity(Entity* parent, Scene& scene)
+		: _Parent(parent), _Scene(scene), _Children(),
 		_Dirty(true), _Pos(), _Rot(), _Scale(1.0f), _TRS(1) {}
 
 
@@ -323,16 +301,4 @@ namespace gtk {
 		_Children.push_back(child);
 	}
 
-	const bool& Entity::Active(const bool& setActive)
-	{
-
-		_Scene.ToggleEntity(*this, setActive);
-
-		return setActive;
-	}
-
-	const bool& Entity::Active()
-	{
-		return _Active;
-	}
 }

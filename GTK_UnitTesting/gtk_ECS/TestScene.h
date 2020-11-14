@@ -17,11 +17,10 @@ protected:
 	{
 		using namespace gtk;
 
-		UpdateGroup group = CreateUpdateGroup();
 		RenderLayer layer = CreateRenderLayer();
 
 		Entity& entity = CreateEntity();
-			AddBehavior(entity, group, new CompTemplate());
+			AddBehavior(entity, new BehaviorTemplate());
 			AddRenderer(entity, layer, new ToggleMeRend());
 
 	}
@@ -44,26 +43,22 @@ protected:
 	{
 		using namespace gtk;
 
-		gtk::UpdateGroup Adders = CreateUpdateGroup();
-		gtk::UpdateGroup Subtractors = CreateUpdateGroup();
-		gtk::UpdateGroup SceneSwitchers = CreateUpdateGroup();
-
 		gtk::RenderLayer layer = CreateRenderLayer();
 
 
 		gtk::Entity& SS = CreateEntity();
-		gtk::Behavior& SSC = AddBehavior(SS, SceneSwitchers, new SceneSwitcherComp(*this, "TestScene"));
+		gtk::Behavior& SSC = AddBehavior(SS, new SceneSwitcherComp(*this, "TestScene"));
 
 		// Create Entities and add components here
 		gtk::Entity& player = CreateEntity();
-		AddBehavior(player, Adders, new VectorTest(true, SSC));
-		AddBehavior(player, Subtractors, new VectorTest(false, SSC));
+		AddBehavior(player, new VectorTest(true, SSC));
+		AddBehavior(player, new VectorTest(false, SSC));
 
 		// Hat is a child of player
 		gtk::Entity& hat = CreateEntity(player);
 		AddRenderer(hat, layer, new TestRenderer());
-		AddBehavior(hat, Adders, new VectorTest(true, SSC));
-		AddBehavior(hat, Subtractors, new VectorTest(false, SSC));
+		AddBehavior(hat, new VectorTest(true, SSC));
+		AddBehavior(hat, new VectorTest(false, SSC));
 
 	}
 	virtual void PostUpdate() override
@@ -84,22 +79,19 @@ protected:
 	{
 		using namespace gtk;
 
-		UpdateGroup g_Tog = CreateUpdateGroup();
-		UpdateGroup g_TogMe = CreateUpdateGroup();
-
 		RenderLayer layer = CreateRenderLayer();
 
 		Entity& ToggleMeElmo = CreateEntity();
 
 			p_tmc = new ToggleMeComp();
-			Behavior& tmc = AddBehavior(ToggleMeElmo, g_TogMe, p_tmc);
+			Behavior& tmc = AddBehavior(ToggleMeElmo, p_tmc);
 
 			p_tmr = new ToggleMeRend();
 			Renderer& tmr = AddRenderer(ToggleMeElmo, layer, p_tmr);
 
 
 		Entity& Toggler = CreateEntity();
-			AddBehavior(Toggler, g_Tog, new TogglerComp(ToggleMeElmo, tmc, tmr));
+			AddBehavior(Toggler, new TogglerComp(ToggleMeElmo, tmc, tmr));
 			
 	}
 
