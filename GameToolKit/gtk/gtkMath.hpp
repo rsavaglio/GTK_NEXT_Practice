@@ -86,7 +86,7 @@ namespace gtk {
 
 		// TODO: Optimize
 
-		MTYPE Length() const { return sqrt(x * x + y * y); }
+		MTYPE Length() const { return sqrtf(x * x + y * y); }
 		MTYPE LengthSquared() const { return x * x + y * y; }
 
 		vec2 GetNormalized()
@@ -99,7 +99,7 @@ namespace gtk {
 				return *this;
 			}
 
-			float recip = 1 / sqrt(lengthsq);
+			float recip = 1 / sqrtf(lengthsq);
 
 			return { x * recip, y * recip };
 		}
@@ -114,7 +114,7 @@ namespace gtk {
 				return *this;
 			}
 
-			float recip = 1 / sqrt(lengthsq);
+			float recip = 1 / sqrtf(lengthsq);
 
 			x *= recip;
 			y *= recip;
@@ -214,7 +214,7 @@ namespace gtk {
 		}
 
 
-		MTYPE Length() const { return sqrt(x * x + y * y + z * z); }
+		MTYPE Length() const { return sqrtf(x * x + y * y + z * z); }
 		MTYPE LengthSquared() const { return x * x + y * y + z * z; }
 
 		vec3 GetNormalized()
@@ -227,7 +227,7 @@ namespace gtk {
 				return *this;
 			}
 
-			float recip = 1 / sqrt(lengthsq);
+			float recip = 1 / sqrtf(lengthsq);
 
 			return { x * recip, y * recip, z * recip };
 		}
@@ -242,7 +242,7 @@ namespace gtk {
 				return *this;
 			}
 
-			float recip = 1 / sqrt(lengthsq);
+			float recip = 1 / sqrtf(lengthsq);
 
 			x *= recip;
 			y *= recip;
@@ -346,7 +346,7 @@ namespace gtk {
 			return out;
 		}
 
-		MTYPE Length() const { return sqrt(x * x + y * y + z * z + w * w); }
+		MTYPE Length() const { return sqrtf(x * x + y * y + z * z + w * w); }
 		MTYPE LengthSquared() const { return x * x + y * y + z * z + w * w; }
 
 		vec4 GetNormalized()
@@ -359,7 +359,7 @@ namespace gtk {
 				return *this;
 			}
 
-			float recip = 1 / sqrt(lengthsq);
+			float recip = 1 / sqrtf(lengthsq);
 
 
 			return { x * recip, y * recip, z * recip, w * recip };
@@ -375,7 +375,7 @@ namespace gtk {
 				return *this;
 			}
 
-			float recip = 1 / sqrt(lengthsq);
+			float recip = 1 / sqrtf(lengthsq);
 
 			x *= recip;
 			y *= recip;

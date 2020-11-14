@@ -41,10 +41,6 @@ namespace gtk {
 	}
 
 
-	//// Camera
-	Camera::Camera(float near, float far)
-		: m_View(1), m_Proj(1), n(near), f(far) {}
-
 	//// Renderer
 
 	const bool& Renderer::Active(const bool& setActive)

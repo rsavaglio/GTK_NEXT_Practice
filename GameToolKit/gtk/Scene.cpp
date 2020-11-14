@@ -183,7 +183,7 @@ namespace gtk {
 			entity._Active = true;
 
 			// Loop through disabled map vector
-			for (int i = 0; i < m_DisabledComponentMaps.size(); i++) // Maps should be in the same order between vectors
+			for (unsigned int i = 0; i < m_DisabledComponentMaps.size(); i++) // Maps should be in the same order between vectors
 			{
 				// Does the entity have a component in this group?
 				if (m_DisabledComponentMaps[i]->find(entity._id) != m_DisabledComponentMaps[i]->end())
@@ -202,7 +202,7 @@ namespace gtk {
 
 
 			// Loop through disabled map vector
-			for (int i = 0; i < m_DisabledRendererMaps.size(); i++) // Maps should be in the same order between vectors
+			for (unsigned int i = 0; i < m_DisabledRendererMaps.size(); i++) // Maps should be in the same order between vectors
 			{
 				// Does the entity have a renderer in this layer?
 				if (m_DisabledRendererMaps[i]->find(entity._id) != m_DisabledRendererMaps[i]->end())
@@ -229,7 +229,7 @@ namespace gtk {
 			entity._Active = false;
 
 			// Loop through active comp map vector
-			for (int i = 0; i < m_ComponentMaps.size(); i++) // Maps should be in the same order between vectors
+			for (unsigned int i = 0; i < m_ComponentMaps.size(); i++) // Maps should be in the same order between vectors
 			{
 				// Does the entity have a comp in this group?
 				if (m_ComponentMaps[i]->find(entity._id) != m_ComponentMaps[i]->end())
@@ -243,7 +243,7 @@ namespace gtk {
 			}
 
 			// Loop through active renderer map vector
-			for (int i = 0; i < m_RendererMaps.size(); i++) // Maps should be in the same order between vectors
+			for (unsigned int i = 0; i < m_RendererMaps.size(); i++) // Maps should be in the same order between vectors
 			{
 				// Does the entity have a renderer in this layer?
 				if (m_RendererMaps[i]->find(entity._id) != m_RendererMaps[i]->end())

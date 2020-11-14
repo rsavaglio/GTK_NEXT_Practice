@@ -48,7 +48,7 @@ TEST_F(Vec3_F, constructors)
 	EXPECT_FLOAT_EQ(y.values[1], 2.0f);
 	EXPECT_FLOAT_EQ(y.values[2], 3.0f);
 
-	vec3 z = { -1.2, -2.2, -3.5 };
+	vec3 z = { -1.2f, -2.2f, -3.5f };
 	EXPECT_FLOAT_EQ(z.r, -1.2f);
 	EXPECT_FLOAT_EQ(z.g, -2.2f);
 	EXPECT_FLOAT_EQ(z.b, -3.5f);

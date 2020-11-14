@@ -236,7 +236,7 @@ namespace gtk {
 		void CalculateProj(float width, float height) override
 		{
 			float a = width / height;
-			float d = 1 / (tan((m_fov * (3.14159265359f / 180.0f)) / 2));
+			float d = 1 / (tanf((m_fov * (3.14159265359f / 180.0f)) / 2));
 
 
 			m_Proj =

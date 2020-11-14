@@ -59,21 +59,21 @@ TEST_F(Vec2_F, add)
 {
 	// Add
 	a.Add(a);
-	EXPECT_FLOAT_EQ(a.x, 30);
-	EXPECT_FLOAT_EQ(a.y, 30);
+	EXPECT_FLOAT_EQ(a.x, 30.0f);
+	EXPECT_FLOAT_EQ(a.y, 30.0f);
 
 	b.Add(b);
-	EXPECT_FLOAT_EQ(b.x, 0.01);
-	EXPECT_FLOAT_EQ(b.y, 0.01);
+	EXPECT_FLOAT_EQ(b.x, 0.01f);
+	EXPECT_FLOAT_EQ(b.y, 0.01f);
 
 	// +=
 	a += a;
-	EXPECT_FLOAT_EQ(a.x, 60);
-	EXPECT_FLOAT_EQ(a.y, 60);
+	EXPECT_FLOAT_EQ(a.x, 60.0f);
+	EXPECT_FLOAT_EQ(a.y, 60.0f);
 
 	// +
 	gtk::vec2 e = d + d;
-	gtk::vec2 f(99.9 + 99.9, -99.9 + -99.9);
+	gtk::vec2 f(99.9f + 99.9f, -99.9f + -99.9f);
 	EXPECT_EQ(e, f);
 	
 }
@@ -82,12 +82,12 @@ TEST_F(Vec2_F, addScalar)
 {
 	// Add
 	a.AddScalar(15.0f);
-	EXPECT_FLOAT_EQ(a.x, 30);
-	EXPECT_FLOAT_EQ(a.y, 30);
+	EXPECT_FLOAT_EQ(a.x, 30.0f);
+	EXPECT_FLOAT_EQ(a.y, 30.0f);
 
-	b.AddScalar(1.005);
-	EXPECT_FLOAT_EQ(b.x, 1.01);
-	EXPECT_FLOAT_EQ(b.y, 1.01);
+	b.AddScalar(1.005f);
+	EXPECT_FLOAT_EQ(b.x, 1.01f);
+	EXPECT_FLOAT_EQ(b.y, 1.01f);
 	
 	c.AddScalar(-10);
 	EXPECT_FLOAT_EQ(c.x, -9.0f);
@@ -120,7 +120,7 @@ TEST_F(Vec2_F, subtract)
 	EXPECT_TRUE( (a - b) == e);
 
 	gtk::vec2 f(69.0f, -130.8f);
-	EXPECT_TRUE( d - 20.9 == f);
+	EXPECT_TRUE( d - 20.9f == f);
 
 }
 
@@ -139,7 +139,7 @@ TEST_F(Vec2_F, multiply)
 	gtk::vec2 e(2997.0f, -2997.0f);
 	EXPECT_TRUE((a * d) == e);
 	
-	gtk::vec2 f(0.000025, 0.000025);
+	gtk::vec2 f(0.000025f, 0.000025f);
 	EXPECT_TRUE( (b * 0.005f) == f);
 
 }
@@ -167,33 +167,33 @@ TEST_F(Vec2_F, divide)
 TEST_F(Vec2_F, incrementDecrement)
 {
 	// Increment
-	EXPECT_FLOAT_EQ((c++).x,  1);
-	EXPECT_FLOAT_EQ(c.x, 2);
-	EXPECT_FLOAT_EQ(c.y, 0);
+	EXPECT_FLOAT_EQ((c++).x,  1.0f);
+	EXPECT_FLOAT_EQ(c.x, 2.0f);
+	EXPECT_FLOAT_EQ(c.y, 0.0f);
 
-	EXPECT_FLOAT_EQ((++a).x, 16);
-	EXPECT_FLOAT_EQ(a.y, 16);
+	EXPECT_FLOAT_EQ((++a).x, 16.0f);
+	EXPECT_FLOAT_EQ(a.y, 16.0f);
 
 	// Decrement
-	EXPECT_FLOAT_EQ((b--).x, 0.005);
-	EXPECT_FLOAT_EQ(b.y, -0.995);
+	EXPECT_FLOAT_EQ((b--).x, 0.005f);
+	EXPECT_FLOAT_EQ(b.y, -0.995f);
 
-	EXPECT_FLOAT_EQ((--d).x, 98.9);
-	EXPECT_FLOAT_EQ(d.y, -100.9);
+	EXPECT_FLOAT_EQ((--d).x, 98.9f);
+	EXPECT_FLOAT_EQ(d.y, -100.9f);
 
 }
 
 TEST_F(Vec2_F, dotCross)
 {
 	// Dot
-	EXPECT_FLOAT_EQ(b.Dot(d), 0);
+	EXPECT_FLOAT_EQ(b.Dot(d), 0.0f);
 
-	gtk::vec2 e(-1.1f, 5.9);
+	gtk::vec2 e(-1.1f, 5.9f);
 	gtk::vec2 f(4.5f, 8.6f);
-	EXPECT_FLOAT_EQ(e.Dot(f), 45.79);
+	EXPECT_FLOAT_EQ(e.Dot(f), 45.79f);
 
 	// Cross
-	EXPECT_FLOAT_EQ(e.Cross(f), -36.01);
+	EXPECT_FLOAT_EQ(e.Cross(f), -36.01f);
 
 }
 
