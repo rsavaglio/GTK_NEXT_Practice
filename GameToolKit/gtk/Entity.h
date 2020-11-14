@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gtkMath.hpp"
+#include "Scene.h"
 #include <vector>
 #include <math.h>
 
@@ -40,18 +41,21 @@ namespace gtk {
 		void SetScaleZ(float z);
 		const vec4& GetScale();
 
+		const bool& Active(const bool& setActive);
+		const bool& Active();
+
 	public:
 
 		const unsigned int _id;
 
-		Entity* const _Parent;
-		Scene* const _Scene;
+		Entity& _Parent;
+		Scene& _Scene;
 
 	private:
 
 		// Call CreateEntity() from a Scene
-		Entity(const unsigned int& id, Entity* const parent, Scene* const scene);
-		void AddChild(Entity* const child);
+		Entity(const unsigned int& id, Entity& parent, Scene& scene);
+		void AddChild(Entity* child);
 
 		void UpdateTRS();
 		void Soil();

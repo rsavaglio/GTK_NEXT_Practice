@@ -148,6 +148,7 @@
     <ClInclude Include="gtk\Scene.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="gtk\Component.cpp" />
     <ClCompile Include="gtk\Entity.cpp" />
     <ClCompile Include="gtk\Game.cpp" />
     <ClCompile Include="gtk\Scene.cpp" />

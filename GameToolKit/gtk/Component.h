@@ -3,16 +3,52 @@
 #include "gtk.h"
 #include "Camera.h"
 #include "Entity.h"
+#include "Scene.h"
 
 #include <vector>
 
 namespace gtk {
 
+	class SceneObject
+	{
+		friend class Scene;
+
+	public:
+
+		SceneObject() : _scene(nullptr) {}
+		virtual ~SceneObject() {}
+
+		const vec3& Pos() { return vec3(0); }
+		const vec3& Rot() { return vec3(0); }
+		const vec3& Scale() { return vec3(0); }
+
+		const vec3& Forward() { return vec3(0); }
+
+		const unsigned int& ID() const;
+
+	protected:
+		
+		virtual inline void Init(const unsigned int& id, Scene* scene);
+
+		Scene& GetScene();
+
+	private:
+
+		unsigned int _id;
+		Scene* _scene;
+	
+		inline void SetPos() {}
+		inline void SetRot() {}
+		inline void SetScale() {}
+
+		inline void SetForward() {}
+	
+	};
 
 	//////////////////////////////////////////
 	//				Components				//		
 	//////////////////////////////////////////
-	class Camera;
+
 
 	class CompGroup
 	{
@@ -26,28 +62,30 @@ namespace gtk {
 		CompGroup(const unsigned int& id) : _id(id) {}
 	};
 
-	class Component
+	class Component : public SceneObject
 	{
 		friend class Scene;
 
 	public:
 
-		Component(Entity* const entity, const CompGroup& compGroup) 
-			: m_Entity(entity), m_GroupID(compGroup._id), m_Active(true) {}
+		Component() 
+			: m_GroupID(0), m_Active(true) {}
 		virtual ~Component() {}
+
+		const bool& Active(const bool& setActive);
+		const bool& Active();
+
+
+		virtual int Trigger(const int& code) = 0;
 
 	protected:
 
 		virtual void Start() = 0;
-		virtual void Update(float deltaTime) = 0;
-
-	protected:
-		
-		Entity* const m_Entity;
-		const unsigned int m_GroupID;
+		virtual void Update(const float& deltaTime) = 0;
 
 	private:
 
+		unsigned int m_GroupID;
 		bool m_Active;
 
 	};
@@ -72,45 +110,54 @@ namespace gtk {
 		RenderLayer(const unsigned int& id) : _id(id) {}
 	};
 
-	class Renderer
+	class Camera;
+
+	class Renderer : public SceneObject
 	{
 		friend class Scene;
 
 	public:
 
-		Renderer(Entity* const entity, Camera* const camera,  const RenderLayer& renderLayer)
-			: m_Entity(entity), m_Camera(camera), m_LayerID(renderLayer._id), m_Active(true) {}
+		Renderer()
+			: m_LayerID(), m_Active(true) {}
 		virtual ~Renderer() {}
+
+		const bool& Active(const bool& setActive);
+
+		const bool& Active();
 
 	protected:
 
 		virtual void Start() = 0;
 		virtual void Draw() = 0;
 
+
+		void SetCamera(const Camera& camera) {}
+		const mat4& GetView() {}
+		const mat4& GetProj() {}
+
+
 	protected:
-		Entity* const m_Entity;
-		Camera* const m_Camera;
-		const unsigned int m_LayerID;
+
+		unsigned int m_LayerID;
 
 	private:
+
+		const Camera* m_Camera; // Read only
 		bool m_Active;
 
 	};
 
 
-	class Camera : public Component
+	class Camera : public SceneObject
 	{
 		friend class Scene;
 
 	public:
-		Camera(Entity* const entity, const CompGroup& compGroup, float near, float far)
-			: Component(entity, compGroup), m_id(entity->_id),
-			m_View(1), m_Proj(1), n(near), f(far) {}
+		Camera(float near, float far)
+			: m_View(1), m_Proj(1), n(near), f(far) {}
 
 		virtual ~Camera() {}
-
-		virtual void Start() = 0;
-		virtual void Update(float deltaTime) = 0;
 
 
 		// View and Projection
@@ -132,13 +179,13 @@ namespace gtk {
 			gtk::mat4 T = { 1.0f, 0.0f, 0.0f, 0.0f,
 							0.0f, 1.0f, 0.0f, 0.0f,
 							0.0f, 0.0f, 1.0f, 0.0f,
-							-m_Entity->GetPos().x, -m_Entity->GetPos().y, m_Entity->GetPos().z, 1.0f };
+							Pos().x, Pos().y, Pos().z, 1.0f };
 
 
 			// Rotate
-			float rx = m_Entity->GetRot().x * (3.14159265359f / 180.0f);
-			float ry = m_Entity->GetRot().y * (3.14159265359f / 180.0f);
-			float rz = m_Entity->GetRot().z * (3.14159265359f / 180.0f);
+			float rx = Rot().x * (3.14159265359f / 180.0f);
+			float ry = Rot().y * (3.14159265359f / 180.0f);
+			float rz = Rot().z * (3.14159265359f / 180.0f);
 
 
 			gtk::mat4 R = { cosf(ry) * cosf(rz),
@@ -177,23 +224,13 @@ namespace gtk {
 
 	public:
 
-		PerspectiveCam(Entity* const entity, const CompGroup& compGroup, float near, float far, float fov)
-			: Camera(entity, compGroup, near, far), m_fov(fov) {}
+		PerspectiveCam(float near, float far, float fov)
+			: Camera(near, far), m_fov(fov) {}
 
 
 		void SetFOV(float fov)
 		{
 			m_fov = fov;
-		}
-
-		void Start() override
-		{
-
-		}
-
-		void Update(float deltaTime) override
-		{
-
 		}
 
 	protected:
@@ -224,19 +261,8 @@ namespace gtk {
 
 	public:
 
-		OrthoCam(Entity* const entity, const CompGroup& compGroup, float near, float far)
-			: Camera(entity, compGroup, near, far) {}
-
-		void Start() override
-		{
-
-		}
-
-		void Update(float deltaTime) override
-		{
-
-		}
-
+		OrthoCam(const Entity& entity, float near, float far)
+			: Camera(near, far) {}
 
 		void CalculateProj(float width, float height) override
 		{

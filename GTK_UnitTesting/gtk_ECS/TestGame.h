@@ -10,8 +10,8 @@ public:
 	void Init() override
 	{
 		// Add the scenes of the game here
-		AddScene("TestScene", new TestScene(this));
-		AddScene("ToggleScene", new ToggleScene(this));
+		AddScene("TestScene", new TestScene(*this));
+		AddScene("ToggleScene", new ToggleScene(*this));
 
 	}
 
@@ -26,7 +26,7 @@ public:
 	void Init() override
 	{
 		// Add the scenes of the game here
-		AddScene("ToggleScene", new ToggleScene(this));
+		AddScene("ToggleScene", new ToggleScene(*this));
 
 	}
 };

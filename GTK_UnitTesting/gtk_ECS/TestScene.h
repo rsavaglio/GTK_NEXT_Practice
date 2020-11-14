@@ -10,19 +10,19 @@ class SceneTemplate : public gtk::Scene
 
 protected:
 
-	SceneTemplate(gtk::Game* const game) : gtk::Scene(game) {}
+	SceneTemplate(gtk::Game& game) : gtk::Scene(game) {}
 
 	// Called by game when scene starts
 	void Init() override
 	{
 		using namespace gtk;
 
-		CompGroup compGroup = CreateCompGroup();
-		RenderLayer rendLayer = CreateRenderLayer();
+		CompGroup group = CreateCompGroup();
+		RenderLayer layer = CreateRenderLayer();
 
-		Entity* entity = CreateEntity();
-			AddComponent(new CompTemplate(entity, compGroup));
-			AddRenderer(new ToggleMeRend(entity, rendLayer));
+		Entity& entity = CreateEntity();
+			AddComponent(entity, group, new CompTemplate());
+			AddRenderer(entity, layer, new ToggleMeRend());
 
 	}
 
@@ -38,7 +38,7 @@ class TestScene : public gtk::Scene
 {
 
 public:
-	TestScene(gtk::Game* const game) : gtk::Scene(game) {}
+	TestScene(gtk::Game& game) : gtk::Scene(game) {}
 
 protected:
 
@@ -49,23 +49,22 @@ protected:
 		gtk::CompGroup Subtractors = CreateCompGroup();
 		gtk::CompGroup SceneSwitchers = CreateCompGroup();
 
-		gtk::RenderLayer rendLayer = CreateRenderLayer();
+		gtk::RenderLayer layer = CreateRenderLayer();
 
 
-		gtk::Entity* SS = CreateEntity();
-			SceneSwitcherComp* const SSC = new SceneSwitcherComp(SS, SceneSwitchers, this, "TestScene");
-			AddComponent(SSC);
+		gtk::Entity& SS = CreateEntity();
+			Component& SSC = AddComponent(SS, SceneSwitchers, new SceneSwitcherComp(*this, "TestScene"));
 
 		// Create Entities and add components here
-		gtk::Entity*  player = CreateEntity();
-			AddComponent(new VectorTest(player, Adders, true, SSC));
-			AddComponent(new VectorTest(player, Subtractors, false, SSC));
+		gtk::Entity&  player = CreateEntity();
+			AddComponent(player, Adders, new VectorTest(true, SSC));
+			AddComponent(player, Subtractors, new VectorTest(false, SSC));
 
 		// Hat is a child of player
-		gtk::Entity*  hat = CreateEntity(player);
-			AddRenderer(new TestRenderer(hat, rendLayer));
-			AddComponent(new VectorTest(hat, Adders, true, SSC));
-			AddComponent(new VectorTest(hat, Subtractors, false, SSC));
+		gtk::Entity& hat = CreateEntity(player);
+			AddRenderer(hat, layer, new TestRenderer());
+			AddComponent(hat, Adders, new VectorTest(true, SSC));
+			AddComponent(hat, Subtractors, new VectorTest(false, SSC));
 
 	}
 
@@ -79,7 +78,7 @@ protected:
 class ToggleScene : public gtk::Scene
 {
 public:
-	ToggleScene(gtk::Game* const game) : gtk::Scene(game), m_UpdateCount(0) {}
+	ToggleScene(gtk::Game& game) : gtk::Scene(game), m_UpdateCount(0) {}
 
 protected:
 
@@ -90,18 +89,19 @@ protected:
 		CompGroup g_Tog = CreateCompGroup();
 		CompGroup g_TogMe = CreateCompGroup();
 
-		RenderLayer rendLayer = CreateRenderLayer();
+		RenderLayer layer = CreateRenderLayer();
+
+		Entity& ToggleMeElmo = CreateEntity();
+
+			p_tmc = new ToggleMeComp();
+			Component& tmc = AddComponent(ToggleMeElmo, g_TogMe, p_tmc);
+
+			p_tmr = new ToggleMeRend();
+			Renderer& tmr = AddRenderer(ToggleMeElmo, layer, p_tmr);
 
 
-		Entity* ToggleMeElmo = CreateEntity();
-			tmc = new ToggleMeComp(ToggleMeElmo, g_TogMe);
-			AddComponent(tmc);
-			tmr = new ToggleMeRend(ToggleMeElmo, rendLayer);
-			AddRenderer(tmr);
-
-
-		Entity* Toggler = CreateEntity();
-			AddComponent(new TogglerComp(Toggler, g_Tog, this, ToggleMeElmo, tmc, tmr));
+		Entity& Toggler = CreateEntity();
+			AddComponent(Toggler, g_Tog, new TogglerComp(ToggleMeElmo, tmc, tmr));
 			
 	}
 
@@ -109,9 +109,9 @@ protected:
 	{
 		if (m_UpdateCount == updateCount)
 		{
-			EXPECT_EQ(tmc->m_UpdateCount, comp);
+			EXPECT_EQ(p_tmc->m_UpdateCount, comp);
 
-			EXPECT_TRUE(tmr->m_DrawCount == rend || tmr->m_DrawCount == rend - 1);
+			EXPECT_TRUE(p_tmr->m_DrawCount == rend || p_tmr->m_DrawCount == rend - 1);
 		}
 	}
 
@@ -160,9 +160,10 @@ protected:
 	}
 
 private:
+
+	ToggleMeComp* p_tmc;
+	ToggleMeRend* p_tmr;
+
 	unsigned int m_UpdateCount;
-	
-	ToggleMeComp* tmc;
-	ToggleMeRend* tmr;
 
 };

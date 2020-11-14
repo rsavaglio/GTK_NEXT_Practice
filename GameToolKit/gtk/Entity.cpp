@@ -2,7 +2,7 @@
 
 namespace gtk {
 
-	Entity::Entity(const unsigned int& id, Entity* const parent, Scene* const scene)
+	Entity::Entity(const unsigned int& id, Entity& parent, Scene& scene)
 		: _id(id), _Parent(parent), _Scene(scene), _Children(), _Active(true),
 		_Dirty(true), _Pos(), _Rot(), _Scale(1.0f), _TRS(1) {}
 
@@ -166,7 +166,7 @@ namespace gtk {
 							0.0f, 0.0f, _Scale.z, 0.0f,
 							0.0f, 0.0f, 0.0f, 1.0f };
 
-			_TRS = _Parent->_TRS * T * R * S;
+			_TRS = _Parent._TRS * T * R * S;
 
 			_Dirty = false;
 
@@ -189,9 +189,19 @@ namespace gtk {
 		}
 	}
 
-	void Entity::AddChild(Entity* const child)
+	void Entity::AddChild(Entity* child)
 	{
 		_Children.push_back(child);
+	}
+
+	const bool& Entity::Active(const bool& setActive)
+	{
+		_Scene.ToggleEntity(*this, setActive);
+	}
+
+	const bool& Entity::Active()
+	{
+		return _Active;
 	}
 
 }

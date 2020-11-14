@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Game.h"
 #include "Component.h"
 #include "Entity.h"
 #include "Camera.h"
@@ -13,25 +14,30 @@ namespace gtk {
 	class Component;
 	class CompGroup;
 	class Renderer;
+	class RenderLayer;
+	class Game;
+	class Camera;
 
 	class Scene {
 
 		friend class Game;
 
 	public:
-		
+
 		// structors
-		Scene(Game* const game);
+		Scene(Game& game);
 		virtual ~Scene();
 
 		void SwitchScene(std::string key);
 
 		// Toggles
-		void ToggleEntity(Entity* const entity, bool setActive);
-		void ToggleComponent(Component* const component, bool setActive);
-		void ToggleRenderer(Renderer* const renderer, bool setActive); 
+		void ToggleEntity(Entity& entity, bool setActive);
+		void ToggleComponent(Component& component, bool setActive);
+		void ToggleRenderer(Renderer& renderer, bool setActive);
 
-		Camera* const GetMainCam();
+		Camera& GetMainCam();
+
+		Entity& GetEntity(unsigned int id);
 
 	protected:
 
@@ -44,12 +50,15 @@ namespace gtk {
 		CompGroup CreateCompGroup();
 		RenderLayer CreateRenderLayer();
 
-		Entity* CreateEntity(); // Sets parent as m_Root
-		Entity* CreateEntity(Entity* const parent);
+		Entity& CreateEntity(); // Sets parent as m_Root
+		Entity& CreateEntity(Entity& parent);
 
-		Component* const AddComponent(Component* const component);
-		Renderer* const AddRenderer(Renderer* const renderer);
-		Camera* const AddCamera(Camera* const camera);
+		Component& AddComponent(Entity& entity, const CompGroup& group, Component* const component);
+
+		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Renderer* const renderer);
+		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, const Camera& camera, Renderer* const renderer);
+
+		Camera& AddCamera(Entity& entity, Camera* const camera);
 
 		void SetMainCam(unsigned int id);
 
@@ -58,7 +67,6 @@ namespace gtk {
 
 		// Scene Object containers
 		std::unordered_map<unsigned int, Entity*> m_EntityMap;
-		
 
 		std::vector<std::unordered_map<unsigned int, Component*>*> m_ComponentMaps;
 		std::vector<std::unordered_map<unsigned int, Component*>*> m_DisabledComponentMaps;
@@ -84,10 +92,10 @@ namespace gtk {
 		// Signals a scene change
 		bool m_SwitchScene;
 		std::string m_NextScene;
-		Game* const m_Game;
+		Game& m_Game;
 
 		// Scene graph root
-		Entity* const m_Root;
+		Entity m_Root;
 
 		unsigned int m_EntityIDProvider;
 		unsigned int m_CompGroupIDProvider;

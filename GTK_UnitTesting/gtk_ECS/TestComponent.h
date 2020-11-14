@@ -5,14 +5,19 @@
 class CompTemplate : public gtk::Component
 {
 public:
-	CompTemplate(gtk::Entity* const entity, const gtk::CompGroup& compGroup) : Component(entity, compGroup) {}
+	CompTemplate() {}
 
 	void Start() override
 	{
 
 	}
 
-	void Update(float deltaTime) override
+	void Update(const float& deltaTime) override
+	{
+
+	}
+
+	int Trigger(const int& code) override
 	{
 
 	}
@@ -25,29 +30,30 @@ private:
 class SceneSwitcherComp : public gtk::Component
 {
 public:
-	SceneSwitcherComp(gtk::Entity* const entity, const gtk::CompGroup& compGroup, gtk::Scene* const scene, std::string nextScene)
-		: Component(entity, compGroup), m_SwitchScene(false), m_NextScene(nextScene), _Scene(scene) {}
-
-	bool m_SwitchScene;
-
+	SceneSwitcherComp(gtk::Scene& scene, std::string nextScene)
+		: m_NextScene(nextScene), _Scene(scene) {}
 
 	void Start() override
 	{
 
 	}
 
-	void Update(float deltaTime) override
+	void Update(const float& deltaTime) override
 	{
-		if (m_SwitchScene)
-		{
-			_Scene->SwitchScene(m_NextScene);
-		}
+	}
+
+	int Trigger(const int& code) override
+	{
+
+		_Scene.SwitchScene(m_NextScene);
+
+		return 1;
 	}
 
 
 private:
 
-	gtk::Scene* const _Scene;
+	gtk::Scene& const _Scene;
 	std::string m_NextScene;
 };
 
@@ -55,8 +61,8 @@ class VectorTest : public gtk::Component
 {
 public:
 
-	VectorTest(gtk::Entity* const entity, const gtk::CompGroup& compGroup, const bool& aOs, SceneSwitcherComp* const sceneSwitcher) 
-		: Component(entity, compGroup), addOrSub(aOs), ValueToAdd(5), vec(), UpdateCount(0), m_SSC(sceneSwitcher)
+	VectorTest(const bool& aOs, Component& sceneSwitcher) 
+		: addOrSub(aOs), ValueToAdd(5), vec(), UpdateCount(0), m_SSC(sceneSwitcher)
 	{
 		if (addOrSub)
 		{
@@ -72,7 +78,7 @@ public:
 	{
 	}
 
-	void Update(float deltaTime) override
+	void Update(const float& deltaTime) override
 	{
 		if (addOrSub)
 		{
@@ -105,9 +111,15 @@ public:
 		{
 			CheckEquals(5000, 5005);
 
-			m_SSC->m_SwitchScene = true;
+			m_SSC.Trigger(1);
 		}
 	
+	}
+
+	int Trigger(const int& code) override
+	{
+
+		return 0;
 	}
 
 private:
@@ -119,7 +131,7 @@ private:
 
 	int UpdateCount;
 
-	SceneSwitcherComp* const m_SSC;
+	Component& m_SSC;
 
 	void CheckEquals(MTYPE x, MTYPE y)
 	{
@@ -143,41 +155,41 @@ class TogglerComp : public gtk::Component
 {
 
 public:
-	TogglerComp(gtk::Entity* const entity, const gtk::CompGroup& compGroup,
-		gtk::Scene* const scene, gtk::Entity* const entityToToggle, gtk::Component* const compToToggle, gtk::Renderer* const rendToToggle)
-		: Component(entity, compGroup), m_Scene(scene), m_UpdateCount(0), m_EntToToggle(entityToToggle), m_CompToToggle(compToToggle), m_RendToToggle(rendToToggle) {}
+	TogglerComp(
+		gtk::Entity& entityToToggle, gtk::Component& compToToggle, gtk::Renderer& rendToToggle)
+		: m_UpdateCount(0), m_EntToToggle(entityToToggle), m_CompToToggle(compToToggle), m_RendToToggle(rendToToggle) {}
 
 	void Start() override
 	{
 
 	}
 
-	void Update(float deltaTime) override
+	void Update(const float& deltaTime) override
 	{
 		if (m_UpdateCount == 10)
 		{
-			m_Scene->ToggleComponent(m_CompToToggle, false);
+			m_CompToToggle.Active(false);
 			
 			// Should do nothing
-			m_Scene->ToggleComponent(m_CompToToggle, false);
-			m_Scene->ToggleRenderer(m_RendToToggle, true);
+			m_CompToToggle.Active(false);
+			m_RendToToggle.Active(true);
 
 		}
 
 		if (m_UpdateCount == 20)
 		{
-			m_Scene->ToggleComponent(m_CompToToggle, true);
-			m_Scene->ToggleRenderer(m_RendToToggle, false);
+			m_CompToToggle.Active(true);
+			m_RendToToggle.Active(false);
 
 			// Should do nothing
-			m_Scene->ToggleComponent(m_CompToToggle, true);
-			m_Scene->ToggleRenderer(m_RendToToggle, false);
+			m_CompToToggle.Active(true);
+			m_RendToToggle.Active(false);
 		}
 
 
 		if (m_UpdateCount == 30)
 		{
-			m_Scene->ToggleRenderer(m_RendToToggle, true);
+			m_RendToToggle.Active(true);
 		}
 
 		if (m_UpdateCount == 40)
@@ -185,8 +197,8 @@ public:
 			// Toggle entity off while comp and rend are active
 
 			// Toggle Entity
-			m_Scene->ToggleEntity(m_EntToToggle, false);
-			m_Scene->ToggleEntity(m_EntToToggle, false); // Should do nothing
+			m_EntToToggle.Active(false);
+			m_EntToToggle.Active(false); // Should do nothing
 		}
 
 		if (m_UpdateCount == 50)
@@ -194,8 +206,8 @@ public:
 			// Toggle entity off while comp and rend are active
 
 			// Toggle Entity
-			m_Scene->ToggleEntity(m_EntToToggle, true);
-			m_Scene->ToggleEntity(m_EntToToggle, true); // Should do nothing
+			m_EntToToggle.Active(true);
+			m_EntToToggle.Active(true); // Should do nothing
 
 		}
 
@@ -203,10 +215,10 @@ public:
 		{
 
 			// Toggle Entity
-			m_Scene->ToggleEntity(m_EntToToggle, false);
+			m_EntToToggle.Active(false);
 
 			// Toggle Comp
-			m_Scene->ToggleComponent(m_CompToToggle, false);
+			m_CompToToggle.Active(false);
 
 		}
 
@@ -214,100 +226,109 @@ public:
 		{
 
 			// Toggle Entity
-			m_Scene->ToggleEntity(m_EntToToggle, true);
+			m_EntToToggle.Active(true);
 		}
 
 
 		if (m_UpdateCount == 80)
 		{
 			// Toggle Comp
-			m_Scene->ToggleComponent(m_CompToToggle, true);
+			m_CompToToggle.Active(true);
 		}
 
 		if (m_UpdateCount == 90)
 		{
 			// Toggle Comp
-			m_Scene->ToggleComponent(m_CompToToggle, false);
+			m_CompToToggle.Active(false);
 
 			// Toggle Entity
-			m_Scene->ToggleEntity(m_EntToToggle, false);
+			m_EntToToggle.Active(false);
 		}
 
 		if (m_UpdateCount == 100)
 		{
 
 			// Toggle Entity
-			m_Scene->ToggleEntity(m_EntToToggle, true);
+			m_EntToToggle.Active(true);
 		}
 
 		if (m_UpdateCount == 110)
 		{
 			// Toggle Comp
-			m_Scene->ToggleComponent(m_CompToToggle, true);
+			m_CompToToggle.Active(true);
 		}
 
 		if (m_UpdateCount == 120)
 		{
-			m_Scene->ToggleEntity(m_EntToToggle, false);
+			m_EntToToggle.Active(false);
 
-			m_Scene->ToggleRenderer(m_RendToToggle, false);
+			m_RendToToggle.Active(false);
 		}
 
 		if (m_UpdateCount == 130)
 		{
-			m_Scene->ToggleEntity(m_EntToToggle, true);
+			m_EntToToggle.Active(true);
 		}
 
 		if (m_UpdateCount == 140)
 		{
-			m_Scene->ToggleRenderer(m_RendToToggle, true);
+			m_RendToToggle.Active(true);
 		}
 
 		if (m_UpdateCount == 150)
 		{
-			m_Scene->ToggleRenderer(m_RendToToggle, false);
+			m_RendToToggle.Active(false);
 
-			m_Scene->ToggleEntity(m_EntToToggle, false);
+			m_EntToToggle.Active(false);
 		}
 
 		if (m_UpdateCount == 160)
 		{
-			m_Scene->ToggleEntity(m_EntToToggle, true);
+			m_EntToToggle.Active(true);
 		}
 
 		if (m_UpdateCount == 170)
 		{
-			m_Scene->ToggleRenderer(m_RendToToggle, true);
+			m_RendToToggle.Active(true);
 		}
 
 
 		m_UpdateCount++;
 	}
 
+	int Trigger(const int& code) override
+	{
+
+		return m_UpdateCount;
+	}
+
 private:
 	unsigned int m_UpdateCount;
 
-	gtk::Scene* const m_Scene;
-	gtk::Entity* const m_EntToToggle;
-	gtk::Component* const m_CompToToggle;
-	gtk::Renderer* const m_RendToToggle;
-
-
+	gtk::Entity& const m_EntToToggle;
+	gtk::Component& const m_CompToToggle;
+	gtk::Renderer& const m_RendToToggle;
 };
 
 class ToggleMeComp : public gtk::Component
 {
 public:
-	ToggleMeComp(gtk::Entity* const entity, const gtk::CompGroup& compGroup) : Component(entity, compGroup), m_UpdateCount(0) {}
+	ToggleMeComp() : m_UpdateCount(0) {}
 
 	void Start() override
 	{
 
 	}
 
-	void Update(float deltaTime) override
+	void Update(const float& deltaTime) override
 	{
 		m_UpdateCount++;
+	}
+
+	int Trigger(const int& code) override
+	{
+
+		return 0;
 	}
 
 	unsigned int m_UpdateCount;
