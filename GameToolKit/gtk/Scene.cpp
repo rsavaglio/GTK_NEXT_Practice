@@ -7,7 +7,7 @@ namespace gtk {
 	Scene::Scene(Game& game)
 		:m_MainCam(nullptr),
 		m_SwitchScene(false), m_NextScene(""),
-		m_Game(game), m_Root(m_EntityIDProvider++, nullptr, *this),
+		m_Game(game),
 		m_EntityIDProvider(0), m_UpdateGroupIDProvider(0), m_RenderLayerIDProvider(0)
 	{
 
@@ -22,30 +22,34 @@ namespace gtk {
 	{
 		m_SwitchScene = true;
 		m_NextScene = key;
+
+		// Scene is switched after all comps are updated
+		// Look in Scene::Update
 	}
 
 	Entity& Scene::CreateEntity()
 	{
-		// Add entity to the map, set as active, set root as parent
-		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, &m_Root, *this) });
+		Entity* newEnt = new Entity(m_EntityIDProvider, nullptr, *this);
 
-		// Add to roots children
-		m_Root.AddChild(m_EntityMap.at(m_EntityIDProvider));
+		newEnt->Init(m_EntityIDProvider, this, newEnt);
+
+		// Add entity to the map, set as active, set root as parent
+		m_RootEntityMap.insert({ m_EntityIDProvider++, newEnt });
 
 		// Return id and increment
-		return *m_EntityMap.at(m_EntityIDProvider++);
+		return *newEnt;
 	}
 
 	Entity& Scene::CreateEntity(Entity& parent)
 	{
 		// Add entity to the map, set as active
-		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, &parent, *this) });
+		Entity* newEnt = new Entity(m_EntityIDProvider++, &parent, *this);
 
 		// Add this to parent's list of children
-		parent.AddChild(m_EntityMap.at(m_EntityIDProvider));
+		parent.AddChild(newEnt);
 
 		// Return id and increment
-		return *m_EntityMap.at(m_EntityIDProvider++);
+		return *newEnt;
 	}
 	
 	UpdateGroup Scene::CreateUpdateGroup()
@@ -71,7 +75,7 @@ namespace gtk {
 	Behavior& Scene::AddBehavior(Entity& entity, const UpdateGroup& group, Behavior* const behavior)
 	{
 		// Set scene object data
-		behavior->Init(entity._id, this);
+		behavior->Init(entity._id, this, &entity);
 
 		// Set behavior data
 		behavior->m_GroupID = group._id;
@@ -89,7 +93,7 @@ namespace gtk {
 	Renderer& Scene::AddRenderer(Entity& entity, const RenderLayer& layer, const Camera& camera, Renderer* const renderer)
 	{
 		// Set scene object data
-		renderer->Init(entity._id, this);
+		renderer->Init(entity._id, this, &entity);
 
 		// Set renderer data
 		renderer->m_Camera = &camera;
@@ -108,7 +112,7 @@ namespace gtk {
 	Renderer& Scene::AddRenderer(Entity& entity, const RenderLayer& layer, Renderer* const renderer)
 	{
 		// Set scene object data
-		renderer->Init(entity._id, this);
+		renderer->Init(entity._id, this, &entity);
 
 		// Set renderer data
 		renderer->m_Camera = m_MainCam;
@@ -128,7 +132,7 @@ namespace gtk {
 	Camera& Scene::AddCamera(Entity& entity, Camera* const camera)
 	{
 		// Set scene object data
-		camera->Init(entity._id, this);
+		camera->Init(entity._id, this, &entity);
 
 		// If first camera
 		if (m_CameraMap.size() == 0)
@@ -157,13 +161,6 @@ namespace gtk {
 	Camera& Scene::GetMainCam()
 	{
 		return *m_MainCam;
-	}
-
-	Entity& Scene::GetEntity(unsigned int id)
-	{
-		ASSERT(m_EntityMap.find(id) != m_EntityMap.end());
-
-		return *m_EntityMap.at(id);
 	}
 
 	void gtk::Scene::ToggleEntity(Entity& entity, bool setActive)
@@ -276,14 +273,11 @@ namespace gtk {
 		unsigned int id = behavior.ID();
 		unsigned int group = behavior.m_GroupID;
 
-		// Does the id/entity even exist?
-		ASSERT(m_EntityMap.find(id) != m_EntityMap.end());
-
 		// Get entity
-		Entity* entity = m_EntityMap.at(id);
+		Entity& entity = behavior.GetEntity();
 
 		// If the entity is active we move the behavior between maps based on requested state
-		if (entity->_Active)
+		if (entity._Active)
 		{
 
 			if (setActive)
@@ -340,15 +334,12 @@ namespace gtk {
 		unsigned int id = renderer.ID();
 		unsigned int layer = renderer.m_LayerID;
 
-		// Does the id/entity even exist?
-		ASSERT(m_EntityMap.find(id) != m_EntityMap.end());
-
 		// Get entity
-		Entity* entity = m_EntityMap.at(id);
+		Entity& entity = renderer.GetEntity();
 
 
 		// If the entity is active we move the renderer between maps based on requested state
-		if (entity->_Active)
+		if (entity._Active)
 		{
 			if (setActive)
 			{
@@ -462,14 +453,18 @@ namespace gtk {
 		
 		// Shred maps
 		MapShredder(m_CameraMap);
-		MapShredder(m_EntityMap);
+
+		// Clear Entity Scene Graph
+		for (auto& child : m_RootEntityMap)
+		{
+			EntityShredder(*child.second);
+		}
+		
+		m_RootEntityMap.clear();
 
 		// Set switch scene flag back for next time
 		m_SwitchScene = false;
 		m_NextScene = "";
-
-		// Remove children from root entity
-		m_Root._Children.clear();
 
 		// Reset id providers
 		m_EntityIDProvider = 0;
@@ -480,9 +475,9 @@ namespace gtk {
 	void gtk::Scene::UpdateSceneGraph()
 	{
 		// Traverse entities and update their TRS
-		for (auto& child : m_Root._Children)
+		for (auto& child : m_RootEntityMap)
 		{
-			child->UpdateTRS();
+			child.second->UpdateRootTRS();
 		}
 
 	}
@@ -521,6 +516,15 @@ namespace gtk {
 			delete obj.second;
 		}
 		map.clear();
+	}
+
+	void Scene::EntityShredder(Entity& entity)
+	{
+		for (auto& child : entity._Children)
+		{
+			EntityShredder(*child);
+
+		}
 	}
 
 	

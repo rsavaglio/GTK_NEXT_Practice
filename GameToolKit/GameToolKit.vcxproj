@@ -138,8 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="gtk\Component.h" />
-    <ClInclude Include="gtk\Entity.h" />
+    <ClInclude Include="gtk\SceneObjects.h" />
     <ClInclude Include="gtk\Game.h" />
     <ClInclude Include="gtk\gtk.h" />
     <ClInclude Include="gtk\gtkMath.hpp" />
@@ -147,8 +146,7 @@
     <ClInclude Include="gtk\Scene.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gtk\Component.cpp" />
-    <ClCompile Include="gtk\Entity.cpp" />
+    <ClCompile Include="gtk\SceneObjects.cpp" />
     <ClCompile Include="gtk\Game.cpp" />
     <ClCompile Include="gtk\Scene.cpp" />
   </ItemGroup>

@@ -37,6 +37,9 @@ namespace gtk {
 
 	void Game::SwitchScene(std::string key)
 	{
+		// Ensure new scene exists
+		ASSERT(m_SceneMap.find(key) != m_SceneMap.end());
+
 		// Shutdown active scene
 		m_ActiveScene->Shutdown();
 

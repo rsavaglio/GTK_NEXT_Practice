@@ -1,20 +1,21 @@
 #pragma once
 
-#include "Component.h"
-#include "Entity.h"
+#include "SceneObjects.h"
 
 #include <vector>
 #include <unordered_map>
 
 namespace gtk {
 
+	class Game;
+	class SceneObject;
+
+	class Entity;
 	class Behavior;
 	class UpdateGroup;
 	class Renderer;
 	class RenderLayer;
-	class Game;
 	class Camera;
-	class Component;
 
 	class Scene {
 
@@ -35,7 +36,7 @@ namespace gtk {
 
 		Camera& GetMainCam();
 
-		Entity& GetEntity(unsigned int id);
+		//Entity& GetEntity(unsigned int id);
 
 	protected:
 
@@ -64,7 +65,7 @@ namespace gtk {
 	protected:
 
 		// Scene Object containers
-		std::unordered_map<unsigned int, Entity*> m_EntityMap;
+		std::unordered_map<unsigned int, Entity*> m_RootEntityMap;
 
 		std::vector<std::unordered_map<unsigned int, Behavior*>*> m_BehaviorMaps;
 		std::vector<std::unordered_map<unsigned int, Behavior*>*> m_DisabledBehaviorMaps;
@@ -90,15 +91,14 @@ namespace gtk {
 		template <class T>
 		void MapShredder(std::unordered_map<unsigned int, T*>& map);
 
+		void EntityShredder(Entity& entity);
+
 	private:
 
 		// Signals a scene change
 		bool m_SwitchScene;
 		std::string m_NextScene;
 		Game& m_Game;
-
-		// Scene graph root
-		Entity m_Root;
 
 		unsigned int m_EntityIDProvider;
 		unsigned int m_UpdateGroupIDProvider;

@@ -4,49 +4,66 @@
 #include "Scene.h"
 
 #include <vector>
+#include <string>
 
 namespace gtk {
 
 	//////////////////////////////////////////
-	//				Components				//		
+	//				SceneObject				//		
 	//////////////////////////////////////////
 
-	// Base class for anything that is added to Entities
+	// Base class for anything mananged by the scene
+	// Provides handy functions
 
-	class Component
+	class Entity;
+	class Scene;
+
+	class SceneObject
 	{
 		friend class Scene;
 
 	public:
 
-		Component();
-		virtual ~Component() {}
+		SceneObject();
+		virtual ~SceneObject() {}
 
-		const vec3& Pos() { return vec3(0); }
-		const vec3& Rot() { return vec3(0); }
-		const vec3& Scale() { return vec3(0); }
+		const vec3& Pos();
+		const vec3& Pos(const vec3& pos);
+		const vec3& Pos(const vec3& pos, const bool& add);
 
-		const vec3& Forward() { return vec3(0); }
+		const vec3& Rot();
+		const vec3& Rot(const vec3& pos);
+		const vec3& Rot(const vec3& pos, const bool& add);
+
+		const vec3& Scale();
+		const vec3& Scale(const vec3& pos);
+		const vec3& Scale(const vec3& pos, const bool& add);
 
 		const unsigned int& ID() const;
 
-		void Parent() {}
-		void TRS() {}
+		Entity& Parent();
+		const mat4& TRS();
 
-		void Instantiate() {} // How could this work?
+		void SwitchScene(std::string name);
+
+		// TODO
+		const vec3& Forward() {}
+		void Instantiate() {}
+
 
 	protected:
 		
-		virtual inline void Init(const unsigned int& id, Scene* scene);
+		virtual inline void Init(const unsigned int& id, Scene* scene, Entity* ent);
 
 		Scene& GetScene();
+		Entity& GetEntity();
 
 	private:
 
 		unsigned int _id;
 		Scene* _scene;
-	
-	
+		Entity* _ent;
+
 	};
 
 	//////////////////////////////////////////
@@ -66,7 +83,7 @@ namespace gtk {
 		UpdateGroup(const unsigned int& id) : _id(id) {}
 	};
 
-	class Behavior : public Component
+	class Behavior : public SceneObject
 	{
 		friend class Scene;
 
@@ -98,14 +115,13 @@ namespace gtk {
 	//				Cameras  				//		
 	//////////////////////////////////////////
 
-	class Camera : public Component
+	class Camera : public SceneObject
 	{
 		friend class Scene;
 
 	public:
 		
 		Camera(const float& near, const float& far);
-
 		virtual ~Camera() {}
 
 
@@ -180,7 +196,7 @@ namespace gtk {
 		RenderLayer(const unsigned int& id) : _id(id) {}
 	};
 
-	class Renderer : public Component
+	class Renderer : public SceneObject
 	{
 		friend class Scene;
 
@@ -191,7 +207,6 @@ namespace gtk {
 		virtual ~Renderer() {}
 
 		const bool& Active(const bool& setActive);
-
 		const bool& Active();
 
 	protected:
@@ -215,5 +230,58 @@ namespace gtk {
 		bool m_Active;
 
 	};
+
+	//////////////////////////////////////////
+	//				Entities				//		
+	//////////////////////////////////////////
+	
+	class Entity : public SceneObject
+	{
+		friend class Scene;
+		friend class SceneObject;
+
+	public:
+
+		const mat4& GetTRS();
+
+		const bool& Active(const bool& setActive);
+		const bool& Active();
+
+	public:
+
+		const unsigned int _id;
+
+
+	private:
+
+		// Call CreateEntity() from a Scene
+		Entity(const unsigned int& id, Entity* parent, Scene& scene);
+		void AddChild(Entity* child);
+
+		void UpdateRootTRS();
+		void UpdateTRS();
+		void Soil();
+
+		mat4 CalcTRS();
+
+	private:
+
+		Entity* _Parent;
+		Scene& _Scene;
+
+		std::vector<Entity*> _Children;
+
+		bool _Active; // Update comps and draw
+		bool _Dirty;  // Update transform
+
+		vec3 _Pos;
+		vec3 _Rot;
+		vec3 _Scale;
+		mat4 _TRS;
+
+	};
+
+
+
 
 }

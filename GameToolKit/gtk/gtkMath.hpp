@@ -135,6 +135,7 @@ namespace gtk {
 		vec3() :x(0), y(0), z(0) {}
 		vec3(const MTYPE& X) : x(X), y(X), z(X) {}
 		vec3(const MTYPE& X, const MTYPE& Y, const MTYPE& Z) : x(X), y(Y), z(Z) {}
+		vec3(const vec2& v2) : x(v2.x), y(v2.y), z(1) {}
 
 		// Indexing
 		MTYPE& operator[](const unsigned short& i) { ASSERT(i < 3); return values[i]; }
@@ -266,6 +267,8 @@ namespace gtk {
 		vec4() :x(0), y(0), z(0), w(0) {}
 		vec4(const MTYPE& X) : x(X), y(X), z(X), w(X) {}
 		vec4(const MTYPE& X, const MTYPE& Y, const MTYPE& Z, const MTYPE& W) : x(X), y(Y), z(Z), w(W) {}
+
+		vec4(const vec3& v3) : x(v3.x), y(v3.y), z(v3.z), w(1) {}
 
 		// Indexing
 		MTYPE& operator[](const unsigned short& i) { ASSERT(i < 4); return values[i]; }

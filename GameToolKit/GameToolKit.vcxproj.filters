@@ -21,10 +21,7 @@
     <ClCompile Include="gtk\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gtk\Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="gtk\Component.cpp">
+    <ClCompile Include="gtk\SceneObjects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -33,9 +30,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gtk\gtkMath.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="gtk\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gtk\Scene.h">
@@ -47,7 +41,7 @@
     <ClInclude Include="gtk\gtk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gtk\Entity.h">
+    <ClInclude Include="gtk\SceneObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
