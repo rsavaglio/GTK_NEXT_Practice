@@ -153,8 +153,8 @@ namespace gtk {
 		friend class Scene;
 
 	public:
-		Camera(float near, float far)
-			: m_View(1), m_Proj(1), n(near), f(far) {}
+		
+		Camera(float near, float far);
 
 		virtual ~Camera() {}
 
@@ -209,7 +209,6 @@ namespace gtk {
 
 	protected:
 
-		unsigned int m_id;
 		mat4 m_View;
 		mat4 m_Proj;
 
@@ -260,7 +259,7 @@ namespace gtk {
 
 	public:
 
-		OrthoCam(const Entity& entity, float near, float far)
+		OrthoCam(float near, float far)
 			: Camera(near, far) {}
 
 		void CalculateProj(float width, float height) override

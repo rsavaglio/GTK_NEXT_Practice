@@ -53,7 +53,7 @@ public:
 
 private:
 
-	gtk::Scene& const _Scene;
+	gtk::Scene& _Scene;
 	std::string m_NextScene;
 };
 
@@ -305,9 +305,9 @@ public:
 private:
 	unsigned int m_UpdateCount;
 
-	gtk::Entity& const m_EntToToggle;
-	gtk::Component& const m_CompToToggle;
-	gtk::Renderer& const m_RendToToggle;
+	gtk::Entity& m_EntToToggle;
+	gtk::Component& m_CompToToggle;
+	gtk::Renderer& m_RendToToggle;
 };
 
 class ToggleMeComp : public gtk::Component

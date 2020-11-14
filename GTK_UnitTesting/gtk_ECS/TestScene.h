@@ -42,6 +42,7 @@ protected:
 
 	void Init() override
 	{
+		using namespace gtk;
 
 		gtk::CompGroup Adders = CreateCompGroup();
 		gtk::CompGroup Subtractors = CreateCompGroup();
@@ -51,7 +52,7 @@ protected:
 
 
 		gtk::Entity& SS = CreateEntity();
-			Component& SSC = AddComponent(SS, SceneSwitchers, new SceneSwitcherComp(*this, "TestScene"));
+		gtk::Component& SSC = AddComponent(SS, SceneSwitchers, new SceneSwitcherComp(*this, "TestScene"));
 
 		// Create Entities and add components here
 		gtk::Entity& player = CreateEntity();

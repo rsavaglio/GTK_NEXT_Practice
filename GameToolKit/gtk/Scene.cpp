@@ -7,7 +7,7 @@ namespace gtk {
 	Scene::Scene(Game& game)
 		:m_MainCam(nullptr),
 		m_SwitchScene(false), m_NextScene(""),
-		m_Game(game), m_Root(new Entity(m_EntityIDProvider++, nullptr, *this)),
+		m_Game(game), m_Root(m_EntityIDProvider++, nullptr, *this),
 		m_EntityIDProvider(0), m_CompGroupIDProvider(0), m_RenderLayerIDProvider(0)
 	{
 
@@ -27,10 +27,10 @@ namespace gtk {
 	Entity& Scene::CreateEntity()
 	{
 		// Add entity to the map, set as active, set root as parent
-		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, m_Root, *this) });
+		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, &m_Root, *this) });
 
 		// Add to roots children
-		m_Root->AddChild(m_EntityMap.at(m_EntityIDProvider));
+		m_Root.AddChild(m_EntityMap.at(m_EntityIDProvider));
 
 		// Return id and increment
 		return *m_EntityMap.at(m_EntityIDProvider++);
@@ -39,7 +39,7 @@ namespace gtk {
 	Entity& Scene::CreateEntity(Entity& parent)
 	{
 		// Add entity to the map, set as active
-		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, parent, *this) });
+		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, &parent, *this) });
 
 		// Add this to parent's list of children
 		parent.AddChild(m_EntityMap.at(m_EntityIDProvider));
@@ -270,7 +270,7 @@ namespace gtk {
 		unsigned int group = component.m_GroupID;
 
 		// Does the id/entity even exist?
-		ASSERT(m_EntityMap.find(id) == m_EntityMap.end());
+		ASSERT(m_EntityMap.find(id) != m_EntityMap.end());
 
 		// Get entity
 		Entity* entity = m_EntityMap.at(id);
@@ -334,7 +334,7 @@ namespace gtk {
 		unsigned int layer = renderer.m_LayerID;
 
 		// Does the id/entity even exist?
-		ASSERT(m_EntityMap.find(id) == m_EntityMap.end());
+		ASSERT(m_EntityMap.find(id) != m_EntityMap.end());
 
 		// Get entity
 		Entity* entity = m_EntityMap.at(id);
@@ -394,7 +394,7 @@ namespace gtk {
 
 	void gtk::Scene::Update(float deltaTime)
 	{
-		ASSERT(m_Cameras.size() > 0);
+		//ASSERT(m_Cameras.size() > 0);
 
 		// Loop through the vector of maps
 		for (auto& CompMap : m_ComponentMaps)
@@ -531,7 +531,7 @@ namespace gtk {
 		m_NextScene = "";
 
 		// Remove children from root
-		m_Root->_Children.clear();
+		m_Root._Children.clear();
 
 		// Reset id providers
 		m_EntityIDProvider = 0;
@@ -542,7 +542,7 @@ namespace gtk {
 	void gtk::Scene::UpdateSceneGraph()
 	{
 		// Traverse entities and update their TRS
-		for (auto& child : m_Root->_Children)
+		for (auto& child : m_Root._Children)
 		{
 			child->UpdateTRS();
 		}

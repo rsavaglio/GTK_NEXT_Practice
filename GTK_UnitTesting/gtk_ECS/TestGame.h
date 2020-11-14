@@ -1,5 +1,4 @@
 #pragma once
-
 #include "TestScene.h"
 
 class SceneSwitchingGame : public gtk::Game

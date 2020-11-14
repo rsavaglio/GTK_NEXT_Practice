@@ -8,13 +8,13 @@
 
 namespace gtk {
 
-	class Entity;
 	class Component;
 	class CompGroup;
 	class Renderer;
 	class RenderLayer;
 	class Game;
 	class Camera;
+	class SceneObject;
 
 	class Scene {
 
@@ -93,7 +93,7 @@ namespace gtk {
 		Game& m_Game;
 
 		// Scene graph root
-		Entity* m_Root;
+		Entity m_Root;
 
 		unsigned int m_EntityIDProvider;
 		unsigned int m_CompGroupIDProvider;

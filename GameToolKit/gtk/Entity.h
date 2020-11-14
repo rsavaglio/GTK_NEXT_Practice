@@ -1,7 +1,6 @@
 #pragma once
 
 #include "gtkMath.hpp"
-#include "Scene.h"
 #include <vector>
 #include <math.h>
 
@@ -48,13 +47,12 @@ namespace gtk {
 
 		const unsigned int _id;
 
-		Entity& _Parent;
+		Entity* _Parent;
 		Scene& _Scene;
 
 	private:
 
 		// Call CreateEntity() from a Scene
-		Entity(const unsigned int& id, Entity& parent, Scene& scene);
 		Entity(const unsigned int& id, Entity* parent, Scene& scene);
 		void AddChild(Entity* child);
 
