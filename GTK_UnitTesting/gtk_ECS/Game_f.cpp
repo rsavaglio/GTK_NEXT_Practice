@@ -30,7 +30,7 @@ TEST_F(TestGame_F, SceneSwitching)
 	while (loopCount++ < 5000)
 	{
 		ssGame.Update(1);
-		ssGame.Render();
+		ssGame.Render(1,1);
 	}
 
 }
@@ -47,7 +47,7 @@ TEST_F(TestGame_F, TogglingEntities)
 	while (loopCount++ < 5000)
 	{
 		tGame.Update(1);
-		tGame.Render();
+		tGame.Render(1, 1);
 	}
 
 }

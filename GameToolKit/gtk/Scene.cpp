@@ -1,11 +1,13 @@
 #include "Scene.h"
 
+#include "Game.h"
+
 namespace gtk {
 
 	Scene::Scene(Game& game)
 		:m_MainCam(nullptr),
 		m_SwitchScene(false), m_NextScene(""),
-		m_Game(game), m_Root(m_EntityIDProvider++, m_Root, *this),
+		m_Game(game), m_Root(new Entity(m_EntityIDProvider++, nullptr, *this)),
 		m_EntityIDProvider(0), m_CompGroupIDProvider(0), m_RenderLayerIDProvider(0)
 	{
 
@@ -28,7 +30,7 @@ namespace gtk {
 		m_EntityMap.insert({ m_EntityIDProvider, new Entity(m_EntityIDProvider, m_Root, *this) });
 
 		// Add to roots children
-		m_Root.AddChild(m_EntityMap.at(m_EntityIDProvider));
+		m_Root->AddChild(m_EntityMap.at(m_EntityIDProvider));
 
 		// Return id and increment
 		return *m_EntityMap.at(m_EntityIDProvider++);
@@ -529,7 +531,7 @@ namespace gtk {
 		m_NextScene = "";
 
 		// Remove children from root
-		m_Root._Children.clear();
+		m_Root->_Children.clear();
 
 		// Reset id providers
 		m_EntityIDProvider = 0;
@@ -540,7 +542,7 @@ namespace gtk {
 	void gtk::Scene::UpdateSceneGraph()
 	{
 		// Traverse entities and update their TRS
-		for (auto& child : m_Root._Children)
+		for (auto& child : m_Root->_Children)
 		{
 			child->UpdateTRS();
 		}

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "gtk.h"
-#include "Camera.h"
+#include "gtkMath.hpp"
 #include "Entity.h"
 #include "Scene.h"
 
@@ -15,7 +14,7 @@ namespace gtk {
 
 	public:
 
-		SceneObject() : _scene(nullptr) {}
+		SceneObject();
 		virtual ~SceneObject() {}
 
 		const vec3& Pos() { return vec3(0); }
@@ -119,7 +118,7 @@ namespace gtk {
 	public:
 
 		Renderer()
-			: m_LayerID(), m_Active(true) {}
+			: m_LayerID(), m_Camera(nullptr), m_Active(true) {}
 		virtual ~Renderer() {}
 
 		const bool& Active(const bool& setActive);

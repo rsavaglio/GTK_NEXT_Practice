@@ -55,6 +55,7 @@ namespace gtk {
 
 		// Call CreateEntity() from a Scene
 		Entity(const unsigned int& id, Entity& parent, Scene& scene);
+		Entity(const unsigned int& id, Entity* parent, Scene& scene);
 		void AddChild(Entity* child);
 
 		void UpdateTRS();

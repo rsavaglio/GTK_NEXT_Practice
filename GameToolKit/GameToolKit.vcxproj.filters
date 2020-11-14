@@ -47,9 +47,6 @@
     <ClInclude Include="gtk\gtk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gtk\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="gtk\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>

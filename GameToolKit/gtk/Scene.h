@@ -1,9 +1,7 @@
 #pragma once
 
-#include "Game.h"
 #include "Component.h"
 #include "Entity.h"
-#include "Camera.h"
 
 #include <vector>
 #include <unordered_map>
@@ -95,7 +93,7 @@ namespace gtk {
 		Game& m_Game;
 
 		// Scene graph root
-		Entity m_Root;
+		Entity* m_Root;
 
 		unsigned int m_EntityIDProvider;
 		unsigned int m_CompGroupIDProvider;

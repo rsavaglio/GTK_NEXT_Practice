@@ -6,6 +6,10 @@ namespace gtk {
 		: _id(id), _Parent(parent), _Scene(scene), _Children(), _Active(true),
 		_Dirty(true), _Pos(), _Rot(), _Scale(1.0f), _TRS(1) {}
 
+	Entity::Entity(const unsigned int& id, Entity* parent, Scene& scene)
+		: _id(id), _Parent(*parent), _Scene(scene), _Children(), _Active(true),
+		_Dirty(true), _Pos(), _Rot(), _Scale(1.0f), _TRS(1) {}
+
 	
 	const mat4& Entity::GetWorldTranform()
 	{
@@ -197,6 +201,8 @@ namespace gtk {
 	const bool& Entity::Active(const bool& setActive)
 	{
 		_Scene.ToggleEntity(*this, setActive);
+
+		return setActive;
 	}
 
 	const bool& Entity::Active()

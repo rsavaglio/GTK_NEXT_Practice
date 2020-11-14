@@ -144,7 +144,6 @@
     <ClInclude Include="gtk\gtk.h" />
     <ClInclude Include="gtk\gtkMath.hpp" />
     <ClInclude Include="gtk\Core.h" />
-    <ClInclude Include="gtk\Camera.h" />
     <ClInclude Include="gtk\Scene.h" />
   </ItemGroup>
   <ItemGroup>

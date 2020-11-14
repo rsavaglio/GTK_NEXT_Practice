@@ -33,16 +33,14 @@ protected:
 	}
 };
 
-
 class TestScene : public gtk::Scene
 {
-
 public:
 	TestScene(gtk::Game& game) : gtk::Scene(game) {}
 
 protected:
 
-	virtual void Init() override
+	void Init() override
 	{
 
 		gtk::CompGroup Adders = CreateCompGroup();
@@ -56,18 +54,17 @@ protected:
 			Component& SSC = AddComponent(SS, SceneSwitchers, new SceneSwitcherComp(*this, "TestScene"));
 
 		// Create Entities and add components here
-		gtk::Entity&  player = CreateEntity();
-			AddComponent(player, Adders, new VectorTest(true, SSC));
-			AddComponent(player, Subtractors, new VectorTest(false, SSC));
+		gtk::Entity& player = CreateEntity();
+		AddComponent(player, Adders, new VectorTest(true, SSC));
+		AddComponent(player, Subtractors, new VectorTest(false, SSC));
 
 		// Hat is a child of player
 		gtk::Entity& hat = CreateEntity(player);
-			AddRenderer(hat, layer, new TestRenderer());
-			AddComponent(hat, Adders, new VectorTest(true, SSC));
-			AddComponent(hat, Subtractors, new VectorTest(false, SSC));
+		AddRenderer(hat, layer, new TestRenderer());
+		AddComponent(hat, Adders, new VectorTest(true, SSC));
+		AddComponent(hat, Subtractors, new VectorTest(false, SSC));
 
 	}
-
 	virtual void PostUpdate() override
 	{
 

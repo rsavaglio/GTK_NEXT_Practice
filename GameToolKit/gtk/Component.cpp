@@ -5,6 +5,8 @@ namespace gtk {
 	
 	//// Scene Object
 
+	SceneObject::SceneObject() : _id(0), _scene(nullptr) {}
+
 	const unsigned int& SceneObject::ID() const
 	{
 		return _id;
