@@ -247,15 +247,10 @@ namespace gtk {
 		const bool& Active(const bool& setActive);
 		const bool& Active();
 
-	public:
-
-		const unsigned int _id;
-
-
 	private:
 
 		// Call CreateEntity() from a Scene
-		Entity(const unsigned int& id, Entity* parent, Scene& scene);
+		Entity();
 		void AddChild(Entity* child);
 
 		void UpdateRootTRS();
@@ -267,7 +262,6 @@ namespace gtk {
 	private:
 
 		Entity* _Parent;
-		Scene& _Scene;
 
 		std::vector<Entity*> _Children;
 

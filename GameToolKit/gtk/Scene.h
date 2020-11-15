@@ -41,7 +41,8 @@ namespace gtk {
 	protected:
 
 		// Implemented in custom scene
-		virtual void Init() = 0;
+		void Init();
+		virtual void Setup() = 0;
 		virtual void PostUpdate() = 0;
 
 		// Scene setup functions
@@ -99,6 +100,10 @@ namespace gtk {
 		bool m_SwitchScene;
 		std::string m_NextScene;
 		Game& m_Game;
+
+		const int MAX_ENTS;
+		Entity* m_EntityPointerProvider;
+
 
 		unsigned int m_EntityIDProvider;
 		unsigned int m_UpdateGroupIDProvider;

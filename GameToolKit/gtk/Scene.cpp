@@ -8,14 +8,21 @@ namespace gtk {
 		:m_MainCam(nullptr),
 		m_SwitchScene(false), m_NextScene(""),
 		m_Game(game),
+		MAX_ENTS(100), m_EntityPointerProvider(nullptr),
 		m_EntityIDProvider(0), m_UpdateGroupIDProvider(0), m_RenderLayerIDProvider(0)
 	{
-
 	}
 
 	Scene::~Scene()
 	{
 		Shutdown();
+	}
+
+	void Scene::Init()
+	{
+		m_EntityPointerProvider = new Entity[MAX_ENTS];
+
+		Setup();
 	}
 
 	void Scene::SwitchScene(std::string key)
@@ -29,7 +36,7 @@ namespace gtk {
 
 	Entity& Scene::CreateEntity()
 	{
-		Entity* newEnt = new Entity(m_EntityIDProvider, nullptr, *this);
+		Entity* newEnt = m_EntityPointerProvider + m_EntityIDProvider;
 
 		newEnt->Init(m_EntityIDProvider, this, newEnt);
 
@@ -43,7 +50,10 @@ namespace gtk {
 	Entity& Scene::CreateEntity(Entity& parent)
 	{
 		// Add entity to the map, set as active
-		Entity* newEnt = new Entity(m_EntityIDProvider++, &parent, *this);
+		Entity* newEnt = m_EntityPointerProvider + m_EntityIDProvider;
+
+		newEnt->Init(m_EntityIDProvider++, this, newEnt);
+		newEnt->_Parent = &parent;
 
 		// Add this to parent's list of children
 		parent.AddChild(newEnt);
@@ -455,11 +465,7 @@ namespace gtk {
 		MapShredder(m_CameraMap);
 
 		// Clear Entity Scene Graph
-		for (auto& child : m_RootEntityMap)
-		{
-			EntityShredder(*child.second);
-		}
-		
+		delete[] m_EntityPointerProvider;
 		m_RootEntityMap.clear();
 
 		// Set switch scene flag back for next time

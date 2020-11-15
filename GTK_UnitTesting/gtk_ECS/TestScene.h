@@ -13,7 +13,7 @@ protected:
 	SceneTemplate(gtk::Game& game) : gtk::Scene(game) {}
 
 	// Called by game when scene starts
-	void Init() override
+	void Setup() override
 	{
 		using namespace gtk;
 
@@ -40,7 +40,7 @@ public:
 
 protected:
 
-	void Init() override
+	void Setup() override
 	{
 		using namespace gtk;
 
@@ -50,16 +50,13 @@ protected:
 
 		gtk::RenderLayer layer = CreateRenderLayer();
 
-
 		gtk::Entity& SS = CreateEntity();
 		gtk::Behavior& SSC = AddBehavior(SS, SceneSwitchers, new SceneSwitcherComp(*this, "TestScene"));
 
-		// Create Entities and add components here
 		gtk::Entity& player = CreateEntity();
 		AddBehavior(player, Adders, new VectorTest(true, SSC));
 		AddBehavior(player, Subtractors, new VectorTest(false, SSC));
 
-		// Hat is a child of player
 		gtk::Entity& hat = CreateEntity(player);
 		AddRenderer(hat, layer, new TestRenderer());
 		AddBehavior(hat, Adders, new VectorTest(true, SSC));
@@ -80,7 +77,7 @@ public:
 
 protected:
 
-	virtual void Init() override
+	void Setup() override
 	{
 		using namespace gtk;
 
