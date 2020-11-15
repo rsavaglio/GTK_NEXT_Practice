@@ -14,13 +14,13 @@ namespace gtk {
 		m_ActiveScene->Init();
 	}
 
-	void Game::Update(float deltaTime)
+	void Game::Update(const float& deltaTime)
 	{
 		// Update the active scene
 		m_ActiveScene->Update(deltaTime);
 	}
 
-	void Game::Render(float width, float height)
+	void Game::Render(const float& width, const float& height)
 	{
 		m_ActiveScene->Render(width, height);
 	}

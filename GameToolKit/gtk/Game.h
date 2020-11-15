@@ -20,10 +20,10 @@ namespace gtk {
 		void Start();
 
 		// Updates the active scene
-		void Update(float deltaTime);
+		void Update(const float& deltaTime);
 
 		// Calls Draw on active scene's renderers
-		void Render(float width, float height);
+		void Render(const float& width, const float& height);
 
 		// Deletes all scenes
 		void Shutdown();

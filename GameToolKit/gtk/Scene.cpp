@@ -23,6 +23,24 @@ namespace gtk {
 		m_EntityPointerProvider = new Entity[MAX_ENTS];
 
 		Setup();
+
+		ASSERT(m_CameraMap.size() > 0);
+
+		// Loop through the vector of maps
+		for (auto& RenderLayer : m_RendererMaps)
+		{
+			// Loop through render map
+			for (auto& Rend : *RenderLayer)
+			{
+				// If the renderer has not been given a camera
+				if (Rend.second->m_Camera == nullptr)
+				{
+					// Give it the main camera
+					Rend.second->m_Camera = m_MainCam;
+				}
+			}
+		}
+
 	}
 
 	void Scene::SwitchScene(std::string key)
@@ -100,7 +118,7 @@ namespace gtk {
 		return *behavior;
 	}
 
-	Renderer& Scene::AddRenderer(Entity& entity, const RenderLayer& layer, const Camera& camera, Renderer* const renderer)
+	Renderer& Scene::AddRenderer(Entity& entity, const RenderLayer& layer, Camera& camera, Renderer* const renderer)
 	{
 		// Set scene object data
 		renderer->Init(entity._id, this, &entity);
@@ -124,9 +142,9 @@ namespace gtk {
 		// Set scene object data
 		renderer->Init(entity._id, this, &entity);
 
-		// Set renderer data
-		renderer->m_Camera = m_MainCam;
+		// Set renderer data, m_Camera is set in Scene::Init()
 		renderer->m_LayerID = layer._id;
+
 
 		// Ensure no deplicate renderer on same entity
 		ASSERT(m_RendererMaps[layer._id]->find(entity._id) == m_RendererMaps[layer._id]->end());

@@ -56,7 +56,7 @@ namespace gtk {
 		Behavior& AddBehavior(Entity& entity, const UpdateGroup& group, Behavior* const behavior);
 
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Renderer* const renderer);
-		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, const Camera& camera, Renderer* const renderer);
+		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Camera& camera, Renderer* const renderer);
 
 		Camera& AddCamera(Entity& entity, Camera* const camera);
 

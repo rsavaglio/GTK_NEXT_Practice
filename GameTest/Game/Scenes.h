@@ -10,24 +10,24 @@ class SceneTemplate : public gtk::Scene
 
 public:
 
-	SceneTemplate(gtk::Game* const game) : gtk::Scene(game) {}
+	SceneTemplate(gtk::Game& game) : gtk::Scene(game) {}
 	
 protected:
 	
 	// Called by game when scene starts
-	void Init() override
+	void Setup() override
 	{
 		using namespace gtk;
 
-		UpdateGroup compGroup = CreateUpdateGroup();
-		RenderLayer rendLayer = CreateRenderLayer();
+		UpdateGroup group = CreateUpdateGroup();
+		RenderLayer layer = CreateRenderLayer();
 
-		Entity* camera = CreateEntity();
-			AddCamera(new PerspectiveCam(camera, compGroup, 1, 100, 80));
+		Entity& camera = CreateEntity();
+			AddCamera(camera, new PerspectiveCam(1, 100, 80));
 
-		Entity* entity = CreateEntity();
-		AddBehavior(new CompTemplate(entity, compGroup));
-		AddRenderer(new RendTemplate(entity, m_MainCam, rendLayer));
+		Entity& entity = CreateEntity();
+		AddBehavior(entity, group, new BehaviorTemplate());
+		AddRenderer(entity, layer, new RendTemplate());
 
 	}
 
@@ -43,48 +43,45 @@ class PracScene : public gtk::Scene
 
 public:
 
-	PracScene(gtk::Game* const game) : gtk::Scene(game) {}
+	PracScene(gtk::Game& game) : gtk::Scene(game) {}
 
 protected:
 
 	// Called by game when scene starts
-	void Init() override
+	void Setup() override
 	{
 		using namespace gtk;
 
 		UpdateGroup controllers = CreateUpdateGroup();
 		RenderLayer rendLayer = CreateRenderLayer();
 
-		Entity* camera = CreateEntity();
-			AddCamera(new PerspectiveCam(camera, controllers, 1, 100, 80));
-			camera->SetPos(0, 0, -500.0f);
-
-
-		Entity* player = CreateEntity();
-			player->SetPos(0.0f, 0.0f, 0.0f);
-			AddBehavior(new PlayerController(player, controllers, 10.0f));
-			AddRenderer(new SpriteRenderer(player, m_MainCam, rendLayer, App::CreateSprite(".\\TestData\\Test.bmp", 8, 4)));
+		Entity& player = CreateEntity();
+			player.Pos(vec3(0.0f, 0.0f, 0.0f));
+			AddBehavior(player, controllers, new PlayerController(10.0f));
+			AddRenderer(player, rendLayer, new SpriteRenderer(App::CreateSprite(".\\TestData\\Test.bmp", 8, 4)));
 		
-		MakeCubeStack(vec3(0), controllers, rendLayer);
 
-		Entity* cube = CreateEntity();
-		cube->SetPos(vec3(0));
-		cube->SetRotY(45.0f);
-		cube->SetScale(100.0f, 100.0f, 100.0f);
-		AddBehavior(new RotaterComp(cube, controllers, gtk::vec3(0.0f, 1.0f, 0)));
-		AddRenderer(new CubeRenderer(cube, m_MainCam, rendLayer));
+		Entity& cube = CreateEntity();
+			cube.Pos(vec3(0));
+			cube.Rot(vec3(0, 45.0f, 0));
+			cube.Scale(vec3(100.0f, 100.0f, 100.0f));
+			AddBehavior(cube, controllers, new RotaterComp(vec3(0.0f, 1.0f, 0)));
+			AddRenderer(cube, rendLayer, new CubeRenderer());
 
-		Entity* childCube = CreateEntity(cube);
-		childCube->SetPos(1.5f, 1.5f, 1.0f);
-		childCube->SetScale(0.5f, 0.5f, 0.5f);
-		AddBehavior(new RotaterComp(childCube, controllers, gtk::vec3(0, 1.0f, 0)));
-		AddRenderer(new CubeRenderer(childCube, m_MainCam, rendLayer));
+		Entity& childCube = CreateEntity(cube);
+			childCube.Pos(vec3(1.5f, 1.5f, 1.0f));
+			childCube.Scale(vec3(0.5f, 0.5f, 0.5f));
+			AddBehavior(childCube, controllers, new RotaterComp(gtk::vec3(0, 1.0f, 0)));
+			AddRenderer(childCube, rendLayer, new CubeRenderer());
 
-		Entity* babyCube = CreateEntity(childCube);
-		babyCube->SetPos(1.5f, 1.5f, 1.5f);
-		babyCube->SetScale(0.5f, 0.5f, 0.5f);
-		AddRenderer(new CubeRenderer(babyCube, m_MainCam, rendLayer));
-		
+		Entity& babyCube = CreateEntity(childCube);
+			babyCube.Pos(vec3(1.5f, 1.5f, 1.5f));
+			babyCube.Scale(vec3(0.5f, 0.5f, 0.5f));
+			AddRenderer(babyCube, rendLayer, new CubeRenderer());
+
+		Entity& camera = CreateEntity(babyCube);
+			AddCamera(camera, new PerspectiveCam(1, 100, 80));
+			camera.Pos(vec3(0, 0, -500.0f));
 
 	}
 
@@ -92,18 +89,5 @@ protected:
 	void PostUpdate() override
 	{
 
-	}
-
-private:
-
-	void MakeCubeStack(gtk::vec3 position, const gtk::UpdateGroup& group, const gtk::RenderLayer& layer)
-	{
-		using namespace gtk;
-
-
-
-
-
-	
 	}
 };

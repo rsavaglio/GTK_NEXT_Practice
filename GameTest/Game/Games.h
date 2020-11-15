@@ -13,7 +13,7 @@ public:
 	void Init() override
 	{
 		// Add the scenes of the game here
-		AddScene("SceneTemplate", new SceneTemplate(this));
+		AddScene("SceneTemplate", new SceneTemplate(*this));
 	}
 };
 
@@ -25,6 +25,6 @@ public:
 	void Init() override
 	{
 		// Add the scenes of the game here
-		AddScene("PracScene", new PracScene(this));
+		AddScene("PracScene", new PracScene(*this));
 	}
 };

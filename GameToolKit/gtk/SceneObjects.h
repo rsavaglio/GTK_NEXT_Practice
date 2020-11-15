@@ -47,6 +47,8 @@ namespace gtk {
 		void SwitchScene(std::string name);
 
 		// TODO
+
+		// Add floatx3 variants above
 		const vec3& Forward() {}
 		void Instantiate() {}
 
@@ -124,10 +126,8 @@ namespace gtk {
 		Camera(const float& near, const float& far);
 		virtual ~Camera() {}
 
-
-		// View and Projection
-		mat4 GetView();
-		mat4 GetProj();
+		const mat4& GetView();
+		const mat4& GetProj();
 
 	protected:
 
@@ -149,8 +149,7 @@ namespace gtk {
 
 	public:
 
-		PerspectiveCam(const float& near, const float& far, const float& fov)
-			: Camera(near, far), m_fov(fov) {}
+		PerspectiveCam(const float& near, const float& far, const float& fov);
 
 
 		void SetFOV(float fov);
@@ -170,8 +169,7 @@ namespace gtk {
 
 	public:
 
-		OrthoCam(const float& near, const float& far)
-			: Camera(near, far) {}
+		OrthoCam(const float& near, const float& far);
 
 		void CalculateProj(const float& width, const float& height) override;
 
@@ -216,8 +214,15 @@ namespace gtk {
 
 
 		void SetCamera(const Camera& camera) {}
-		const mat4& GetView() {}
-		const mat4& GetProj() {}
+		
+		const mat4& GetView()
+		{
+			return m_Camera->GetView();
+		}
+		const mat4& GetProj() 
+		{
+			return m_Camera->GetProj();
+		}
 
 
 	protected:
@@ -226,7 +231,7 @@ namespace gtk {
 
 	private:
 
-		const Camera* m_Camera; // Read only
+		Camera* m_Camera;
 		bool m_Active;
 
 	};

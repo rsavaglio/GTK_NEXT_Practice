@@ -3,19 +3,25 @@
 #include "app/app.h"
 #include "gtk/gtkMath.hpp"
 
-class CompTemplate : public gtk::Behavior
+class BehaviorTemplate : public gtk::Behavior
 {
 public:
-	CompTemplate(gtk::Entity* const entity, const gtk::UpdateGroup& compGroup) : Behavior(entity, compGroup) {}
+	BehaviorTemplate() {}
 
 	void Start() override
 	{
 
 	}
 
-	void Update(float deltaTime) override
+	void Update(const float& deltaTime) override
 	{
 
+	}
+
+	int Trigger(const int& code) override
+	{
+
+		return 0;
 	}
 
 
@@ -26,25 +32,28 @@ private:
 class PlayerController : public gtk::Behavior
 {
 public:
-	PlayerController(gtk::Entity* const entity, const gtk::UpdateGroup& compGroup, float speed) 
-		: Behavior(entity, compGroup), m_Speed(speed) {}
+	PlayerController(float speed) 
+		: m_Speed(speed) {}
 
 	void Start() override
 	{
 
 	}
 
-	void Update(float deltaTime) override
+	void Update(const float& deltaTime) override
 	{
 
 		// Need a better solution for this
 		// Base comp should just have these functions
 
 
-		m_Entity->SetPosX(m_Entity->GetPos().x + (App::GetController().GetLeftThumbStickX() * m_Speed));
-		m_Entity->SetPosY(m_Entity->GetPos().y + (App::GetController().GetLeftThumbStickY() * m_Speed));
+		Pos((Pos().x + (App::GetController().GetLeftThumbStickX() * m_Speed), Pos().y, Pos().z));
+		Pos((Pos().x, Pos().y + (App::GetController().GetLeftThumbStickY() * m_Speed), Pos().z));
+	}
 
-
+	int Trigger(const int& code)
+	{
+		return 0;
 	}
 
 
@@ -57,26 +66,26 @@ private:
 class RotaterComp : public gtk::Behavior
 {
 public:
-	RotaterComp(gtk::Entity* const entity, const gtk::UpdateGroup& compGroup, const gtk::vec3& rotVals) 
-		: Behavior(entity, compGroup), animX(rotVals.x), animY(rotVals.y), animZ(rotVals.z) {}
+	RotaterComp(const gtk::vec3& rotVals) 
+		: anim(rotVals) {}
 
 	void Start() override
 	{
 
 	}
 
-	void Update(float deltaTime) override
+	void Update(const float& deltaTime) override
 	{
-		m_Entity->SetRot(m_Entity->GetRot().x + animX,
-						 m_Entity->GetRot().y + animY,
-						 m_Entity->GetRot().z + animZ);
+		Rot(anim, true);
 	}
 
+	int Trigger(const int& code) override
+	{
+		return 0;
+	}
 
 private:
 
-	float animX;
-	float animY;
-	float animZ;
+	gtk::vec3 anim;
 
 };

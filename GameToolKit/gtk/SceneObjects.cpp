@@ -128,11 +128,11 @@ namespace gtk {
 	Camera::Camera(const float& near, const float& far)
 		: n(near), f(far) {}
 
-	mat4 Camera::GetView()
+	const mat4& Camera::GetView()
 	{
 		return m_View;
 	}
-	mat4 Camera::GetProj()
+	const mat4& Camera::GetProj()
 	{
 		return m_Proj;
 	}
@@ -169,11 +169,14 @@ namespace gtk {
 						 0.0f, 0.0f, 0.0f, 1.0f };
 
 
-		// TODO: User TRS here
+		// TODO: Figure out how TRS fits in here pls
 
 		m_View = R * T;
 
 	}
+
+	PerspectiveCam::PerspectiveCam(const float& near, const float& far, const float& fov)
+		: Camera(near, far), m_fov(fov) {}
 
 	void PerspectiveCam::SetFOV(float fov)
 	{
@@ -194,6 +197,10 @@ namespace gtk {
 			0,0,(2 * n * f) / (n - f),0
 		};
 	}
+
+
+	OrthoCam::OrthoCam(const float& near, const float& far)
+		: Camera(near, far) {}
 
 	void OrthoCam::CalculateProj(const float& width, const float& height)
 	{
@@ -275,15 +282,12 @@ namespace gtk {
 
 	void Entity::UpdateRootTRS()
 	{
+		// TODO: Profile dirty flag here
+
 		// This version does not multiply by a parent
+		_TRS = CalcTRS();
 
-		if (_Dirty)
-		{
-			_TRS = CalcTRS();
-
-			_Dirty = false;
-
-		}
+		_Dirty = false;
 
 		// Update Children's TRS
 		for (auto& child : _Children)
@@ -294,12 +298,10 @@ namespace gtk {
 
 	void Entity::UpdateTRS()
 	{
-		if (_Dirty)
-		{
-			_TRS = _Parent->_TRS * CalcTRS();
 
-			_Dirty = false;
-		}
+		// TODO: Profile dirty flag here
+
+		_TRS = _Parent->_TRS * CalcTRS();
 
 		// Update Children's TRS
 		for (auto& child : _Children)
