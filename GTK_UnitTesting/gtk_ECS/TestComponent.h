@@ -2,11 +2,10 @@
 
 #include "gtk/gtk.h"
 
-class BehaviorTemplate : public gtk::Behavior
+class CompTemplate : public gtk::Behavior
 {
 public:
-	
-	BehaviorTemplate() {}
+	CompTemplate() {}
 
 	void Start() override
 	{
@@ -22,6 +21,9 @@ public:
 	{
 
 	}
+
+
+private:
 
 };
 

@@ -29,7 +29,14 @@ namespace gtk {
 
 		void SwitchScene(std::string key);
 
+		// Toggles
+		void ToggleEntity(Entity& entity, bool setActive);
+		void ToggleBehavior(Behavior& behavior, bool setActive);
+		void ToggleRenderer(Renderer& renderer, bool setActive);
+
 		Camera& GetMainCam();
+
+		//Entity& GetEntity(unsigned int id);
 
 	protected:
 
@@ -39,31 +46,34 @@ namespace gtk {
 
 		// Scene setup functions
 
+		UpdateGroup CreateUpdateGroup();
 		RenderLayer CreateRenderLayer();
 
 		Entity& CreateEntity(); // Sets parent as m_Root
 		Entity& CreateEntity(Entity& parent);
 
-		Behavior& AddBehavior(Entity& entity, Behavior* const behavior);
+		Behavior& AddBehavior(Entity& entity, const UpdateGroup& group, Behavior* const behavior);
 
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Renderer* const renderer);
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, const Camera& camera, Renderer* const renderer);
 
 		Camera& AddCamera(Entity& entity, Camera* const camera);
 
-		void SetMainCam(Camera& camera);
+		void SetMainCam(unsigned int id);
 
 
 	protected:
 
 		// Scene Object containers
-		std::vector<Entity*> m_RootEntities;
+		std::unordered_map<unsigned int, Entity*> m_RootEntityMap;
 
-		std::vector<Behavior*> m_Behaviors;
+		std::vector<std::unordered_map<unsigned int, Behavior*>*> m_BehaviorMaps;
+		std::vector<std::unordered_map<unsigned int, Behavior*>*> m_DisabledBehaviorMaps;
 
-		std::vector<std::vector<Renderer*>*> m_RendererMaps;
+		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_RendererMaps;
+		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_DisabledRendererMaps;
 
-		std::vector<Camera*> m_Cameras;
+		std::unordered_map<unsigned int, Camera*> m_CameraMap;
 		Camera* m_MainCam;
 	
 	private:
@@ -76,7 +86,10 @@ namespace gtk {
 		void UpdateSceneGraph();
 
 		template <class T>
-		void VectorShredder(std::vector< T*>& vector);
+		void MapVectorShredder(std::vector<std::unordered_map<unsigned int, T*>*>& vectorMap);
+
+		template <class T>
+		void MapShredder(std::unordered_map<unsigned int, T*>& map);
 
 		void EntityShredder(Entity& entity);
 
@@ -88,6 +101,7 @@ namespace gtk {
 		Game& m_Game;
 
 		unsigned int m_EntityIDProvider;
+		unsigned int m_UpdateGroupIDProvider;
 		unsigned int m_RenderLayerIDProvider;
 
 	};
