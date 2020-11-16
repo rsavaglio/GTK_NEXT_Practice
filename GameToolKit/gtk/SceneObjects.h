@@ -132,6 +132,7 @@ namespace gtk {
 	protected:
 
 		void CalculateView();
+		void CalculateView2();
 		virtual void CalculateProj(const float& width, const float& height) = 0;
 
 	protected:
@@ -141,6 +142,10 @@ namespace gtk {
 
 		float n;
 		float f;
+
+	private:
+
+		mat4 TraverseForTR(Entity& ent);
 
 	};
 
@@ -244,6 +249,7 @@ namespace gtk {
 	{
 		friend class Scene;
 		friend class SceneObject;
+		friend class Camera;
 
 	public:
 
@@ -251,18 +257,19 @@ namespace gtk {
 
 		const bool& Active(const bool& setActive);
 		const bool& Active();
-
+	
 	private:
 
 		// Call CreateEntity() from a Scene
 		Entity();
 		void AddChild(Entity* child);
 
+		mat4 CalcTRS();
+		mat4 CalcWorldToView();
+
 		void UpdateRootTRS();
 		void UpdateTRS();
 		void Soil();
-
-		mat4 CalcTRS();
 
 	private:
 

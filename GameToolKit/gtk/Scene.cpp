@@ -57,6 +57,7 @@ namespace gtk {
 		Entity* newEnt = m_EntityPointerProvider + m_EntityIDProvider;
 
 		newEnt->Init(m_EntityIDProvider, this, newEnt);
+		newEnt->_Parent = newEnt;
 
 		// Add entity to the map, set as active, set root as parent
 		m_RootEntityMap.insert({ m_EntityIDProvider++, newEnt });
@@ -420,9 +421,6 @@ namespace gtk {
 
 	void gtk::Scene::Update(const float& deltaTime)
 	{
-
-		// TODO: Ensure a camera exists
-		//ASSERT(m_Cameras.size() > 0);
 
 		// Loop through the vector of maps
 		for (auto& BehMap : m_BehaviorMaps)

@@ -59,13 +59,12 @@ protected:
 			player.Pos(vec3(0.0f, 0.0f, 0.0f));
 			AddBehavior(player, controllers, new PlayerController(10.0f));
 			AddRenderer(player, rendLayer, new SpriteRenderer(App::CreateSprite(".\\TestData\\Test.bmp", 8, 4)));
-		
 
 		Entity& cube = CreateEntity();
-			cube.Pos(vec3(0));
-			cube.Rot(vec3(0, 45.0f, 0));
+			cube.Pos(vec3(0.0f, 0.0f, 500.0f));
+			cube.Rot(vec3(0.0f, 45.0f, 0.0f));
 			cube.Scale(vec3(100.0f, 100.0f, 100.0f));
-			AddBehavior(cube, controllers, new RotaterComp(vec3(0.0f, 1.0f, 0)));
+			//AddBehavior(cube, controllers, new RotaterComp(vec3(1.0f, 0.0f, 0)));
 			AddRenderer(cube, rendLayer, new CubeRenderer());
 
 		Entity& childCube = CreateEntity(cube);
@@ -79,10 +78,26 @@ protected:
 			babyCube.Scale(vec3(0.5f, 0.5f, 0.5f));
 			AddRenderer(babyCube, rendLayer, new CubeRenderer());
 
-		Entity& camera = CreateEntity(babyCube);
-			AddCamera(camera, new PerspectiveCam(1, 100, 80));
-			camera.Pos(vec3(0, 0, -500.0f));
+		Entity& tripod = CreateEntity();
+			tripod.Pos(vec3(0.0f, 0.0f, 500.0f));
+			tripod.Rot(vec3(0.0f, 0.0f, 0.0f));
+			tripod.Scale(vec3(50.0f));
+			AddBehavior(tripod, controllers, new RotaterComp(vec3(0.0f, 1.0f, 0)));
+			AddRenderer(tripod, rendLayer, new CubeRenderer());
+		
+		Entity& test = CreateEntity(tripod);
+			test.Pos(vec3(0.0f, 10.0f, 0.0f));
+			AddRenderer(test, rendLayer, new CubeRenderer());
 
+		Entity& test2 = CreateEntity(test);
+			test2.Pos(vec3(0.0f, 0.0f, -10.0f));
+			AddRenderer(test2, rendLayer, new CubeRenderer());
+
+		Entity& camera = CreateEntity(test2);
+			AddCamera(camera, new PerspectiveCam(1, 1000, 80));
+			camera.Pos(vec3(0.0f, 0.0f, 0.0f));
+			camera.Rot(vec3(0.0f, 0.0f, 0.0f));
+		
 	}
 
 	// Called after all entities are updated but before renderer

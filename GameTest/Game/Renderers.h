@@ -100,19 +100,17 @@ public:
 			gtk::mat4 view = GetView();
 			gtk::mat4 proj = GetProj();
 
-	
+			gtk::mat4 mvp = proj * view * model;
 
-			s = (proj * view * model) * s;
-			e = (proj * view * model) * e;
+			s = mvp * s;
+			e = mvp * e;
 
-			if (e.z > 175.0f) // clip
-			{
-				App::DrawLine(
-					s.x / s.z, s.y / s.z,
-					e.x / e.z, e.y / e.z,
-					0.9f, 0.5f, 0.2f);
-			}
+			// Clip using camera world position
 
+			App::DrawLine(
+				s.x / s.z, s.y / s.z,
+				e.x / e.z, e.y / e.z,
+				0.9f, 0.5f, 0.2f);
 
 		}
 	}
