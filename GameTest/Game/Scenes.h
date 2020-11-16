@@ -73,6 +73,12 @@ protected:
 			AddBehavior(childCube, controllers, new RotaterComp(gtk::vec3(0, 1.0f, 0)));
 			AddRenderer(childCube, rendLayer, new CubeRenderer());
 
+		Entity& childCube2 = CreateEntity(cube);
+			childCube2.Pos(vec3(-1.5f, 1.5f, -1.0f));
+			childCube2.Scale(vec3(0.5f, 0.5f, 0.5f));
+			AddBehavior(childCube2, controllers, new RotaterComp(gtk::vec3(0, 1.0f, 0)));
+			AddRenderer(childCube2, rendLayer, new CubeRenderer());
+
 		Entity& babyCube = CreateEntity(childCube);
 			babyCube.Pos(vec3(1.5f, 1.5f, 1.5f));
 			babyCube.Scale(vec3(0.5f, 0.5f, 0.5f));
@@ -93,7 +99,7 @@ protected:
 			test2.Pos(vec3(0.0f, 0.0f, -10.0f));
 			AddRenderer(test2, rendLayer, new CubeRenderer());
 
-		Entity& camera = CreateEntity(test2);
+		Entity& camera = CreateEntity();
 			AddCamera(camera, new PerspectiveCam(1, 1000, 80));
 			camera.Pos(vec3(0.0f, 0.0f, 0.0f));
 			camera.Rot(vec3(0.0f, 0.0f, 0.0f));
