@@ -157,22 +157,64 @@ namespace gtk {
 
 	mat4 Camera::TraverseForTR(Entity& ent)
 	{
-		// Gather parents
+		/*
+		// TODO: Cameras should just store their parents
 		std::vector<Entity*> parents = GetParents(ent);
-		
-		int i = 1;
 
+		
 		// Interate through parents multiplying the TRs
+		/mat4 TR(1);
+
+		for (auto& ent : parents)
+		{
+			TR =  TR * ent->GetTRS();
+		}
+		*/
 
 		// Invert the TR to get view matrix
+
 
 		return mat4(1);
 	}
 
 	void Camera::CalculateView()
 	{
-		// Get view to world excluding scale
-		m_View = TraverseForTR(GetEntity());
+		// TODO: allow other scaling
+
+		mat4 trs;
+		
+		// Cam has a parent
+		if (&GetEntity().Parent() != &GetEntity())
+		{
+			mat4 parentTRS = Parent().TRS();
+			mat4 camTR = GetEntity().CalcTR();
+
+			trs = parentTRS * camTR;
+		}
+		else 
+		{
+			trs = GetEntity().CalcTR();
+		}
+		
+		mat3 R =
+		{
+			trs(0,0), trs(1,0), trs(2,0),
+			trs(0,1), trs(1,1), trs(2,1),
+			trs(0,2), trs(1,2), trs(2,2),
+		};
+		R.SetInverse();
+
+		vec3 iPos = R * vec3(trs(0, 3), trs(1, 3), trs(2, 3));
+
+		mat4 final
+		{
+			R(0,0), R(1,0), R(2,0), 0,
+			R(0,1), R(1,1), R(2,1), 0,
+			R(0,2), R(1,2), R(2,2), 0,
+			-iPos.x, -iPos.y, -iPos.z, 1
+		};
+
+		m_View = final;
 
 	}
 
