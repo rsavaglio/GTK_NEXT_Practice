@@ -52,6 +52,7 @@ protected:
 	{
 		using namespace gtk;
 
+
 		UpdateGroup controllers = CreateUpdateGroup();
 		RenderLayer rendLayer = CreateRenderLayer();
 
@@ -62,13 +63,13 @@ protected:
 
 		Entity& cube = CreateEntity();
 			cube.Pos(vec3(0.0f, 0.0f, 500.0f));
-			cube.Rot(vec3(0.0f, 45.0f, 0.0f));
+			cube.Rot(vec3(0.0f, 0.0f, 0.0f));
 			cube.Scale(vec3(100.0f, 100.0f, 100.0f));
 			//AddBehavior(cube, controllers, new RotaterComp(vec3(1.0f, 0.0f, 0)));
 			AddRenderer(cube, rendLayer, new CubeRenderer());
 
 		Entity& childCube = CreateEntity(cube);
-			childCube.Pos(vec3(1.5f, 1.5f, 1.0f));
+			childCube.Pos(vec3(3.5f, 1.5f, 1.0f));
 			childCube.Scale(vec3(0.5f, 0.5f, 0.5f));
 			AddBehavior(childCube, controllers, new RotaterComp(gtk::vec3(0, 1.0f, 0)));
 			AddRenderer(childCube, rendLayer, new CubeRenderer());
@@ -84,24 +85,24 @@ protected:
 			babyCube.Scale(vec3(0.5f, 0.5f, 0.5f));
 			AddRenderer(babyCube, rendLayer, new CubeRenderer());
 
-		Entity& tripod = CreateEntity();
+		Entity& tripod = CreateEntity("tripod");
 			tripod.Pos(vec3(0.0f, 0.0f, 500.0f));
 			tripod.Rot(vec3(0.0f, 0.0f, 0.0f));
 			tripod.Scale(vec3(50.0f));
 			AddBehavior(tripod, controllers, new RotaterComp(vec3(0.0f, 1.0f, 0)));
 			AddRenderer(tripod, rendLayer, new CubeRenderer());
 		
-		Entity& test = CreateEntity(tripod);
+		Entity& test = CreateEntity("test", tripod);
 			test.Pos(vec3(0.0f, 10.0f, 0.0f));
 			AddRenderer(test, rendLayer, new CubeRenderer());
 
-		Entity& test2 = CreateEntity(test);
+		Entity& test2 = CreateEntity("test2",test);
 			test2.Pos(vec3(0.0f, 0.0f, -10.0f));
 			AddRenderer(test2, rendLayer, new CubeRenderer());
 
-		Entity& camera = CreateEntity();
+		Entity& camera = CreateEntity("camera", test2);
 			AddCamera(camera, new PerspectiveCam(1, 1000, 80));
-			camera.Pos(vec3(0.0f, 0.0f, 0.0f));
+			camera.Pos(vec3(0.0f, 0.0f, -500.0f));
 			camera.Rot(vec3(0.0f, 0.0f, 0.0f));
 		
 	}

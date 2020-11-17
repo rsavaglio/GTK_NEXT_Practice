@@ -53,6 +53,9 @@ namespace gtk {
 		Entity& CreateEntity(); // Sets parent as m_Root
 		Entity& CreateEntity(Entity& parent);
 
+		Entity& CreateEntity(std::string name); // Sets parent as m_Root
+		Entity& CreateEntity(std::string name, Entity& parent);
+
 		Behavior& AddBehavior(Entity& entity, const UpdateGroup& group, Behavior* const behavior);
 
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Renderer* const renderer);

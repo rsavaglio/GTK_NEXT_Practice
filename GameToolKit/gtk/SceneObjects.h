@@ -137,6 +137,8 @@ namespace gtk {
 
 	protected:
 
+		std::vector<Entity*> GetParents(Entity& ent);
+
 		mat4 m_View;
 		mat4 m_Proj;
 
@@ -265,13 +267,15 @@ namespace gtk {
 		void AddChild(Entity* child);
 
 		mat4 CalcTRS();
-		mat4 CalcWorldToView();
+		mat4 CalcTR();
 
 		void UpdateRootTRS();
 		void UpdateTRS();
 		void Soil();
 
 	private:
+
+		std::string _Name;
 
 		Entity* _Parent;
 

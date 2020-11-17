@@ -80,6 +80,38 @@ namespace gtk {
 		// Return id and increment
 		return *newEnt;
 	}
+
+	Entity& Scene::CreateEntity(std::string name)
+	{
+		Entity* newEnt = m_EntityPointerProvider + m_EntityIDProvider;
+
+		newEnt->Init(m_EntityIDProvider, this, newEnt);
+		newEnt->_Parent = newEnt;
+		newEnt->_Name = name;
+
+
+		// Add entity to the map, set as active, set root as parent
+		m_RootEntityMap.insert({ m_EntityIDProvider++, newEnt });
+
+		// Return id and increment
+		return *newEnt;
+	}
+
+	Entity& Scene::CreateEntity(std::string name, Entity& parent)
+	{
+		// Add entity to the map, set as active
+		Entity* newEnt = m_EntityPointerProvider + m_EntityIDProvider;
+
+		newEnt->Init(m_EntityIDProvider++, this, newEnt);
+		newEnt->_Parent = &parent;
+		newEnt->_Name = name;
+
+		// Add this to parent's list of children
+		parent.AddChild(newEnt);
+
+		// Return id and increment
+		return *newEnt;
+	}
 	
 	UpdateGroup Scene::CreateUpdateGroup()
 	{
@@ -449,7 +481,6 @@ namespace gtk {
 
 	void gtk::Scene::Render(const float& width, const float& height)
 	{
-
 		// Calculate view and proj
 		for (auto& cam : m_CameraMap)
 		{
