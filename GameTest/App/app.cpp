@@ -15,7 +15,7 @@
 // Utils and externals for system info.
 
 namespace App
-{	
+{
 	void DrawLine(float sx, float sy, float ex, float ey, float r, float g, float b)
 	{
 #if APP_USE_VIRTUAL_RES		
@@ -28,8 +28,8 @@ namespace App
 		glVertex2f(ex, ey);
 		glEnd();
 	}
-	
-	CSimpleSprite *CreateSprite(const char *fileName, int columns, int rows)
+
+	CSimpleSprite* CreateSprite(const char* fileName, int columns, int rows)
 	{
 		return new CSimpleSprite(fileName, columns, rows);
 	}
@@ -39,7 +39,7 @@ namespace App
 		return ((GetAsyncKeyState(key) & 0x8000) != 0);
 	}
 
-	void GetMousePos(float &x, float &y)
+	void GetMousePos(float& x, float& y)
 	{
 		POINT mousePos;
 		GetCursorPos(&mousePos);	// Get the mouse cursor 2D x,y position			
@@ -53,21 +53,21 @@ namespace App
 		APP_NATIVE_TO_VIRTUAL_COORDS(x, y);
 #endif
 	}
-	void PlaySound(const char *fileName, bool looping)
+	void PlaySound(const char* fileName, bool looping)
 	{
 		DWORD flags = (looping) ? DSBPLAY_LOOPING : 0;
 		CSimpleSound::GetInstance().PlaySound(fileName, flags);
 	}
-	void StopSound(const char *fileName)
+	void StopSound(const char* fileName)
 	{
 		CSimpleSound::GetInstance().StopSound(fileName);
 	}
-	bool IsSoundPlaying(const char *fileName)
+	bool IsSoundPlaying(const char* fileName)
 	{
 		return CSimpleSound::GetInstance().IsPlaying(fileName);
 	}
 	// This prints a string to the screen
-	void Print(float x, float y, const char *st, float r, float g, float b, void *font)
+	void Print(float x, float y, const char* st, float r, float g, float b, void* font)
 	{
 #if APP_USE_VIRTUAL_RES		
 		APP_VIRTUAL_TO_NATIVE_COORDS(x, y);
@@ -81,7 +81,7 @@ namespace App
 			glutBitmapCharacter(font, st[i]); // Print a character on the screen
 		}
 	}
-	const CController &GetController( int pad )
+	const CController& GetController(int pad)
 	{
 		return CSimpleControllers::GetInstance().GetController(pad);
 	}

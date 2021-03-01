@@ -98,7 +98,6 @@ protected:
 
 		Entity& test2 = CreateEntity("test2", test);
 			test2.Pos(vec3(0.0f, 0.0f, -10.0f));
-			//AddRenderer(test2, rendLayer, new CubeRenderer());
 
 		Entity& camera = CreateEntity(test2);
 			AddCamera(camera, new PerspectiveCam(1, 1000, 80));

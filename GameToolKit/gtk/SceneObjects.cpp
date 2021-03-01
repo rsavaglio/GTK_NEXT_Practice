@@ -404,8 +404,6 @@ namespace gtk {
 	void Entity::UpdateTRS()
 	{
 
-		// TODO: Profile dirty flag here
-
 		_TRS = _Parent->_TRS * CalcTRS();
 
 		// Update Children's TRS
