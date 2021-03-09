@@ -97,7 +97,7 @@ protected:
 
 		Entity& camera = CreateEntity();
 			AddCamera(camera, new PerspectiveCam(1, 1000, 80));
-			camera.Pos(vec3(0.0f, 0.0f, 0.0f));
+			camera.Pos(vec3(0.0f, 0.0f, -1.0f));
 			camera.Rot(vec3(0.0f, 0.0f, 0.0f));
 
 
@@ -108,17 +108,19 @@ protected:
 			AddBehavior(player, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
 			AddRenderer(player, rendLayer, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));
 
+			
 		Entity& player2 = CreateEntity(player);
 			player2.Pos(vec3(0.0f, 40.0f, 0.0f));
-			player2.Scale(0.001f);
-			//AddBehavior(player2, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
+			player2.Scale(0.1f);
+			AddBehavior(player2, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
 			AddRenderer(player2, rendLayer, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));
 
+			
 		Entity& player3 = CreateEntity(player2);
-			player3.Pos(vec3(10.0f, 20.0f, 0.0f));
-			player3.Scale(0.001f);
-			//AddBehavior(player3, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
-			AddRenderer(player3, rendLayer, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));
+			player3.Pos(vec3(100.0f, 0.0f, 0.0f));
+			AddBehavior(player3, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
+			AddRenderer(player3, rendLayer, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));\
+			
 	}
 
 	// Called after all entities are updated but before renderer
