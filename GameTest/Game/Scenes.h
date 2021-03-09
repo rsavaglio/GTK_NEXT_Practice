@@ -56,10 +56,6 @@ protected:
 		UpdateGroup controllers = CreateUpdateGroup();
 		RenderLayer rendLayer = CreateRenderLayer();
 
-		Entity& player = CreateEntity();
-			player.Pos(vec3(0.0f, 0.0f, 0.0f));
-			AddBehavior(player, controllers, new PlayerController(10.0f));
-			AddRenderer(player, rendLayer, new SpriteRenderer(App::CreateSprite(".\\TestData\\Test.bmp", 8, 4)));
 
 		Entity& cube = CreateEntity();
 			cube.Pos(vec3(0.0f, 0.0f, 500.0f));
@@ -99,11 +95,30 @@ protected:
 		Entity& test2 = CreateEntity("test2", test);
 			test2.Pos(vec3(0.0f, 0.0f, -10.0f));
 
-		Entity& camera = CreateEntity(test2);
+		Entity& camera = CreateEntity();
 			AddCamera(camera, new PerspectiveCam(1, 1000, 80));
 			camera.Pos(vec3(0.0f, 0.0f, 0.0f));
 			camera.Rot(vec3(0.0f, 0.0f, 0.0f));
-		
+
+
+			// Player sprite
+		Entity& player = CreateEntity();
+			player.Pos(vec3(0.0f, 0.0f, 0.0f));
+			player.Scale(0.01f);
+			AddBehavior(player, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
+			AddRenderer(player, rendLayer, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));
+
+		Entity& player2 = CreateEntity(player);
+			player2.Pos(vec3(0.0f, 40.0f, 0.0f));
+			player2.Scale(0.001f);
+			//AddBehavior(player2, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
+			AddRenderer(player2, rendLayer, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));
+
+		Entity& player3 = CreateEntity(player2);
+			player3.Pos(vec3(10.0f, 20.0f, 0.0f));
+			player3.Scale(0.001f);
+			//AddBehavior(player3, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
+			AddRenderer(player3, rendLayer, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));
 	}
 
 	// Called after all entities are updated but before renderer

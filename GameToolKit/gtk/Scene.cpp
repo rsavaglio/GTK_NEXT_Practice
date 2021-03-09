@@ -59,7 +59,7 @@ namespace gtk {
 		newEnt->Init(m_EntityIDProvider, this, newEnt);
 		newEnt->_Parent = newEnt;
 
-		// Add entity to the map, set as active, set root as parent
+		// Add entity to the map, set as active, set self as parent
 		m_RootEntityMap.insert({ m_EntityIDProvider++, newEnt });
 
 		// Return id and increment

@@ -31,28 +31,60 @@ class SpriteRenderer : public gtk::Renderer
 
 public:
 
-	SpriteRenderer(CSimpleSprite* const sprite) : m_Sprite(sprite) {}
+	SpriteRenderer(const char* filePath, const int& col, const int& row) : m_Sprite(nullptr) 
+	{
+		// Setup sprite
+		m_Sprite = App::CreateSprite(filePath, col, row);
+	}
+
+	// Helper
+	float GetRotFromParents(gtk::Entity& ent)
+	{
+		// Base case, at root entity
+		if (&ent.Parent() == &ent)
+		{
+			return ent.Rot().z;
+		}
+		else
+		{
+			// Not at root yet
+			return ent.Rot().z + GetRotFromParents(ent.Parent());
+		}
+	}
 
 	void Start() override
 	{
-
+		
 	}
 	
 	void Draw() override
 	{
-		// Set Position Based on Entity
-		m_Sprite->SetPosition(Pos().x, Pos().y);
-		
-		
-		m_Sprite->SetScale(0.01f);
+		gtk::mat4 model = TRS();
+		gtk::mat4 view = GetView();
+		gtk::mat4 proj = GetProj();
+
+		gtk::mat4 mvp = proj * view * model;
+
+
+		gtk::vec4 p;
+		gtk::vec4 r;
+
+		p = mvp * Pos();
+		r = mvp * Rot();
+
+		m_Sprite->SetPosition(p.x, p.y);
+
+		m_Sprite->SetAngle(GetRotFromParents(GetEntity()) * PI / 180);
+
+		m_Sprite->SetScale(Scale().z);
 
 		// Draw sprite
 		m_Sprite->Draw();
 	}
 
-	CSimpleSprite* const m_Sprite;
-
 private:
+
+	CSimpleSprite* m_Sprite;
 
 };
 
@@ -105,8 +137,7 @@ public:
 			s = mvp * s;
 			e = mvp * e;
 
-			// Clip using camera world position
-
+			// TODO: Clip
 			App::DrawLine(
 				s.x / s.z, s.y / s.z,
 				e.x / e.z, e.y / e.z,
