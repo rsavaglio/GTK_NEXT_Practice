@@ -5,6 +5,8 @@
 #include "Components.h"
 #include "Renderers.h"
 
+#include <queue>
+
 class SceneTemplate : public gtk::Scene
 {
 
@@ -55,6 +57,7 @@ protected:
 
 		UpdateGroup controllers = CreateUpdateGroup();
 		RenderLayer rendLayer = CreateRenderLayer();
+		RenderLayer layer2 = CreateRenderLayer();
 
 
 		Entity& donut = CreateEntity();
@@ -106,7 +109,7 @@ protected:
 		Entity& player = CreateEntity();
 			player.Pos(vec3(0.0f, 0.0f, 500.0f));
 			AddBehavior(player, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
-			AddRenderer(player, rendLayer, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));
+			AddRenderer(player, layer2, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));
 
 			
 		Entity& player2 = CreateEntity(player);
@@ -124,6 +127,60 @@ protected:
 	}
 
 	// Called after all entities are updated but before renderer
+	void PostUpdate() override
+	{
+
+	}
+};
+
+
+class PinballScene : public gtk::Scene
+{
+
+public:
+
+	PinballScene(gtk::Game& game) : gtk::Scene(game) {}
+
+protected:
+
+
+	void GenSpherePool(const gtk::UpdateGroup& group, const gtk::RenderLayer& layer, 
+							const int& num, std::queue<gtk::Entity*>& out)
+	{
+		using namespace gtk;
+
+		for (int i = 0; i < num; i++)
+		{
+			Entity* entity = &CreateEntity();
+				entity->Pos(vec3((std::rand() % 20 + 1) - 10, 0.0f, 0.0f));
+				AddBehavior(*entity, group, new SphereController());
+				AddRenderer(*entity, layer, new OBJRenderer(".\\TestData\\sphere.obj"));
+
+				out.push(entity);
+		}
+		
+
+	}
+
+	// Called by game when scene starts
+	void Setup() override
+	{
+		using namespace gtk;
+
+		UpdateGroup group = CreateUpdateGroup();
+		RenderLayer layer = CreateRenderLayer();
+
+		Entity& camera = CreateEntity();
+			AddCamera(camera, new PerspectiveCam(1, 100, 80));
+			camera.Pos(vec3(0.0f, 0.0f, -10.0f));
+
+		std::queue<Entity*> spheres;
+
+		GenSpherePool(group, layer, 8, spheres);
+
+	}
+
+	// Called after all entities are updated
 	void PostUpdate() override
 	{
 

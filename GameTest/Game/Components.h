@@ -5,6 +5,7 @@
 
 class BehaviorTemplate : public gtk::Behavior
 {
+
 public:
 	BehaviorTemplate() {}
 
@@ -26,6 +27,42 @@ public:
 
 
 private:
+
+};
+
+class SphereController : public gtk::Behavior
+{
+public:
+	
+	SphereController() : _vel(), _acc(0.0f, -9.8f, 0.0f) {}
+
+	void Start() override
+	{
+	}
+
+	void Update(const float& deltaTime) override
+	{
+
+		gtk::vec3 p = Pos();
+
+		// Update position
+		Pos(p + (_vel * deltaTime) + ((_acc * (deltaTime * deltaTime)) * (1 / 2)));
+
+		// Update velocity
+		_vel = _vel + (_acc * deltaTime);
+	}
+
+	int Trigger(const int& code) override
+	{
+
+		return 0;
+	}
+
+
+private:
+
+	gtk::vec3 _vel;
+	gtk::vec3 _acc;
 
 };
 
