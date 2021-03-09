@@ -103,8 +103,7 @@ protected:
 
 			// Player sprite
 		Entity& player = CreateEntity();
-			player.Pos(vec3(0.0f, 0.0f, 0.0f));
-			player.Scale(0.01f);
+			player.Pos(vec3(0.0f, 0.0f, 500.0f));
 			AddBehavior(player, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
 			AddRenderer(player, rendLayer, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));
 

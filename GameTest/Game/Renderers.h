@@ -84,11 +84,11 @@ public:
 
 		p = mvp * p;
 
-		m_Sprite->SetPosition(p.x, p.y);
+		m_Sprite->SetPosition(p.x / p.z, p.y / p.z);
 
 		m_Sprite->SetAngle(GetRotFromParents(GetEntity()) * PI / 180);
 
-		m_Sprite->SetScale((1/p.z) * GetScaleFromParents(GetEntity()));
+		m_Sprite->SetScale(GetScaleFromParents(GetEntity()) / p.z);
 
 		// Draw sprite
 		m_Sprite->Draw();
