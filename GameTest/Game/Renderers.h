@@ -5,6 +5,7 @@
 
 #include <array>
 #include <math.h>
+#include <fstream>
 
 class RendTemplate : public gtk::Renderer
 {
@@ -179,8 +180,6 @@ public:
 			{
 				// Clipping math
 
-
-
 			}
 			
 			*/
@@ -195,4 +194,125 @@ private:
 	std::array<int, 24> _ibo;
 
 	float _anim;
+};
+
+class OBJRenderer : public gtk::Renderer
+{
+
+
+public:
+
+	OBJRenderer(std::string filePath) : _vbo(), _ibo()
+	{
+
+		using namespace std;
+
+		// Open File
+		fstream file;
+		file.open(filePath); // TODO: ASSERT that this worked!!
+
+		string prefix;
+
+		// Find the verts
+		while (prefix != "v")
+		{
+			file >> prefix;
+		}
+
+		// Add each vert to vbo
+		float x, y, z;
+		while (prefix == "v")
+		{
+			file >> x;
+			file >> y;
+			file >> z;
+
+			gtk::vec4 newVert = { x, y, z, 1.0f };
+			_vbo.push_back(newVert);
+
+			file >> prefix;
+		}
+
+		// Find the faces
+		while (prefix != "f")
+		{
+			file >> prefix;
+		}
+
+
+		int e1 = 0;
+		int e2 = 0;
+		int e3 = 0;
+
+		// Add each quad to ibo
+		while (!file.eof())
+		{
+
+			file >> e1;
+			file >> e2;
+			file >> e3;
+
+			e1 -= 1;
+			e2 -= 1;
+			e3 -= 1;
+
+			_ibo.push_back(e1);
+			_ibo.push_back(e2);
+
+			_ibo.push_back(e2);
+			_ibo.push_back(e3);
+
+			_ibo.push_back(e3);
+			_ibo.push_back(e1);
+
+			file >> prefix;
+
+		}
+
+		file.close();
+	
+	}
+
+	void Start() override
+	{
+		// Called first frame
+	}
+
+	void Draw() override
+	{
+		gtk::vec4 s;
+		gtk::vec4 e;
+
+		for (int i = 0; i < _ibo.size(); i += 2)
+		{
+			s = { _vbo[_ibo[i]].x, _vbo[_ibo[i]].y, _vbo[_ibo[i]].z, 1 };
+			e = { _vbo[_ibo[i + 1]].x, _vbo[_ibo[i + 1]].y, _vbo[_ibo[i + 1]].z, 1 };
+
+			gtk::mat4 model = TRS();
+			gtk::mat4 view = GetView();
+			gtk::mat4 proj = GetProj();
+
+			gtk::mat4 mvp = proj * view * model;
+
+			s = mvp * s;
+			e = mvp * e;
+
+
+			// Both points infront of camera
+			if (s.z > 0 && e.z > 0)
+			{
+				App::DrawLine(
+					s.x / s.z, s.y / s.z,
+					e.x / e.z, e.y / e.z,
+					0.9f, 0.5f, 0.2f);
+			}
+
+		}
+	}
+
+
+private:
+
+	std::vector<gtk::vec4> _vbo;
+	std::vector<int> _ibo;
 };

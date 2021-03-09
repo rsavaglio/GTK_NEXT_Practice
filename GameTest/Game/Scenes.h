@@ -57,19 +57,20 @@ protected:
 		RenderLayer rendLayer = CreateRenderLayer();
 
 
-		Entity& cube = CreateEntity();
-			cube.Pos(vec3(0.0f, 0.0f, 500.0f));
-			cube.Rot(vec3(0.0f, 0.0f, 0.0f));
-			cube.Scale(vec3(100.0f, 100.0f, 100.0f));
-			AddRenderer(cube, rendLayer, new CubeRenderer());
+		Entity& donut = CreateEntity();
+			donut.Pos(vec3(0.0f, 0.0f, 1000.0f));
+			donut.Rot(vec3(0.0f, 0.0f, 0.0f));
+			donut.Scale(vec3(400.0f));
+			AddBehavior(donut, controllers, new RotaterComp(gtk::vec3(1.0f, 0.0f, 0.0f)));
+			AddRenderer(donut, rendLayer, new OBJRenderer(".\\TestData\\donut.obj"));
 
-		Entity& childCube = CreateEntity(cube);
+		Entity& childCube = CreateEntity(donut);
 			childCube.Pos(vec3(3.5f, 1.5f, 1.0f));
 			childCube.Scale(vec3(0.5f, 0.5f, 0.5f));
 			AddBehavior(childCube, controllers, new RotaterComp(gtk::vec3(0, 1.0f, 0)));
 			AddRenderer(childCube, rendLayer, new CubeRenderer());
 
-		Entity& childCube2 = CreateEntity(cube);
+		Entity& childCube2 = CreateEntity(donut);
 			childCube2.Pos(vec3(-1.5f, 1.5f, -1.0f));
 			childCube2.Scale(vec3(0.5f, 0.5f, 0.5f));
 			AddBehavior(childCube2, controllers, new RotaterComp(gtk::vec3(0, 1.0f, 0)));
@@ -96,8 +97,8 @@ protected:
 
 		Entity& camera = CreateEntity();
 			AddCamera(camera, new PerspectiveCam(1, 1000, 80));
-			AddBehavior(camera, controllers, new CameraController(1.0f));
-			camera.Pos(vec3(0.0f, 0.0f, -1.0f));
+			//AddBehavior(camera, controllers, new CameraController(1.0f));
+			camera.Pos(vec3(0.0f, 0.0f, 0.0f));
 			camera.Rot(vec3(0.0f, 0.0f, 0.0f));
 
 
