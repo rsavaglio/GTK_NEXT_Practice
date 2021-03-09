@@ -89,3 +89,37 @@ private:
 	gtk::vec3 anim;
 
 };
+
+
+class CameraController : public gtk::Behavior
+{
+public:
+	CameraController(float speed)
+		: m_Speed(speed) {}
+
+	void Start() override
+	{
+
+	}
+
+	void Update(const float& deltaTime) override
+	{
+
+		// Need a better solution for this
+		// Base comp should just have these functions
+
+
+		Pos((Pos().x, Pos().y, Pos().z + (App::GetController().GetLeftThumbStickY() * m_Speed)));
+	}
+
+	int Trigger(const int& code)
+	{
+		return 0;
+	}
+
+
+private:
+
+	float m_Speed;
+
+};

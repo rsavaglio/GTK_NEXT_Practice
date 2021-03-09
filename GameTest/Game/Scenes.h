@@ -61,7 +61,6 @@ protected:
 			cube.Pos(vec3(0.0f, 0.0f, 500.0f));
 			cube.Rot(vec3(0.0f, 0.0f, 0.0f));
 			cube.Scale(vec3(100.0f, 100.0f, 100.0f));
-			//AddBehavior(cube, controllers, new RotaterComp(vec3(1.0f, 0.0f, 0)));
 			AddRenderer(cube, rendLayer, new CubeRenderer());
 
 		Entity& childCube = CreateEntity(cube);
@@ -97,6 +96,7 @@ protected:
 
 		Entity& camera = CreateEntity();
 			AddCamera(camera, new PerspectiveCam(1, 1000, 80));
+			AddBehavior(camera, controllers, new CameraController(1.0f));
 			camera.Pos(vec3(0.0f, 0.0f, -1.0f));
 			camera.Rot(vec3(0.0f, 0.0f, 0.0f));
 

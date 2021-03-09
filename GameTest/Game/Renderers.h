@@ -84,14 +84,20 @@ public:
 
 		p = mvp * p;
 
-		m_Sprite->SetPosition(p.x / p.z, p.y / p.z);
+		// Only draw when infront of camera
+		if (p.z > 0)
+		{
 
-		m_Sprite->SetAngle(GetRotFromParents(GetEntity()) * PI / 180);
+			m_Sprite->SetPosition(p.x / p.z, p.y / p.z);
 
-		m_Sprite->SetScale(GetScaleFromParents(GetEntity()) / p.z);
+			m_Sprite->SetAngle(GetRotFromParents(GetEntity()) * PI / 180);
 
-		// Draw sprite
-		m_Sprite->Draw();
+			m_Sprite->SetScale(GetScaleFromParents(GetEntity()) / p.z);
+
+			// Draw sprite
+			m_Sprite->Draw();
+		}
+
 	}
 
 private:
@@ -149,11 +155,35 @@ public:
 			s = mvp * s;
 			e = mvp * e;
 
-			// TODO: Clip
-			App::DrawLine(
-				s.x / s.z, s.y / s.z,
-				e.x / e.z, e.y / e.z,
-				0.9f, 0.5f, 0.2f);
+
+			// Both points infront of camera
+			if (s.z > 0 && e.z > 0)
+			{
+				App::DrawLine(
+					s.x / s.z, s.y / s.z,
+					e.x / e.z, e.y / e.z,
+					0.9f, 0.5f, 0.2f);
+			}
+
+
+			/* TODO: Better clipping
+			
+			else if (s.z > 0 && e.z < 0) // s front, e behind
+			{
+				// Clipping math
+
+
+
+			}
+			else if (s.z < 0 && e.z > 0) // s behind, e front
+			{
+				// Clipping math
+
+
+
+			}
+			
+			*/
 
 		}
 	}
