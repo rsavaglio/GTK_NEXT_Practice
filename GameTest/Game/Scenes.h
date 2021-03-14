@@ -156,7 +156,9 @@ protected:
 			AddCamera(camera, new PerspectiveCam(1, 100, 80));
 			camera.Pos(vec3(0.0f, 0.0f, -10.0f));
 
-		SpherePool spheres(10, *this, group, layer);
+
+		CreatePool("spherePool", new SpherePool(10, *this, group, layer));
+
 
 	}
 

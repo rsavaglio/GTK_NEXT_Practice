@@ -7,62 +7,6 @@
 
 using namespace gtk;
 
-class ObjectPool
-{
-	// Make some abstract functions
-
-public:
-	ObjectPool(int count, Scene& scene) : _pool(), _count(count), _scene(scene) {}
-
-	virtual ~ObjectPool() {}
-
-	virtual void GeneratePool() = 0;
-
-
-	void ActivateAll()
-	{
-		for (Entity* ent : _pool)
-		{
-			ent->Active(true);
-		}
-	}
-
-protected:
-	std::vector<Entity*> _pool;
-
-	int _count;
-	Scene& _scene;
-};
-
-class CustomPool : public ObjectPool
-{
-public:
-	
-	CustomPool(int count, Scene& scene)
-		: ObjectPool(count, scene) 
-	{
-		GeneratePool();
-	}
-
-	void GeneratePool() override
-	{
-		for (int i = 0; i < _count; i++)
-		{
-			// Create entity and add it to pool
-			Entity* entity = &_scene.CreateEntity();
-			_pool.push_back(entity);
-			entity->Active(false);
-
-			// Setup Here
-
-
-		}
-	}
-
-private:
-
-
-};
 
 class SpherePool : public ObjectPool
 {
@@ -70,7 +14,7 @@ class SpherePool : public ObjectPool
 public:
 
 	SpherePool(int count, Scene& scene, gtk::UpdateGroup& group, gtk::RenderLayer& layer)
-		: _group(group), _layer(layer), ObjectPool(count, scene) 
+		: _group(group), _layer(layer), ObjectPool(count, scene)
 	{
 		GeneratePool();
 	}
@@ -89,7 +33,6 @@ public:
 			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\sphere.obj"));
 			entity->Pos(vec3(((rand() % 20) - 10), 0.0f, 0.0f));
 
-			
 		}
 	}
 

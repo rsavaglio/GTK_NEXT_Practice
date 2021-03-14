@@ -9,6 +9,7 @@ namespace gtk {
 
 	class Game;
 	class SceneObject;
+	class ObjectPool;
 
 	class Entity;
 	class Behavior;
@@ -46,7 +47,9 @@ namespace gtk {
 
 		Entity& CreateEntity(std::string name); // Sets parent as m_Root
 		Entity& CreateEntity(std::string name, Entity& parent);
-
+		
+		ObjectPool& CreatePool(std::string name, ObjectPool* const pool);
+		ObjectPool& GetPool(std::string name);
 
 		Behavior& AddBehavior(Entity& entity, const UpdateGroup& group, Behavior* const behavior);
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Renderer* const renderer);
@@ -71,6 +74,8 @@ namespace gtk {
 		// Scene Object containers
 		std::unordered_map<unsigned int, Entity*> m_RootEntityMap;
 
+		std::unordered_map<std::string, ObjectPool*> m_ObjectPools;
+
 		std::vector<std::unordered_map<unsigned int, Behavior*>*> m_BehaviorMaps;
 		std::vector<std::unordered_map<unsigned int, Behavior*>*> m_DisabledBehaviorMaps;
 
@@ -92,8 +97,8 @@ namespace gtk {
 		template <class T>
 		void MapVectorShredder(std::vector<std::unordered_map<unsigned int, T*>*>& vectorMap);
 
-		template <class T>
-		void MapShredder(std::unordered_map<unsigned int, T*>& map);
+		template <class T, class K>
+		void MapShredder(std::unordered_map<K, T*>& map);
 
 		void EntityShredder(Entity& entity);
 
@@ -106,7 +111,6 @@ namespace gtk {
 
 		const int MAX_ENTS;
 		Entity* m_EntityPointerProvider;
-
 
 		unsigned int m_EntityIDProvider;
 		unsigned int m_UpdateGroupIDProvider;

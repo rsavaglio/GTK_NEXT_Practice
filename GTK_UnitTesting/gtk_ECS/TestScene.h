@@ -24,6 +24,9 @@ protected:
 			AddBehavior(entity, group, new CompTemplate());
 			AddRenderer(entity, layer, new ToggleMeRend());
 
+		Entity& camera = CreateEntity();
+			AddCamera(camera, new PerspectiveCam(1, 100, 80));
+
 	}
 
 	// Called after all entities are updated
@@ -62,6 +65,9 @@ protected:
 		AddBehavior(hat, Adders, new VectorTest(true, SSC));
 		AddBehavior(hat, Subtractors, new VectorTest(false, SSC));
 
+		Entity& camera = CreateEntity();
+		AddCamera(camera, new PerspectiveCam(1, 100, 80));
+
 	}
 	virtual void PostUpdate() override
 	{
@@ -97,6 +103,10 @@ protected:
 
 		Entity& Toggler = CreateEntity();
 			AddBehavior(Toggler, g_Tog, new TogglerComp(ToggleMeElmo, tmc, tmr));
+
+
+		Entity& camera = CreateEntity();
+			AddCamera(camera, new PerspectiveCam(1, 100, 80));
 			
 	}
 

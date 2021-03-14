@@ -294,4 +294,38 @@ namespace gtk {
 	};
 
 
+
+
+	/////// Object Pools //////////
+
+
+	class ObjectPool
+	{
+		// Make some abstract functions
+
+	public:
+
+		virtual ~ObjectPool() {}
+
+		virtual void GeneratePool() = 0;
+
+
+		void ActivateAll()
+		{
+			for (Entity* ent : _pool)
+			{
+				ent->Active(true);
+			}
+		}
+
+	protected:
+		std::vector<Entity*> _pool;
+
+		int _count;
+		Scene& _scene;
+		
+		ObjectPool(int count, Scene& scene) : _pool(), _count(count), _scene(scene) {}
+		ObjectPool(const ObjectPool&) = delete;
+	};
+
 }

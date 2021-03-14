@@ -112,6 +112,18 @@ namespace gtk {
 		// Return id and increment
 		return *newEnt;
 	}
+
+	ObjectPool& Scene::CreatePool(std::string name, ObjectPool* const pool)
+	{
+		m_ObjectPools.insert({ name, pool });
+		return *pool;
+	}
+
+	ObjectPool& Scene::GetPool(std::string name)
+	{
+		ASSERT(m_ObjectPools.find(name) != m_ObjectPools.end());
+		return *m_ObjectPools.at(name);
+	}
 	
 	UpdateGroup Scene::CreateUpdateGroup()
 	{
@@ -141,12 +153,19 @@ namespace gtk {
 		// Set behavior data
 		behavior->m_GroupID = group._id;
 
-		// Ensure no deplicate behaviors on same entity
-		ASSERT(m_BehaviorMaps[group._id]->find(entity._id) == m_BehaviorMaps[group._id]->end());
-		ASSERT(m_DisabledBehaviorMaps[group._id]->find(entity._id) == m_DisabledBehaviorMaps[group._id]->end());
+		if (entity.Active())
+		{
+			// Ensure no deplicate behaviors on same entity
+			ASSERT(m_BehaviorMaps[group._id]->find(entity._id) == m_BehaviorMaps[group._id]->end());
 
-		// Add behavior to correct map with the ID
-		m_BehaviorMaps[group._id]->insert({ entity._id, behavior });
+			// Add behavior to correct map with the ID
+			m_BehaviorMaps[group._id]->insert({ entity._id, behavior });
+		}
+		else
+		{
+			ASSERT(m_DisabledBehaviorMaps[group._id]->find(entity._id) == m_DisabledBehaviorMaps[group._id]->end());
+			m_DisabledBehaviorMaps[group._id]->insert({ entity._id, behavior });
+		}
 
 		return *behavior;
 	}
@@ -160,9 +179,18 @@ namespace gtk {
 		renderer->m_Camera = &camera;
 		renderer->m_LayerID = layer._id;
 
-		// Ensure no deplicate renderer on same entity
-		ASSERT(m_RendererMaps[layer._id]->find(entity._id) == m_RendererMaps[layer._id]->end());
-		ASSERT(m_DisabledRendererMaps[layer._id]->find(entity._id) == m_DisabledRendererMaps[layer._id]->end());
+
+		if (entity.Active())
+		{
+			// Ensure no deplicate renderer on same entity
+			ASSERT(m_RendererMaps[layer._id]->find(entity._id) == m_RendererMaps[layer._id]->end());
+			m_RendererMaps[layer._id]->insert({ entity._id, renderer });
+		}
+		else
+		{
+			ASSERT(m_DisabledRendererMaps[layer._id]->find(entity._id) == m_DisabledRendererMaps[layer._id]->end());
+			m_DisabledRendererMaps[layer._id]->insert({ entity._id, renderer });
+		}
 
 		// Add renderer to correct map with the ID
 		m_RendererMaps[layer._id]->insert({ entity._id, renderer });
@@ -179,13 +207,19 @@ namespace gtk {
 		renderer->m_LayerID = layer._id;
 
 
-		// Ensure no deplicate renderer on same entity
-		ASSERT(m_RendererMaps[layer._id]->find(entity._id) == m_RendererMaps[layer._id]->end());
-		ASSERT(m_DisabledRendererMaps[layer._id]->find(entity._id) == m_DisabledRendererMaps[layer._id]->end());
+		if (entity.Active())
+		{
+			// Ensure no deplicate renderer on same entity
+			ASSERT(m_RendererMaps[layer._id]->find(entity._id) == m_RendererMaps[layer._id]->end());
+			m_RendererMaps[layer._id]->insert({ entity._id, renderer });
+		}
+		else
+		{
+			ASSERT(m_DisabledRendererMaps[layer._id]->find(entity._id) == m_DisabledRendererMaps[layer._id]->end());
+			m_DisabledRendererMaps[layer._id]->insert({ entity._id, renderer });
+		}
 
 		// Add renderer to correct map with the ID
-		m_RendererMaps[layer._id]->insert({ entity._id, renderer });
-
 		return *renderer;
 	}
 
@@ -510,6 +544,7 @@ namespace gtk {
 		
 		// Shred maps
 		MapShredder(m_CameraMap);
+		MapShredder(m_ObjectPools);
 
 		// Clear Entity Scene Graph
 		delete[] m_EntityPointerProvider;
@@ -559,8 +594,8 @@ namespace gtk {
 		mapVector.clear(); // Clear the vector
 	}
 
-	template <class T>
-	void Scene::MapShredder(std::unordered_map<unsigned int, T*>& map)
+	template <class T, class K>
+	void Scene::MapShredder(std::unordered_map<K, T*>& map)
 	{
 		// Loop through map
 		for (auto obj : map)
