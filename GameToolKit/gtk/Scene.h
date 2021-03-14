@@ -36,15 +36,6 @@ namespace gtk {
 
 		Camera& GetMainCam();
 
-		//Entity& GetEntity(unsigned int id);
-
-	protected:
-
-		// Implemented in custom scene
-		void Init();
-		virtual void Setup() = 0;
-		virtual void PostUpdate() = 0;
-
 		// Scene setup functions
 
 		UpdateGroup CreateUpdateGroup();
@@ -56,14 +47,23 @@ namespace gtk {
 		Entity& CreateEntity(std::string name); // Sets parent as m_Root
 		Entity& CreateEntity(std::string name, Entity& parent);
 
-		Behavior& AddBehavior(Entity& entity, const UpdateGroup& group, Behavior* const behavior);
 
+		Behavior& AddBehavior(Entity& entity, const UpdateGroup& group, Behavior* const behavior);
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Renderer* const renderer);
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Camera& camera, Renderer* const renderer);
 
 		Camera& AddCamera(Entity& entity, Camera* const camera);
 
 		void SetMainCam(unsigned int id);
+
+	protected:
+
+		// Implemented in custom scene
+		void Init();
+		virtual void Setup() = 0;
+		virtual void PostUpdate() = 0;
+
+		
 
 
 	protected:

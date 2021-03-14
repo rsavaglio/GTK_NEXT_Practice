@@ -264,6 +264,8 @@ namespace gtk {
 
 		// Call CreateEntity() from a Scene
 		Entity();
+		Entity(const Entity&) = delete;
+
 		void AddChild(Entity* child);
 
 		mat4 CalcTRS();
@@ -290,8 +292,6 @@ namespace gtk {
 		mat4 _TRS;
 
 	};
-
-
 
 
 }

@@ -202,9 +202,59 @@ class OBJRenderer : public gtk::Renderer
 
 public:
 
-	OBJRenderer(std::string filePath) : _vbo(), _ibo()
+	OBJRenderer(std::string filePath) : _color(gtk::vec3(0.5f, 0.5f, 0.2f)), _vbo(), _ibo()
 	{
+		LoadObject(filePath);
+	}
 
+	OBJRenderer(std::string filePath, gtk::vec3 color) : _color(), _vbo(), _ibo()
+	{
+		LoadObject(filePath);
+		_color = color;
+	}
+
+	void Start() override
+	{
+		// Called first frame
+	}
+
+	void Draw() override
+	{
+		gtk::vec4 s;
+		gtk::vec4 e;
+
+		for (int i = 0; i < _ibo.size(); i += 2)
+		{
+			s = { _vbo[_ibo[i]].x, _vbo[_ibo[i]].y, _vbo[_ibo[i]].z, 1 };
+			e = { _vbo[_ibo[i + 1]].x, _vbo[_ibo[i + 1]].y, _vbo[_ibo[i + 1]].z, 1 };
+
+			gtk::mat4 model = TRS();
+			gtk::mat4 view = GetView();
+			gtk::mat4 proj = GetProj();
+
+			gtk::mat4 mvp = proj * view * model;
+
+			s = mvp * s;
+			e = mvp * e;
+
+
+			// Both points infront of camera
+			if (s.z > 0 && e.z > 0)
+			{
+				App::DrawLine(
+					s.x / s.z, s.y / s.z,
+					e.x / e.z, e.y / e.z,
+					_color.x, _color.y, _color.z);
+			}
+
+		}
+	}
+
+
+private:
+
+	void LoadObject(std::string filePath)
+	{
 		using namespace std;
 
 		// Open File
@@ -270,49 +320,9 @@ public:
 		}
 
 		file.close();
-	
 	}
 
-	void Start() override
-	{
-		// Called first frame
-	}
-
-	void Draw() override
-	{
-		gtk::vec4 s;
-		gtk::vec4 e;
-
-		for (int i = 0; i < _ibo.size(); i += 2)
-		{
-			s = { _vbo[_ibo[i]].x, _vbo[_ibo[i]].y, _vbo[_ibo[i]].z, 1 };
-			e = { _vbo[_ibo[i + 1]].x, _vbo[_ibo[i + 1]].y, _vbo[_ibo[i + 1]].z, 1 };
-
-			gtk::mat4 model = TRS();
-			gtk::mat4 view = GetView();
-			gtk::mat4 proj = GetProj();
-
-			gtk::mat4 mvp = proj * view * model;
-
-			s = mvp * s;
-			e = mvp * e;
-
-
-			// Both points infront of camera
-			if (s.z > 0 && e.z > 0)
-			{
-				App::DrawLine(
-					s.x / s.z, s.y / s.z,
-					e.x / e.z, e.y / e.z,
-					0.9f, 0.5f, 0.2f);
-			}
-
-		}
-	}
-
-
-private:
-
+	gtk::vec3 _color;
 	std::vector<gtk::vec4> _vbo;
 	std::vector<int> _ibo;
 };

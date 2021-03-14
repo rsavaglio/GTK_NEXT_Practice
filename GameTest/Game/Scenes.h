@@ -4,6 +4,7 @@
 
 #include "Components.h"
 #include "Renderers.h"
+#include "ObjectPools.h"
 
 #include <queue>
 
@@ -143,25 +144,6 @@ public:
 
 protected:
 
-
-	void GenSpherePool(const gtk::UpdateGroup& group, const gtk::RenderLayer& layer, 
-							const int& num, std::queue<gtk::Entity*>& out)
-	{
-		using namespace gtk;
-
-		for (int i = 0; i < num; i++)
-		{
-			Entity* entity = &CreateEntity();
-				entity->Pos(vec3((std::rand() % 20 + 1) - 10, 0.0f, 0.0f));
-				AddBehavior(*entity, group, new SphereController());
-				AddRenderer(*entity, layer, new OBJRenderer(".\\TestData\\sphere.obj"));
-
-				out.push(entity);
-		}
-		
-
-	}
-
 	// Called by game when scene starts
 	void Setup() override
 	{
@@ -174,15 +156,13 @@ protected:
 			AddCamera(camera, new PerspectiveCam(1, 100, 80));
 			camera.Pos(vec3(0.0f, 0.0f, -10.0f));
 
-		std::queue<Entity*> spheres;
-
-		GenSpherePool(group, layer, 8, spheres);
+		SpherePool spheres(10, *this, group, layer);
 
 	}
 
 	// Called after all entities are updated
 	void PostUpdate() override
 	{
-
+		
 	}
 };

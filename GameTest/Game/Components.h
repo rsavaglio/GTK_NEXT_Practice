@@ -3,6 +3,8 @@
 #include "app/app.h"
 #include "gtk/gtkMath.hpp"
 
+using namespace gtk;
+
 class BehaviorTemplate : public gtk::Behavior
 {
 
@@ -160,3 +162,4 @@ private:
 	float m_Speed;
 
 };
+
