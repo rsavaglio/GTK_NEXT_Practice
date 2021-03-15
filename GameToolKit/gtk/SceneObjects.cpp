@@ -87,6 +87,12 @@ namespace gtk {
 		return _ent->_TRS;
 	}
 
+	void SceneObject::Trigger(const int& code)
+	{
+		// Triggers any of its behaviours
+		_scene->TriggerBehaviours(_ent->ID(), code);
+	}
+
 	void SceneObject::SwitchScene(std::string name)
 	{
 		_scene->SwitchScene(name);

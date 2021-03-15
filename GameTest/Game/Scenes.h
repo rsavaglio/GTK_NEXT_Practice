@@ -157,8 +157,10 @@ protected:
 			camera.Pos(vec3(0.0f, 0.0f, -10.0f));
 
 
-		CreatePool("spherePool", new SpherePool(10, *this, group, layer));
+		ObjectPool& spherePool = CreatePool("spherePool", new SpherePool(10, *this, group, layer));
 
+		Entity& sphereManager = CreateEntity();
+			AddBehavior(sphereManager, group, new SphereManager(1.0f, spherePool));
 
 	}
 

@@ -41,6 +41,21 @@ namespace gtk {
 			}
 		}
 
+		// Loop through the vector of maps
+		for (auto& RenderLayer : m_DisabledRendererMaps)
+		{
+			// Loop through render map
+			for (auto& Rend : *RenderLayer)
+			{
+				// If the renderer has not been given a camera
+				if (Rend.second->m_Camera == nullptr)
+				{
+					// Give it the main camera
+					Rend.second->m_Camera = m_MainCam;
+				}
+			}
+		}
+
 	}
 
 	void Scene::SwitchScene(std::string key)
@@ -246,11 +261,25 @@ namespace gtk {
 		return *camera;
 	}
 
-	void Scene::SetMainCam(unsigned int id) 
+	void Scene::SetMainCam(const unsigned int& id) 
 	{
 		ASSERT(m_CameraMap.find(id) != m_CameraMap.end());
 
 		m_MainCam = m_CameraMap.find(id)->second;
+	}
+
+	void gtk::Scene::TriggerBehaviours(const unsigned int& id, const int& code)
+	{
+		// Check each map
+		for (auto& CompMap : m_BehaviorMaps)
+		{
+			// If entity has a behviour in the map
+			if (CompMap->find(id) != CompMap->end())
+			{
+				// Trigger the behaviour
+				CompMap->at(id)->Trigger(code);
+			}
+		}
 	}
 
 	Camera& Scene::GetMainCam()
@@ -316,7 +345,7 @@ namespace gtk {
 			}
 
 		}
-		else // Set entitiy inactive
+		else // Set entity inactive
 		{
 			// Return if entity is already inactive
 			if (!entity._Active) { return; }
@@ -353,8 +382,6 @@ namespace gtk {
 			}
 
 		}
-
-		// TODO: Test toggling children
 
 		// Repeat on children
 		for (auto& child : entity._Children)

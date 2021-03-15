@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <string>
+#include <queue>
 
 namespace gtk {
 
@@ -44,14 +45,15 @@ namespace gtk {
 		Entity& Parent();
 		const mat4& TRS();
 
+		void Trigger(const int& code);
+
+
 		void SwitchScene(std::string name);
 
-		// TODO
 
 		// Add floatx3 variants above
 		const vec3& Forward() {}
 		void Instantiate() {}
-
 
 	protected:
 		
@@ -310,21 +312,36 @@ namespace gtk {
 		virtual void GeneratePool() = 0;
 
 
-		void ActivateAll()
+		Entity& Create(vec3 pos)
 		{
-			for (Entity* ent : _pool)
-			{
-				ent->Active(true);
-			}
+			Entity* ent = _pool.front();
+			_pool.pop();
+			_pool.push(ent);
+
+			ent->Active(true);
+			ent->Pos(pos);
+
+			return *ent;
+		}
+
+		Entity& Create()
+		{
+			Entity* ent = _pool.front();
+			_pool.pop();
+			_pool.push(ent);
+
+			ent->Active(true);
+
+			return *ent;
 		}
 
 	protected:
-		std::vector<Entity*> _pool;
+		std::queue<Entity*> _pool;
 
 		int _count;
 		Scene& _scene;
 		
-		ObjectPool(int count, Scene& scene) : _pool(), _count(count), _scene(scene) {}
+		ObjectPool(const int& count, Scene& scene) : _pool(), _count(count), _scene(scene) {}
 		ObjectPool(const ObjectPool&) = delete;
 	};
 

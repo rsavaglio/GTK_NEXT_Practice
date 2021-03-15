@@ -25,11 +25,11 @@ public:
 		{
 			// Create entity and add it to pool
 			Entity* entity = &_scene.CreateEntity();
-			_pool.push_back(entity);
+			_pool.push(entity);
 			entity->Active(false);
 
 			// Setup here
-			_scene.AddBehavior(*entity, _group, new SphereController());
+			_scene.AddBehavior(*entity, _group, new SphereB());
 			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\sphere.obj"));
 			entity->Pos(vec3(((rand() % 20) - 10), 0.0f, 0.0f));
 

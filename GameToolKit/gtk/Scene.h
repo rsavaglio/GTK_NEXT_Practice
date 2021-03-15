@@ -57,7 +57,10 @@ namespace gtk {
 
 		Camera& AddCamera(Entity& entity, Camera* const camera);
 
-		void SetMainCam(unsigned int id);
+		void SetMainCam(const unsigned int& id);
+
+		void TriggerBehaviours(const unsigned int& id, const int& code);
+
 
 	protected:
 
@@ -66,21 +69,18 @@ namespace gtk {
 		virtual void Setup() = 0;
 		virtual void PostUpdate() = 0;
 
-		
-
-
 	protected:
 
 		// Scene Object containers
 		std::unordered_map<unsigned int, Entity*> m_RootEntityMap;
-
-		std::unordered_map<std::string, ObjectPool*> m_ObjectPools;
 
 		std::vector<std::unordered_map<unsigned int, Behavior*>*> m_BehaviorMaps;
 		std::vector<std::unordered_map<unsigned int, Behavior*>*> m_DisabledBehaviorMaps;
 
 		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_RendererMaps;
 		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_DisabledRendererMaps;
+
+		std::unordered_map<std::string, ObjectPool*> m_ObjectPools;
 
 		std::unordered_map<unsigned int, Camera*> m_CameraMap;
 		Camera* m_MainCam;

@@ -23,7 +23,6 @@ public:
 
 	int Trigger(const int& code) override
 	{
-
 		return 0;
 	}
 
@@ -32,11 +31,11 @@ private:
 
 };
 
-class SphereController : public gtk::Behavior
+class SphereB : public gtk::Behavior
 {
 public:
 	
-	SphereController() : _vel(), _acc(0.0f, -9.8f, 0.0f) {}
+	SphereB() : _vel(), _acc(0.0f, -9.8f, 0.0f) {}
 
 	void Start() override
 	{
@@ -56,6 +55,8 @@ public:
 
 	int Trigger(const int& code) override
 	{
+
+		_vel = 0;
 
 		return 0;
 	}
@@ -163,3 +164,47 @@ private:
 
 };
 
+class SphereManager : public gtk::Behavior
+{
+
+public:
+	SphereManager(const float& delay, ObjectPool& pool) : _delay(delay), _time(0), _spherePool(pool) {}
+
+	void Start() override
+	{
+
+	}
+
+	void Update(const float& deltaTime) override
+	{
+		_time += deltaTime;
+
+		if (_time >= _delay)
+		{
+			Entity& newSphere = _spherePool.Create();
+
+			newSphere.Pos(vec3(((rand() % 20) - 10), 0.0f, 0.0f));
+
+			// Resets velocity on sphere
+			newSphere.Trigger(1);
+
+			_time = 0;
+
+		}
+
+	}
+
+	int Trigger(const int& code) override
+	{
+
+		return 0;
+	}
+
+
+private:
+
+	float _delay;
+	float _time;
+	ObjectPool& _spherePool;
+
+};
