@@ -107,6 +107,79 @@ private:
 
 };
 
+class TextRenderer : public gtk::Renderer
+{
+
+public:
+
+	TextRenderer(const char* text, gtk::vec3 color = gtk::vec3(0.5f, 0.5f, 0.2f)) : _color(color), _text(text)
+	{
+	}
+
+	// Helper
+	float GetRotFromParents(gtk::Entity& ent)
+	{
+		// Base case, at root entity
+		if (&ent.Parent() == &ent)
+		{
+			return ent.Rot().z;
+		}
+		else
+		{
+			// Not at root yet
+			return ent.Rot().z + GetRotFromParents(ent.Parent());
+		}
+	}
+
+	float GetScaleFromParents(gtk::Entity& ent)
+	{
+		// Base case, at root entity
+		if (&ent.Parent() == &ent)
+		{
+			return ent.Scale().z;
+		}
+		else
+		{
+			// Not at root yet
+			return ent.Scale().z * GetScaleFromParents(ent.Parent());
+		}
+	}
+
+	void Start() override
+	{
+
+	}
+
+	void Draw() override
+	{
+		gtk::mat4 model = TRS();
+		gtk::mat4 view = GetView();
+		gtk::mat4 proj = GetProj();
+
+		gtk::mat4 mvp = proj * view * model;
+
+
+		gtk::vec4 p = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+		p = mvp * p;
+
+		// Only draw when infront of camera
+		if (p.z > 0)
+		{
+
+			App::Print(p.x / p.z, p.y / p.z, _text, _color.r, _color.g, _color.b);
+
+		}
+
+	}
+
+private:
+
+	gtk::vec3 _color;
+	const char* _text;
+
+};
+
 class CubeRenderer : public gtk::Renderer
 {
 	
@@ -172,14 +245,10 @@ public:
 			else if (s.z > 0 && e.z < 0) // s front, e behind
 			{
 				// Clipping math
-
-
-
 			}
 			else if (s.z < 0 && e.z > 0) // s behind, e front
 			{
 				// Clipping math
-
 			}
 			
 			*/
@@ -207,7 +276,7 @@ public:
 		LoadObject(filePath);
 	}
 
-	OBJRenderer(std::string filePath, gtk::vec3 color) : _color(), _vbo(), _ibo()
+	OBJRenderer(std::string filePath, gtk::vec3 color) : _color(color), _vbo(), _ibo()
 	{
 		LoadObject(filePath);
 		_color = color;

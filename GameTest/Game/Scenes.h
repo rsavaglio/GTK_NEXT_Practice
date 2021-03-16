@@ -108,14 +108,14 @@ protected:
 
 			// Player sprite
 		Entity& player = CreateEntity();
-			player.Pos(vec3(0.0f, 0.0f, 500.0f));
+			player.Pos(vec3(0.0f, 0.0f, 400.0f));
 			AddBehavior(player, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
 			AddRenderer(player, layer2, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));
 
 			
 		Entity& player2 = CreateEntity(player);
 			player2.Pos(vec3(0.0f, 40.0f, 0.0f));
-			player2.Scale(0.1f);
+			player2.Scale(0.5f);
 			AddBehavior(player2, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
 			AddRenderer(player2, rendLayer, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));
 
@@ -123,8 +123,12 @@ protected:
 		Entity& player3 = CreateEntity(player2);
 			player3.Pos(vec3(100.0f, 0.0f, 0.0f));
 			AddBehavior(player3, controllers, new RotaterComp(vec3(0.0f, 0.0f, 1.0f)));
-			AddRenderer(player3, rendLayer, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));\
-			
+			AddRenderer(player3, rendLayer, new SpriteRenderer(".\\TestData\\Test.bmp", 8, 4));
+
+		// Text 
+		Entity& text = CreateEntity(player3);
+			text.Pos(vec3(0.0f, 0.0f, 0.0f));
+			AddRenderer(text, layer2, new TextRenderer("NEXT 2021!", vec3(1.0f, 1.0f, 1.0f)));
 	}
 
 	// Called after all entities are updated but before renderer

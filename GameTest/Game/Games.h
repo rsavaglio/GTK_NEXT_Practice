@@ -25,7 +25,7 @@ public:
 	void Init() override
 	{
 		// Add the scenes of the game here
-		AddScene("PinballScene", new PinballScene(*this));
 		AddScene("PracScene", new PracScene(*this));
+		AddScene("PinballScene", new PinballScene(*this));
 	}
 };
