@@ -45,14 +45,14 @@ namespace gtk {
 		Entity& Parent();
 		const mat4& TRS();
 
+		vec3 Right();
+		vec3 Up();
+		vec3 Forward();
+
 		void Trigger(const int& code);
 
 
 		void SwitchScene(std::string name);
-
-
-		// Add floatx3 variants above
-		const vec3& Forward() {}
 		void Instantiate() {}
 
 	protected:
@@ -275,7 +275,6 @@ namespace gtk {
 
 		void UpdateRootTRS();
 		void UpdateTRS();
-		void Soil();
 
 	private:
 
@@ -286,11 +285,15 @@ namespace gtk {
 		std::vector<Entity*> _Children;
 
 		bool _Active; // Update comps and draw
-		bool _Dirty;  // Update transform
 
 		vec3 _Pos;
 		vec3 _Rot;
 		vec3 _Scale;
+		
+		vec3 _right;
+		vec3 _up;
+		vec3 _forward;
+		
 		mat4 _TRS;
 
 	};

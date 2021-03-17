@@ -2,6 +2,7 @@
 #include "gtk/gtk.h"
 #include "app/app.h"
 #include "gtk/gtkMath.hpp"
+#include <math.h>
 
 using namespace gtk;
 
@@ -144,12 +145,27 @@ public:
 
 	void Update(const float& deltaTime) override
 	{
+		using namespace std;
+
+		vec3 forward = vec3(
+
+			sin(Rot().y) * cos(Rot().x),
+			-sin(Rot().x),
+			cos(Rot().x) * cos(Rot().y)
+		);
+
+
 
 		// Need a better solution for this
 		// Base comp should just have these functions
+		Pos( Forward() * (App::GetController().GetLeftThumbStickY() * -m_Speed), true);
+		Pos( Right() * (App::GetController().GetLeftThumbStickX() * m_Speed), true);
 
-
-		Pos((Pos().x, Pos().y, Pos().z + (App::GetController().GetLeftThumbStickY() * m_Speed)));
+		Rot(vec3(
+			(App::GetController().GetRightThumbStickY() * -m_Speed/10),
+			(App::GetController().GetRightThumbStickX() * m_Speed/10), 
+			Rot().z), 
+			true);
 	}
 
 	int Trigger(const int& code)
@@ -206,5 +222,39 @@ private:
 	float _delay;
 	float _time;
 	ObjectPool& _spherePool;
+
+};
+
+
+class CubeMover : public gtk::Behavior
+{
+
+public:
+	CubeMover(const float& speed) : _speed(speed){}
+
+	void Start() override
+	{
+
+	}
+
+	void Update(const float& deltaTime) override
+	{
+
+		Pos(Forward() * (App::GetController().GetLeftThumbStickY() * _speed), true);
+		Pos(Right() * (App::GetController().GetLeftThumbStickX() * _speed), true);
+
+		Rot(vec3( App::GetController().GetRightThumbStickY() * _speed, App::GetController().GetRightThumbStickX() * _speed, 0.0f), true);
+
+	}
+
+	int Trigger(const int& code) override
+	{
+		return 0;
+	}
+
+
+private:
+
+	float _speed;
 
 };

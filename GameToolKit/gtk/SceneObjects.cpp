@@ -87,6 +87,24 @@ namespace gtk {
 		return _ent->_TRS;
 	}
 
+	vec3 SceneObject::Right()
+	{
+		vec3 r = _ent->_right;
+		return r;
+	}
+
+	vec3 SceneObject::Up()
+	{
+		vec3 u = _ent->_up;
+		return u;
+	}
+
+	vec3 SceneObject::Forward()
+	{
+		vec3 f = _ent->_forward;
+		return f;
+	}
+
 	void SceneObject::Trigger(const int& code)
 	{
 		// Triggers any of its behaviours
@@ -329,7 +347,7 @@ namespace gtk {
 
 	Entity::Entity()
 		: _Name(""), _Parent(nullptr), _Children(), _Active(true),
-		_Dirty(true), _Pos(0.0f), _Rot(0.0f), _Scale(1.0f), _TRS(1.0f) {}
+		_Pos(0.0f), _Rot(0.0f), _Scale(1.0f), _TRS(1.0f) {}
 
 
 	const mat4& Entity::GetTRS()
@@ -393,12 +411,28 @@ namespace gtk {
 
 	void Entity::UpdateRootTRS()
 	{
-		// TODO: Profile dirty flag here
 
 		// This version does not multiply by a parent
 		_TRS = CalcTRS();
 
-		_Dirty = false;
+		// Right
+		_right.x = _TRS[0][0];
+		_right.y = _TRS[0][1];
+		_right.z = _TRS[0][2];
+		_right.Normalize();
+
+		// Up
+		_up.x = _TRS[1][0];
+		_up.y = _TRS[1][1];
+		_up.z = _TRS[1][2];
+		_up.Normalize();
+		_up.Normalize();
+
+		// Forward
+		_forward.x = _TRS[2][0];
+		_forward.y = _TRS[2][1];
+		_forward.z = _TRS[2][2];
+		_forward.Normalize();
 
 		// Update Children's TRS
 		for (auto& child : _Children)
@@ -412,20 +446,35 @@ namespace gtk {
 
 		_TRS = _Parent->_TRS * CalcTRS();
 
+
+		// Right
+		vec4 temp(1.0f, 0.0f, 0.0f, 1.0f);
+		vec4 t = _TRS * temp;
+		_right.x = t.x;
+		_right.y = t.y;
+		_right.z = t.z;
+		_right.Normalize();
+
+		// Up
+		temp = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+		t = _TRS * temp;
+		_up.x = t.x;
+		_up.y = t.y;
+		_up.z = t.z;
+		_up.Normalize();
+
+		// Forward
+		temp = vec4(0.0f, 0.0f, 1.0f, 1.0f);
+		t = _TRS * temp;
+		_forward.x = t.x;
+		_forward.y = t.y;
+		_forward.z = t.z;
+		_forward.Normalize();
+
 		// Update Children's TRS
 		for (auto& child : _Children)
 		{
 			child->UpdateTRS();
-		}
-	}
-
-	void Entity::Soil()
-	{
-		_Dirty = true;
-
-		for (auto& child : _Children)
-		{
-			child->Soil();
 		}
 	}
 

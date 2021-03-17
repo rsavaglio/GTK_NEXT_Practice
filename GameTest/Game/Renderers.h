@@ -215,16 +215,17 @@ public:
 		gtk::vec4 s;
 		gtk::vec4 e;
 
+		gtk::mat4 model = TRS();
+		gtk::mat4 view = GetView();
+		gtk::mat4 proj = GetProj();
+
+		gtk::mat4 mvp = proj * view * model;
+
+
 		for (int i = 0; i < 24; i += 2)
 		{
 			s = { _vbo[_ibo[i]].x, _vbo[_ibo[i]].y, _vbo[_ibo[i]].z, 1 };
 			e = { _vbo[_ibo[i + 1]].x, _vbo[_ibo[i+ 1]].y, _vbo[_ibo[i + 1]].z, 1 };
-
-			gtk::mat4 model = TRS();
-			gtk::mat4 view = GetView();
-			gtk::mat4 proj = GetProj();
-
-			gtk::mat4 mvp = proj * view * model;
 
 			s = mvp * s;
 			e = mvp * e;
@@ -238,21 +239,6 @@ public:
 					e.x / e.z, e.y / e.z,
 					0.9f, 0.5f, 0.2f);
 			}
-
-
-			/* TODO: Better clipping
-			
-			else if (s.z > 0 && e.z < 0) // s front, e behind
-			{
-				// Clipping math
-			}
-			else if (s.z < 0 && e.z > 0) // s behind, e front
-			{
-				// Clipping math
-			}
-			
-			*/
-
 		}
 	}
 
@@ -292,20 +278,20 @@ public:
 		gtk::vec4 s;
 		gtk::vec4 e;
 
+		gtk::mat4 model = TRS();
+		gtk::mat4 view = GetView();
+		gtk::mat4 proj = GetProj();
+
+		gtk::mat4 mvp = proj * view * model;
+
+		// Draw Model
 		for (int i = 0; i < _ibo.size(); i += 2)
 		{
 			s = { _vbo[_ibo[i]].x, _vbo[_ibo[i]].y, _vbo[_ibo[i]].z, 1 };
 			e = { _vbo[_ibo[i + 1]].x, _vbo[_ibo[i + 1]].y, _vbo[_ibo[i + 1]].z, 1 };
 
-			gtk::mat4 model = TRS();
-			gtk::mat4 view = GetView();
-			gtk::mat4 proj = GetProj();
-
-			gtk::mat4 mvp = proj * view * model;
-
 			s = mvp * s;
 			e = mvp * e;
-
 
 			// Both points infront of camera
 			if (s.z > 0 && e.z > 0)
@@ -394,4 +380,84 @@ private:
 	gtk::vec3 _color;
 	std::vector<gtk::vec4> _vbo;
 	std::vector<int> _ibo;
+};
+
+
+class DirRenderer : public gtk::Renderer
+{
+
+public:
+
+	DirRenderer() {}
+
+	void Start() override
+	{
+		// Called first frame
+	}
+
+	void Draw() override
+	{
+		Entity& ent = GetEntity();
+
+		gtk::vec4 s;
+		gtk::vec4 e;
+
+		gtk::mat4 model = TRS();
+		gtk::mat4 view = GetView();
+		gtk::mat4 proj = GetProj();
+
+		gtk::mat4 mvp = proj * view * model;
+
+
+		// Draw Directional Vectors
+
+		// Right, Red
+		s = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		e = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+		s = mvp * s;
+		e = mvp * e;
+
+		if (s.z > 0 && e.z > 0)
+		{
+			App::DrawLine(
+				s.x / s.z, s.y / s.z,
+				e.x / e.z, e.y / e.z,
+				1.0f, 0.0f, 0.0f);
+		}
+
+
+		// Up, Green
+
+		s = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		e = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+		s = mvp * s;
+		e = mvp * e;
+
+		if (s.z > 0 && e.z > 0)
+		{
+			App::DrawLine(
+				s.x / s.z, s.y / s.z,
+				e.x / e.z, e.y / e.z,
+				0.0f, 1.0f, 0.0f);
+		}
+
+		// Forward, blue
+
+		s = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		e = vec4(0.0f, 0.0f, 1.0f, 1.0f	);
+
+		s = mvp * s;
+		e = mvp * e;
+
+		if (s.z > 0 && e.z > 0)
+		{
+			App::DrawLine(
+				s.x / s.z, s.y / s.z,
+				e.x / e.z, e.y / e.z,
+				0.0f, 0.0f, 1.0f);
+		}
+	}
+
 };
