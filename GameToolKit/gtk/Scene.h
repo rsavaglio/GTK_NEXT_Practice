@@ -26,6 +26,8 @@ namespace gtk {
 		// Sub systems for each component type
 		// Or use a generic AddComponent function?
 
+		
+
 		friend class Game;
 
 	public:
@@ -70,6 +72,8 @@ namespace gtk {
 		void SetMainCam(const unsigned int& id);
 
 		void TriggerBehaviours(const unsigned int& id, const int& code);
+		void TriggerOnCollision(const unsigned int& id, Entity& other);
+
 
 		const int& GetState();
 		void SetState(const int& newState);
@@ -106,8 +110,9 @@ namespace gtk {
 
 		void Update(const float& deltaTime);
 		void Render(const float& width, const float& height);
-		void CheckCollision();
 		void Shutdown();
+
+		void CheckCollision();
 
 		// Traverse all entities and update TRS
 		void UpdateSceneGraph();

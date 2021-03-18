@@ -245,6 +245,11 @@ public:
 		return 0;
 	}
 
+	void OnCollision(Entity& other) override
+	{
+		int i = 0;
+	}
+
 
 private:
 
@@ -355,10 +360,19 @@ class SphereCollider : public gtk::Collider
 public:
 	SphereCollider() {}
 
+	void UpdateData() override
+	{
+		_radius = Scale().x > Scale().y ? Scale().x : Scale().y;
+		_radius = _radius > Scale().z ? _radius : Scale().z;
+
+		_center = Pos();
+	}
+
 
 	bool Check(Collider& other) override
 	{
-		if (true) // If they collide
+		if ((_center - other._center).Dot((_center - other.Pos()))
+				<= (_radius + other._radius) * (_radius + other._radius)) // If they collide
 		{
 			return true;
 		}
@@ -368,7 +382,6 @@ public:
 	}
 
 private:
-
 
 
 };

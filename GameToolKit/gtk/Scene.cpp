@@ -355,6 +355,20 @@ namespace gtk {
 		}
 	}
 
+	void gtk::Scene::TriggerOnCollision(const unsigned int& id, Entity& other)
+	{
+		// Check each map
+		for (auto& CompMap : m_BehaviorMaps)
+		{
+			// If entity has a behviour in the map
+			if (CompMap->find(id) != CompMap->end())
+			{
+				// Trigger the behaviour
+				CompMap->at(id)->OnCollision(other);
+			}
+		}
+	}
+
 	const int& gtk::Scene::GetState()
 	{
 		return m_SceneState;
@@ -702,7 +716,17 @@ namespace gtk {
 			}
 		}
 
-		/// Check Collision ///
+		/// Collision ///
+		
+		// Update collision data
+		for (auto& ColMap : m_ColliderMaps)
+		{
+			// Loop through behavior map
+			for (auto& col : *ColMap)
+			{
+				col.second->UpdateData();
+			}
+		}
 		
 		CheckCollision();
 		
@@ -744,11 +768,30 @@ namespace gtk {
 
 	void gtk::Scene::CheckCollision()
 	{
+		// TODO: Optimize this it's awful
+
+
 		// For each collision group
-
+		for (auto& ColGroup : m_ColliderMaps)
+		{  
 			// Check collision between all pairs
-				// if there's a collision, call OnCollision(Entity& other)
+			for (auto& col1 : *ColGroup)
+			{
+				for (auto& col2 : *ColGroup)
+				{
+					if (col1 != col2) // Don't check self
+					{
+						if(col1.second->Check(*col2.second))
+						{
+							// Wow this is awful																		(but it works)
+							col1.second->TriggerCollision(col2.second->GetEntity());
+						}
+					}
+				}
+			}
+		}
 
+			
 	}
 
 	void gtk::Scene::Shutdown()

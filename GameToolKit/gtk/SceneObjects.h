@@ -53,6 +53,7 @@ namespace gtk {
 		const int& State(const int& newState);
 
 		void Trigger(const int& code);
+		void TriggerCollision(Entity& other);
 
 		void SwitchScene(std::string name);
 
@@ -376,6 +377,7 @@ namespace gtk {
 	class Collider : public SceneObject
 	{
 		friend class Scene;
+		friend class Collider;
 
 	public:
 
@@ -384,13 +386,17 @@ namespace gtk {
 		virtual ~Collider() {}
 
 
+		vec3 _center;
+		float _radius;
+
 	protected:
 
+		virtual void UpdateData() = 0;
 		virtual bool Check(Collider& other) = 0;
+
+
 	
 	private:
-
-		// Info about collider
 
 		unsigned int m_GroupID;
 		bool m_Active;

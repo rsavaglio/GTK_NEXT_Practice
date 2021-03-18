@@ -67,18 +67,28 @@ protected:
 
 		UpdateGroup group1 = CreateUpdateGroup();
 		UpdateGroup group2 = CreateUpdateGroup();
+
 		RenderLayer layer1 = CreateRenderLayer();
 		RenderLayer layer2 = CreateRenderLayer();
+
+		CollisionGroup col1 = CreateCollisionGroup();
 	
 
 
-		Entity& monkey = CreateEntity();
+		Entity& monkey = CreateEntity("monkey");
 			monkey.Pos(vec3(0.0f, -8.0f, -40.0f));
 			monkey.Rot(vec3(0.0f, 0.0f, 0.0f));
 			ObjectPool& bullets = CreatePool("monkeyBullets", new BulletPool(monkey, 10, *this, group1, layer2));
+			AddCollider(monkey, col1, new SphereCollider());
 			AddBehavior(monkey, group1, new ShooterB(30.0f, bullets));
 			AddBehavior(monkey, group2, new RotatorB(vec3(0.0f, -100.0f, 0.0f)));
 			AddRenderer(monkey, layer2, new OBJRenderer(".\\TestData\\monkey.obj", vec3(0.7f, 0.7, 0.3f)));
+
+
+		Entity& sphere = CreateEntity("sphere");
+			sphere.Pos(vec3(0.0f, 5.0f, -40.0f));
+			AddCollider(sphere, col1, new SphereCollider());
+			AddRenderer(sphere, layer2, new OBJRenderer(".\\TestData\\sphere.obj", vec3(0.7f, 0.7, 0.3f)));
 
 
 

@@ -122,6 +122,12 @@ namespace gtk {
 		_scene->TriggerBehaviours(_ent->ID(), code);
 	}
 
+	void SceneObject::TriggerCollision(Entity& other)
+	{
+		// Triggers any of its behaviours
+		_scene->TriggerOnCollision(_ent->ID(), other);
+	}
+
 	void SceneObject::SwitchScene(std::string name)
 	{
 		_scene->SwitchScene(name);
