@@ -243,7 +243,8 @@ public:
 		Pos(Forward() * (App::GetController().GetLeftThumbStickY() * _speed), true);
 		Pos(Right() * (App::GetController().GetLeftThumbStickX() * _speed), true);
 
-		Rot(vec3( App::GetController().GetRightThumbStickY() * _speed, App::GetController().GetRightThumbStickX() * _speed, 0.0f), true);
+		Rot(vec3(0.0f, App::GetController().GetRightThumbStickX() * _speed, 0.0f), true);
+		Rot(vec3(App::GetController().GetRightThumbStickY() * _speed, 0.0f, 0.0f), true);
 
 	}
 

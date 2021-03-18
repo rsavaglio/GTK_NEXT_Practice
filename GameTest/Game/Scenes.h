@@ -66,7 +66,7 @@ protected:
 			AddRenderer(cube, layer1, new CubeRenderer());
 			AddRenderer(cube, layer2, new DirRenderer());
 
-		Entity& camera = CreateEntity(cube);
+		Entity& camera = CreateEntity();
 			AddCamera(camera, new PerspectiveCam(1, 1000, 80));
 			camera.Pos(vec3(0.0f, 0.0f, -5.0f));
 			camera.Rot(vec3(0.0f, 0.0f, 0.0f));
@@ -74,6 +74,7 @@ protected:
 
 		Entity& donut = CreateEntity();
 			donut.Scale(10.0f);
+			AddBehavior(donut, group1, new CubeMover(1.0f));
 			AddRenderer(donut, layer1, new OBJRenderer(".\\TestData\\donut.obj"));
 
 
