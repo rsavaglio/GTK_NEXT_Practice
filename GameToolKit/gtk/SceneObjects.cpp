@@ -105,6 +105,17 @@ namespace gtk {
 		return f;
 	}
 
+	const int& SceneObject::State()
+	{
+		return _scene->GetState();
+	}
+
+	const int& SceneObject::State(const int& newState)
+	{
+		_scene->SetState(newState);
+		return _scene->GetState();
+	}
+
 	void SceneObject::Trigger(const int& code)
 	{
 		// Triggers any of its behaviours
@@ -115,6 +126,34 @@ namespace gtk {
 	{
 		_scene->SwitchScene(name);
 	}
+
+	float SceneObject::LERP(const float& s, const float& e, const float& t)
+	{
+		return (1 - t) * s + t * e;
+	}
+
+	vec3 SceneObject::LERP(const vec3& s, const vec3& e, const float& t)
+	{
+		vec3 temp(0);
+
+		temp.x = (1 - t) * s.x + t * e.x;
+		temp.y = (1 - t) * s.y + t * e.y;
+		temp.z = (1 - t) * s.z + t * e.z;
+
+		return temp;
+	}
+
+	vec2 SceneObject::LERP(const vec2& s, const vec2& e, const float& t)
+	{
+		vec2 temp(0);
+		temp.x = (1 - t) * s.x + t * e.x;
+		temp.y = (1 - t) * s.y + t * e.y;
+		return temp;
+	}
+
+
+	
+	
 
 	inline void SceneObject::Init(const unsigned int& id, Scene* scene, Entity* ent)
 	{

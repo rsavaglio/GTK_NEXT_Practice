@@ -49,11 +49,18 @@ namespace gtk {
 		vec3 Up();
 		vec3 Forward();
 
+		const int& State();
+		const int& State(const int& newState);
+
 		void Trigger(const int& code);
 
-
 		void SwitchScene(std::string name);
-		void Instantiate() {}
+
+		// Math Helpers
+
+		float LERP(const float& s, const float& e, const float& t);
+		vec3  LERP(const vec3& s, const vec3& e, const float& t);
+		vec2  LERP(const vec2& s, const vec2& e, const float& t);
 
 	protected:
 		

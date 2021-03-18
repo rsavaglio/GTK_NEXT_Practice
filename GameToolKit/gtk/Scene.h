@@ -61,6 +61,9 @@ namespace gtk {
 
 		void TriggerBehaviours(const unsigned int& id, const int& code);
 
+		const int& GetState();
+		void SetState(const int& newState);
+
 
 	protected:
 
@@ -105,6 +108,7 @@ namespace gtk {
 	private:
 
 		// Signals a scene change
+		int m_SceneState;
 		bool m_SwitchScene;
 		std::string m_NextScene;
 		Game& m_Game;
@@ -115,6 +119,7 @@ namespace gtk {
 		unsigned int m_EntityIDProvider;
 		unsigned int m_UpdateGroupIDProvider;
 		unsigned int m_RenderLayerIDProvider;
+
 
 	};
 }

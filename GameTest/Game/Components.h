@@ -70,44 +70,12 @@ private:
 
 };
 
-class PlayerController : public gtk::Behavior
+
+
+class RotatorB : public gtk::Behavior
 {
 public:
-	PlayerController(float speed) 
-		: m_Speed(speed) {}
-
-	void Start() override
-	{
-
-	}
-
-	void Update(const float& deltaTime) override
-	{
-
-		// Need a better solution for this
-		// Base comp should just have these functions
-
-
-		Pos((Pos().x + (App::GetController().GetLeftThumbStickX() * m_Speed), Pos().y, Pos().z));
-		Pos((Pos().x, Pos().y + (App::GetController().GetLeftThumbStickY() * m_Speed), Pos().z));
-	}
-
-	int Trigger(const int& code)
-	{
-		return 0;
-	}
-
-
-private:
-
-	float m_Speed;
-
-};
-
-class RotaterComp : public gtk::Behavior
-{
-public:
-	RotaterComp(const gtk::vec3& rotVals) 
+	RotatorB(const gtk::vec3& rotVals) 
 		: anim(rotVals) {}
 
 	void Start() override
@@ -117,7 +85,7 @@ public:
 
 	void Update(const float& deltaTime) override
 	{
-		Rot(anim, true);
+		Rot(anim * deltaTime, true);
 	}
 
 	int Trigger(const int& code) override
@@ -155,9 +123,8 @@ public:
 		);
 
 
+		// Need Quaternions!!!
 
-		// Need a better solution for this
-		// Base comp should just have these functions
 		Pos( Forward() * (App::GetController().GetLeftThumbStickY() * -m_Speed), true);
 		Pos( Right() * (App::GetController().GetLeftThumbStickX() * m_Speed), true);
 
@@ -240,12 +207,20 @@ public:
 	void Update(const float& deltaTime) override
 	{
 
-		Pos(Forward() * (App::GetController().GetLeftThumbStickY() * _speed), true);
-		Pos(Right() * (App::GetController().GetLeftThumbStickX() * _speed), true);
 
-		Rot(vec3(0.0f, App::GetController().GetRightThumbStickX() * _speed, 0.0f), true);
-		Rot(vec3(App::GetController().GetRightThumbStickY() * _speed, 0.0f, 0.0f), true);
+		// Update velocity goal from input
+		_velGoal.x = App::GetController().GetLeftThumbStickX() * _speed;
+		_velGoal.y = App::GetController().GetLeftThumbStickY() * _speed;
 
+		// Lerp current velocity to goal
+		_vel = LERP(_vel, _velGoal, deltaTime * 10.f);
+
+		// Set position from velocity
+		Pos(vec3(
+			Pos().x + _vel.x * deltaTime,
+			Pos().y + _vel.y * deltaTime,
+			Pos().z
+		));
 	}
 
 	int Trigger(const int& code) override
@@ -257,5 +232,50 @@ public:
 private:
 
 	float _speed;
+	vec2 _vel;
+	vec2 _velGoal;
+
+};
+
+class LERPatState : public gtk::Behavior
+{
+
+public:
+	LERPatState(int state, float speed, const vec3& pos, const vec3& rot) : _state(state), _speed(speed), _targetPos(pos), _targetRot(rot) {}
+
+	void Start() override
+	{
+
+	}
+
+	void Update(const float& deltaTime) override
+	{
+		
+		if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
+		{
+			State(1);
+		}
+
+
+		if (State() == _state)
+		{
+			Pos(LERP(Pos(), _targetPos, deltaTime * _speed));
+			Rot(LERP(Rot(), _targetRot, deltaTime * _speed));
+		}
+
+	}
+
+	int Trigger(const int& code) override
+	{
+		return 0;
+	}
+
+
+private:
+
+	int _state;
+	float _speed;
+	vec3 _targetPos;
+	vec3 _targetRot;
 
 };

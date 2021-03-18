@@ -55,62 +55,31 @@ protected:
 	{
 		using namespace gtk;
 
-
 		UpdateGroup group1 = CreateUpdateGroup();
+		UpdateGroup group2 = CreateUpdateGroup();
 		RenderLayer layer1 = CreateRenderLayer();
 		RenderLayer layer2 = CreateRenderLayer();
 	
-		Entity& cube = CreateEntity();
-			cube.Pos(vec3(0.0f, 0.0f, 0.0f));
-			AddBehavior(cube, group1, new CubeMover(1.0f));
-			AddRenderer(cube, layer1, new CubeRenderer());
-			AddRenderer(cube, layer2, new DirRenderer());
+		Entity& cone = CreateEntity();
+			cone.Pos(vec3(0.0f, -8.0f, -40.0f));
+			cone.Rot(vec3(0.0f, 0.0f, 0.0f));
+			AddBehavior(cone, group1, new CubeMover(30.0f));
+			AddBehavior(cone, group2, new RotatorB(vec3(0.0f, -100.0f, 0.0f)));
+			AddRenderer(cone, layer2, new OBJRenderer(".\\TestData\\monkey.obj", vec3(0.7f, 0.7, 0.3f)));
 
 		Entity& camera = CreateEntity();
-			AddCamera(camera, new PerspectiveCam(1, 1000, 80));
-			camera.Pos(vec3(0.0f, 0.0f, -5.0f));
-			camera.Rot(vec3(0.0f, 0.0f, 0.0f));
+			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
+			camera.Pos(vec3(600.0f, 1000.0f, 400.0f));
+			camera.Rot(vec3(20.0f, 50.0f, -30.0f));
+			AddBehavior(camera, group1, new LERPatState(1, 2.0f, vec3(0.0f, 0.0f, -50.0f), vec3(0.0f, 0.0f, 0.0f)));
 
 
 		Entity& donut = CreateEntity();
-			donut.Scale(10.0f);
-			AddBehavior(donut, group1, new CubeMover(1.0f));
-			AddRenderer(donut, layer1, new OBJRenderer(".\\TestData\\donut.obj"));
-
-
-			/*
-		Entity& childCube = CreateEntity(donut);
-			childCube.Pos(vec3(1.5f, 1.5f, 1.0f));
-			childCube.Scale(vec3(0.5f, 0.5f, 0.5f));
-			//AddBehavior(childCube, controllers, new RotaterComp(gtk::vec3(0, 1.0f, 0)));
-			AddRenderer(childCube, rendLayer, new CubeRenderer());
-
-		Entity& childCube2 = CreateEntity(donut);
-			childCube2.Pos(vec3(-1.5f, 1.5f, -1.0f));
-			childCube2.Scale(vec3(0.5f, 0.5f, 0.5f));
-			//AddBehavior(childCube2, controllers, new RotaterComp(gtk::vec3(0, 1.0f, 0)));
-			AddRenderer(childCube2, rendLayer, new CubeRenderer());
-
-		Entity& babyCube = CreateEntity(childCube);
-			babyCube.Pos(vec3(1.5f, 1.5f, 1.5f));
-			babyCube.Scale(vec3(0.5f, 0.5f, 0.5f));
-			AddRenderer(babyCube, rendLayer, new CubeRenderer());
-
-		Entity& tripod = CreateEntity("tripod");
-			tripod.Pos(vec3(30.0f, 0.0f, 500.0f));
-			tripod.Rot(vec3(0.0f, 0.0f, 0.0f));
-			tripod.Scale(vec3(50.0f));
-			AddBehavior(tripod, controllers, new RotaterComp(vec3(0.0f, 1.0f, 0)));
-			AddRenderer(tripod, rendLayer, new CubeRenderer());
-		
-		Entity& test = CreateEntity("test", tripod);
-			test.Pos(vec3(0.0f, 10.0f, 0.0f));
-			AddRenderer(test, rendLayer, new CubeRenderer());
-
-		Entity& test2 = CreateEntity("test2", test);
-			test2.Pos(vec3(0.0f, 0.0f, -10.0f));
-
-			*/
+			donut.Scale(50.0f);
+			donut.Pos(vec3(46.0f, 0.0f, -12.0f));
+			donut.Rot(vec3(0.0f, 0.0f, 0.0f));
+			AddBehavior(donut, group1, new RotatorB(vec3(0.0f, 20.0f, 0.0f)));
+			AddRenderer(donut, layer1, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.5f, 0.0f, 0.5f)));
 
 
 

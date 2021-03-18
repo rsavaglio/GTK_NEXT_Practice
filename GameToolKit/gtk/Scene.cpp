@@ -5,7 +5,7 @@
 namespace gtk {
 
 	Scene::Scene(Game& game)
-		:m_MainCam(nullptr),
+		:m_SceneState(0), m_MainCam(nullptr),
 		m_SwitchScene(false), m_NextScene(""),
 		m_Game(game),
 		MAX_ENTS(100), m_EntityPointerProvider(nullptr),
@@ -280,6 +280,16 @@ namespace gtk {
 				CompMap->at(id)->Trigger(code);
 			}
 		}
+	}
+
+	const int& gtk::Scene::GetState()
+	{
+		return m_SceneState;
+	}
+
+	void gtk::Scene::SetState(const int& newState)
+	{
+		m_SceneState = newState;
 	}
 
 	Camera& Scene::GetMainCam()
