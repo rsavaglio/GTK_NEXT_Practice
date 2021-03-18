@@ -56,6 +56,28 @@ namespace gtk {
 			}
 		}
 
+
+		// Call Start on enabled behaviours
+		for (auto& BehMap : m_BehaviorMaps)
+		{
+			// Loop through behavior map
+			for (auto& behavior : *BehMap)
+			{
+				behavior.second->Start();
+			}
+		}
+
+
+		// Call Start on enabled renderer
+		for (auto& RenMap : m_RendererMaps)
+		{
+			// Loop through behavior map
+			for (auto& renderer : *RenMap)
+			{
+				renderer.second->Start();
+			}
+		}
+
 	}
 
 	void Scene::SwitchScene(std::string key)

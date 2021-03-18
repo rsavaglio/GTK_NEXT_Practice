@@ -195,6 +195,19 @@ bool CSimpleSound::StopSound(const char *filename)
 	return false;
 }
 
+bool CSimpleSound::SetVolume(const char* filename, LONG vol)
+{
+	if (IsPlaying(filename))
+	{
+		if (m_sounds[filename] != nullptr)
+		{
+			HRESULT result = m_sounds[filename]->SetVolume(vol);
+			return (FAILED(result));
+		}
+	}
+	return false;
+}
+
 bool CSimpleSound::LoadWaveFile(const char* filename)
 {	
 	int error;

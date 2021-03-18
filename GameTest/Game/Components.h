@@ -248,7 +248,7 @@ public:
 
 	void Start() override
 	{
-
+		App::PlaySound(".\\TestData\\Test.wav", true);
 	}
 
 	void Update(const float& deltaTime) override
@@ -257,6 +257,9 @@ public:
 		if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
 		{
 			State(_state);
+
+			App::SetSoundVolume(".\\TestData\\Test.wav", -5000);
+
 		}
 
 

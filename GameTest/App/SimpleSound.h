@@ -42,6 +42,8 @@ public:
 	bool PlaySound(const char *filename, DWORD flags = 0);
 	bool StopSound(const char *filename);
 	bool IsPlaying(const char *filename);
+	bool SetVolume(const char* filename, LONG vol);
+
 private:
 	bool InitializeDirectSound(HWND);
 	void ShutdownDirectSound();
