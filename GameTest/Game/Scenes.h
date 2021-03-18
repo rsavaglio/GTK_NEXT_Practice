@@ -41,6 +41,16 @@ protected:
 	}
 };
 
+enum sState
+{
+	SETUP,
+	INTRO,
+	GAMEPLAY,
+	END1,
+	END2,
+	OUTRO
+};
+
 class PracScene : public gtk::Scene
 {
 
@@ -71,7 +81,7 @@ protected:
 			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
 			camera.Pos(vec3(600.0f, 1000.0f, 400.0f));
 			camera.Rot(vec3(20.0f, 50.0f, -30.0f));
-			AddBehavior(camera, group1, new LERPatState(1, 2.0f, vec3(0.0f, 0.0f, -50.0f), vec3(0.0f, 0.0f, 0.0f)));
+			AddBehavior(camera, group1, new LERPatState(INTRO, 2.0f, vec3(0.0f, 0.0f, -50.0f), vec3(0.0f, 0.0f, 0.0f)));
 
 
 		Entity& donut = CreateEntity();

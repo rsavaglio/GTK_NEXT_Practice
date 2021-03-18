@@ -5,6 +5,7 @@
 namespace gtk {
 
 	#define MTYPE float
+	#define EPSILON 0.1
 
 	struct vec2
 	{
@@ -65,12 +66,12 @@ namespace gtk {
 		vec2  operator++(int) { vec2 temp = *this; Increment(); return temp; }
 		vec2  operator--(int) { vec2 temp = *this; Decrement(); return temp; }
 
-		bool operator==(const vec2& other) { return   x == other.x && y == other.y ; }
-		bool operator!=(const vec2& other) { return !(x == other.x && y == other.y); }
+		bool operator==(const vec2& other) { return   x - other.x < EPSILON && y - other.y < EPSILON ; }
+		bool operator!=(const vec2& other) { return !(x - other.x < EPSILON && y - other.y < EPSILON); }
 
 		friend bool operator==(const vec2& left, const vec2& right)
 		{
-			return   left.x == right.x && left.y == right.y;
+			return   left.x - right.x < EPSILON && left.y - right.y < EPSILON;
 		}
 
 		friend bool operator!=(const vec2& left, const vec2& right)
@@ -183,12 +184,12 @@ namespace gtk {
 		vec3  operator++(int) { vec3 temp = *this; Increment(); return temp; }
 		vec3  operator--(int) { vec3 temp = *this; Decrement(); return temp; }
 
-		bool operator==(const vec3& other) { return   x == other.x && y == other.y && z == other.z; }
-		bool operator!=(const vec3& other) { return !(x == other.x && y == other.y && z == other.z); }
+		bool operator==(const vec3& other) { return   x - other.x < EPSILON && y - other.y < EPSILON&& z - other.z < EPSILON; }
+		bool operator!=(const vec3& other) { return !(x - other.x < EPSILON && y - other.y < EPSILON&& z - other.z < EPSILON); }
 
 		friend bool operator==(const vec3& left, const vec3& right)
 		{
-			return   left.x == right.x && left.y == right.y && left.z == right.z;
+			return   left.x - right.x < EPSILON && left.y - right.y < EPSILON && left.z - right.z < EPSILON;
 		}
 
 		friend bool operator!=(const vec3& left, const vec3& right)
@@ -316,12 +317,12 @@ namespace gtk {
 		vec4  operator++(int) { vec4 temp = *this; Increment(); return temp; }
 		vec4  operator--(int) { vec4 temp = *this; Decrement(); return temp; }
 
-		bool operator==(const vec4& other) { return   x == other.x && y == other.y && z == other.z && w == other.w; }
-		bool operator!=(const vec4& other) { return !(x == other.x && y == other.y && z == other.z && w == other.w); }
+		bool operator==(const vec4& other) { return   x - other.x < EPSILON && y - other.y < EPSILON && z - other.z < EPSILON && w - other.w < EPSILON; }
+		bool operator!=(const vec4& other) { return !(x - other.x < EPSILON && y - other.y < EPSILON && z - other.z < EPSILON && w - other.w < EPSILON); }
 
 		friend bool operator==(const vec4& left, const vec4& right)
 		{
-			return   left.x == right.x && left.y == right.y && left.z == right.z && left.w == right.w;
+			return   left.x - right.x < EPSILON && left.y - right.y < EPSILON && left.z - right.z < EPSILON && left.w - right.w < EPSILON;
 		}
 
 		friend bool operator!=(const vec4& left, const vec4& right)
@@ -622,7 +623,7 @@ namespace gtk {
 
 			for (int i = 0; i < 4; i++)
 			{
-				if (*(values + i) != *(other.values + i))
+				if (*(values + i) - *(other.values + i) > EPSILON)
 					return false;
 			}
 
@@ -634,7 +635,7 @@ namespace gtk {
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				if (*(left.values + i) != *(right.values + i))
+				if (*(left.values + i) - *(right.values + i) > EPSILON)
 					return false;
 			}
 
@@ -970,7 +971,7 @@ namespace gtk {
 		{
 			for (int i = 0; i < 9; i++)
 			{
-				if (*(values + i) != *(other.values + i))
+				if (*(values + i) - *(other.values + i) > EPSILON)
 					return false;
 			}
 
@@ -982,7 +983,7 @@ namespace gtk {
 		{
 			for (int i = 0; i < 9; i++)
 			{
-				if (*(left.values + i) != *(right.values + i))
+				if (*(left.values + i) - *(right.values + i) > EPSILON)
 					return false;
 			}
 
@@ -1412,7 +1413,7 @@ namespace gtk {
 		{
 			for (int i = 0; i < 16; i++)
 			{
-				if (*(values + i) != *(other.values + i))
+				if (*(values + i) - *(other.values + i) > EPSILON)
 					return false;
 			}
 
@@ -1424,7 +1425,7 @@ namespace gtk {
 		{
 			for (int i = 0; i < 16; i++)
 			{
-				if (*(left.values + i) != *(right.values + i))
+				if (*(left.values + i) - *(right.values + i) > EPSILON)
 					return false;
 			}
 

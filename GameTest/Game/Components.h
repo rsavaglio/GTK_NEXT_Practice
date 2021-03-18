@@ -207,20 +207,23 @@ public:
 	void Update(const float& deltaTime) override
 	{
 
+		if (State() == 2)
+		{
+			// Update velocity goal from input
+			_velGoal.x = App::GetController().GetLeftThumbStickX() * _speed;
+			_velGoal.y = App::GetController().GetLeftThumbStickY() * _speed;
 
-		// Update velocity goal from input
-		_velGoal.x = App::GetController().GetLeftThumbStickX() * _speed;
-		_velGoal.y = App::GetController().GetLeftThumbStickY() * _speed;
+			// Lerp current velocity to goal
+			_vel = LERP(_vel, _velGoal, deltaTime * 10.f);
 
-		// Lerp current velocity to goal
-		_vel = LERP(_vel, _velGoal, deltaTime * 10.f);
+			// Set position from velocity
+			Pos(vec3(
+				Pos().x + _vel.x * deltaTime,
+				Pos().y + _vel.y * deltaTime,
+				Pos().z
+			));
+		}
 
-		// Set position from velocity
-		Pos(vec3(
-			Pos().x + _vel.x * deltaTime,
-			Pos().y + _vel.y * deltaTime,
-			Pos().z
-		));
 	}
 
 	int Trigger(const int& code) override
@@ -253,7 +256,7 @@ public:
 		
 		if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
 		{
-			State(1);
+			State(_state);
 		}
 
 
@@ -261,6 +264,11 @@ public:
 		{
 			Pos(LERP(Pos(), _targetPos, deltaTime * _speed));
 			Rot(LERP(Rot(), _targetRot, deltaTime * _speed));
+
+			if (Pos() == _targetPos)
+			{
+				State(2);
+			}
 		}
 
 	}
