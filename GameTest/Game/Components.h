@@ -193,11 +193,12 @@ private:
 };
 
 
-class CubeMover : public gtk::Behavior
+class ShooterB : public gtk::Behavior
 {
 
 public:
-	CubeMover(const float& speed) : _speed(speed){}
+	ShooterB(const float& speed, ObjectPool& bulletPool) 
+		: _speed(speed), _vel(), _velGoal(), _bulletPool(bulletPool) {}
 
 	void Start() override
 	{
@@ -207,8 +208,11 @@ public:
 	void Update(const float& deltaTime) override
 	{
 
+		// During Gameplay
 		if (State() == 2)
 		{
+			//// Movement ////
+
 			// Update velocity goal from input
 			_velGoal.x = App::GetController().GetLeftThumbStickX() * _speed;
 			_velGoal.y = App::GetController().GetLeftThumbStickY() * _speed;
@@ -222,6 +226,16 @@ public:
 				Pos().y + _vel.y * deltaTime,
 				Pos().z
 			));
+
+
+			//// Bullets ////
+
+			if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
+			{
+				Entity& bullet = _bulletPool.Create();
+				bullet.Trigger(1);
+			}
+
 		}
 
 	}
@@ -237,7 +251,7 @@ private:
 	float _speed;
 	vec2 _vel;
 	vec2 _velGoal;
-
+	ObjectPool& _bulletPool;
 };
 
 class LERPatState : public gtk::Behavior
@@ -248,7 +262,15 @@ public:
 
 	void Start() override
 	{
-		App::PlaySound(".\\TestData\\Test.wav", true);
+		// Start Music
+		App::PlaySound(".\\TestData\\Layer1.wav", true);
+		App::PlaySound(".\\TestData\\Layer2.wav", true);
+
+		App::PlaySound(".\\TestData\\Layer3.wav", true);
+		App::SetSoundVolume(".\\TestData\\Layer3.wav", -10000);
+		
+		App::PlaySound(".\\TestData\\Layer4.wav", true);
+		App::SetSoundVolume(".\\TestData\\Layer4.wav", -10000);
 	}
 
 	void Update(const float& deltaTime) override
@@ -256,12 +278,8 @@ public:
 		
 		if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
 		{
-			State(_state);
-
-			App::SetSoundVolume(".\\TestData\\Test.wav", -5000);
-
+			State(1);
 		}
-
 
 		if (State() == _state)
 		{
@@ -288,5 +306,37 @@ private:
 	float _speed;
 	vec3 _targetPos;
 	vec3 _targetRot;
+
+};
+
+class BulletB : public gtk::Behavior
+{
+
+public:
+	BulletB(Entity& shooter) : _vel(), _speed(5.0), _shooter(shooter) {}
+
+	void Start() override
+	{
+
+	}
+
+	void Update(const float& deltaTime) override
+	{
+		Pos(_vel * deltaTime * _speed, true);
+	}
+
+	int Trigger(const int& code) override
+	{
+		_vel = _shooter.Forward();
+		Pos(_shooter.Pos());
+		return 0;
+	}
+
+
+private:
+
+	vec3 _vel;
+	float _speed;
+	Entity& _shooter;
 
 };

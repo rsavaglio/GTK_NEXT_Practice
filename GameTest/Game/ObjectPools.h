@@ -8,13 +8,13 @@
 using namespace gtk;
 
 
-class SpherePool : public ObjectPool
+class BulletPool : public ObjectPool
 {
 
 public:
 
-	SpherePool(int count, Scene& scene, gtk::UpdateGroup& group, gtk::RenderLayer& layer)
-		: _group(group), _layer(layer), ObjectPool(count, scene)
+	BulletPool(Entity& shooter, int count, Scene& scene, gtk::UpdateGroup& group, gtk::RenderLayer& layer)
+		: _shooter(shooter), _group(group), _layer(layer), ObjectPool(count, scene)
 	{
 		GeneratePool();
 	}
@@ -29,14 +29,15 @@ public:
 			entity->Active(false);
 
 			// Setup here
-			_scene.AddBehavior(*entity, _group, new SphereB());
-			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\sphere.obj"));
-			entity->Pos(vec3(((rand() % 20) - 10), 0.0f, 0.0f));
-
+			_scene.AddBehavior(*entity, _group, new BulletB(_shooter));
+			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\sphere.obj", vec3(0.7f, 0.3, 0.0f)));
+			
 		}
 	}
 
 private:
+
+	Entity& _shooter;
 
 	UpdateGroup& _group;
 	RenderLayer& _layer;

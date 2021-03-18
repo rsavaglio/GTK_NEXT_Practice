@@ -70,12 +70,17 @@ protected:
 		RenderLayer layer1 = CreateRenderLayer();
 		RenderLayer layer2 = CreateRenderLayer();
 	
-		Entity& cone = CreateEntity();
-			cone.Pos(vec3(0.0f, -8.0f, -40.0f));
-			cone.Rot(vec3(0.0f, 0.0f, 0.0f));
-			AddBehavior(cone, group1, new CubeMover(30.0f));
-			AddBehavior(cone, group2, new RotatorB(vec3(0.0f, -100.0f, 0.0f)));
-			AddRenderer(cone, layer2, new OBJRenderer(".\\TestData\\monkey.obj", vec3(0.7f, 0.7, 0.3f)));
+
+
+		Entity& monkey = CreateEntity();
+			monkey.Pos(vec3(0.0f, -8.0f, -40.0f));
+			monkey.Rot(vec3(0.0f, 0.0f, 0.0f));
+			ObjectPool& bullets = CreatePool("monkeyBullets", new BulletPool(monkey, 10, *this, group1, layer2));
+			AddBehavior(monkey, group1, new ShooterB(30.0f, bullets));
+			AddBehavior(monkey, group2, new RotatorB(vec3(0.0f, -100.0f, 0.0f)));
+			AddRenderer(monkey, layer2, new OBJRenderer(".\\TestData\\monkey.obj", vec3(0.7f, 0.7, 0.3f)));
+
+
 
 		Entity& camera = CreateEntity();
 			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
@@ -151,10 +156,10 @@ protected:
 			camera.Pos(vec3(0.0f, 0.0f, -10.0f));
 
 
-		ObjectPool& spherePool = CreatePool("spherePool", new SpherePool(10, *this, group, layer));
+		//ObjectPool& spherePool = CreatePool("spherePool", new SpherePool(10, *this, group, layer));
 
 		Entity& sphereManager = CreateEntity();
-			AddBehavior(sphereManager, group, new SphereManager(1.0f, spherePool));
+			//AddBehavior(sphereManager, group, new SphereManager(1.0f, spherePool));
 
 	}
 
