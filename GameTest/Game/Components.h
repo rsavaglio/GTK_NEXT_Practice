@@ -247,7 +247,7 @@ public:
 
 	void OnCollision(Entity& other) override
 	{
-		int i = 0;
+		SwitchScene("PracScene");
 	}
 
 

@@ -26,6 +26,5 @@ public:
 	{
 		// Add the scenes of the game here
 		AddScene("PracScene", new PracScene(*this));
-		AddScene("PinballScene", new PinballScene(*this));
 	}
 };

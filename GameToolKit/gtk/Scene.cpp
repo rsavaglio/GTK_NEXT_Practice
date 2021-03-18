@@ -823,6 +823,7 @@ namespace gtk {
 		m_UpdateGroupIDProvider = 0;
 		m_RenderLayerIDProvider = 0;
 		m_CollisionGroupIDProvider = 0;
+		m_SceneState = 0;
 	}
 
 	void gtk::Scene::UpdateSceneGraph()
