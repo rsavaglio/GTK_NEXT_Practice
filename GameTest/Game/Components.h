@@ -322,14 +322,21 @@ public:
 
 	void Update(const float& deltaTime) override
 	{
+		// Update position
 		Pos(_vel * deltaTime * _speed, true);
 	}
 
 	int Trigger(const int& code) override
 	{
+		// Shoot from shooter position and direction
 		_vel = _shooter.Forward();
 		Pos(_shooter.Pos());
 		return 0;
+	}
+
+	void OnCollision(Entity& other) override
+	{
+		// BOOM
 	}
 
 
@@ -338,5 +345,30 @@ private:
 	vec3 _vel;
 	float _speed;
 	Entity& _shooter;
+
+};
+
+
+class SphereCollider : public gtk::Collider
+{
+
+public:
+	SphereCollider() {}
+
+
+	bool Check(Collider& other) override
+	{
+		if (true) // If they collide
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
+private:
+
+
 
 };

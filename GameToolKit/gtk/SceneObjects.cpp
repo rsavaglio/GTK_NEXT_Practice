@@ -218,27 +218,6 @@ namespace gtk {
 		return parents;
 	}
 
-	mat4 Camera::TraverseForTR(Entity& ent)
-	{
-		/*
-		// TODO: Cameras should just store their parents
-		std::vector<Entity*> parents = GetParents(ent);
-
-		
-		// Interate through parents multiplying the TRs
-		/mat4 TR(1);
-
-		for (auto& ent : parents)
-		{
-			TR =  TR * ent->GetTRS();
-		}
-		*/
-
-		// Invert the TR to get view matrix
-
-
-		return mat4(1);
-	}
 
 	void Camera::CalculateView()
 	{

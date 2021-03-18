@@ -109,6 +109,8 @@ namespace gtk {
 
 		virtual int Trigger(const int& code) = 0;
 
+		virtual void OnCollision(Entity& other) {}
+
 	protected:
 
 		virtual void Start() = 0;
@@ -313,8 +315,6 @@ namespace gtk {
 
 	class ObjectPool
 	{
-		// Make some abstract functions
-
 	public:
 
 		virtual ~ObjectPool() {}
@@ -353,6 +353,48 @@ namespace gtk {
 		
 		ObjectPool(const int& count, Scene& scene) : _pool(), _count(count), _scene(scene) {}
 		ObjectPool(const ObjectPool&) = delete;
+	};
+
+
+
+	/////////////////////////////////////
+	///			Colliders
+	/////////////////////////////////////
+
+	class CollisionGroup
+	{
+		friend class Scene;
+
+	public:
+		const unsigned int _id;
+
+	private:
+
+		CollisionGroup(const unsigned int& id) : _id(id) {}
+	};
+
+	class Collider : public SceneObject
+	{
+		friend class Scene;
+
+	public:
+
+		Collider()
+			: m_GroupID(0), m_Active(true) {}
+		virtual ~Collider() {}
+
+
+	protected:
+
+		virtual bool Check(Collider& other) = 0;
+	
+	private:
+
+		// Info about collider
+
+		unsigned int m_GroupID;
+		bool m_Active;
+
 	};
 
 }

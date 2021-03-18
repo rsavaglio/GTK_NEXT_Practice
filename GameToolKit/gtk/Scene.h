@@ -16,9 +16,15 @@ namespace gtk {
 	class UpdateGroup;
 	class Renderer;
 	class RenderLayer;
+	class Collider;
+	class CollisionGroup;
 	class Camera;
 
 	class Scene {
+
+		// TODO: Needs to be refactored 
+		// Sub systems for each component type
+		// Or use a generic AddComponent function?
 
 		friend class Game;
 
@@ -34,28 +40,32 @@ namespace gtk {
 		void ToggleEntity(Entity& entity, bool setActive);
 		void ToggleBehavior(Behavior& behavior, bool setActive);
 		void ToggleRenderer(Renderer& renderer, bool setActive);
+		void ToggleCollider(Collider& collider, bool setActive);
 
 		Camera& GetMainCam();
 
-		// Scene setup functions
-
-		UpdateGroup CreateUpdateGroup();
-		RenderLayer CreateRenderLayer();
-
-		Entity& CreateEntity(); // Sets parent as m_Root
+		
+		// Creating Entities //
+		Entity& CreateEntity();
 		Entity& CreateEntity(Entity& parent);
-
-		Entity& CreateEntity(std::string name); // Sets parent as m_Root
+		Entity& CreateEntity(std::string name);
 		Entity& CreateEntity(std::string name, Entity& parent);
 		
 		ObjectPool& CreatePool(std::string name, ObjectPool* const pool);
 		ObjectPool& GetPool(std::string name);
 
+		UpdateGroup CreateUpdateGroup();
+		RenderLayer CreateRenderLayer();
+		CollisionGroup CreateCollisionGroup();
+
 		Behavior& AddBehavior(Entity& entity, const UpdateGroup& group, Behavior* const behavior);
+
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Renderer* const renderer);
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Camera& camera, Renderer* const renderer);
 
 		Camera& AddCamera(Entity& entity, Camera* const camera);
+
+		Collider& AddCollider(Entity& entity, const CollisionGroup& group, Collider* const collider);
 
 		void SetMainCam(const unsigned int& id);
 
@@ -83,6 +93,10 @@ namespace gtk {
 		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_RendererMaps;
 		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_DisabledRendererMaps;
 
+		std::vector<std::unordered_map<unsigned int, Collider*>*> m_ColliderMaps;
+		std::vector<std::unordered_map<unsigned int, Collider*>*> m_DisabledColliderMaps;
+
+
 		std::unordered_map<std::string, ObjectPool*> m_ObjectPools;
 
 		std::unordered_map<unsigned int, Camera*> m_CameraMap;
@@ -92,6 +106,7 @@ namespace gtk {
 
 		void Update(const float& deltaTime);
 		void Render(const float& width, const float& height);
+		void CheckCollision();
 		void Shutdown();
 
 		// Traverse all entities and update TRS
@@ -119,6 +134,7 @@ namespace gtk {
 		unsigned int m_EntityIDProvider;
 		unsigned int m_UpdateGroupIDProvider;
 		unsigned int m_RenderLayerIDProvider;
+		unsigned int m_CollisionGroupIDProvider;
 
 
 	};

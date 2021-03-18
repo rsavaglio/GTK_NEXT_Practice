@@ -9,7 +9,7 @@ namespace gtk {
 		m_SwitchScene(false), m_NextScene(""),
 		m_Game(game),
 		MAX_ENTS(100), m_EntityPointerProvider(nullptr),
-		m_EntityIDProvider(0), m_UpdateGroupIDProvider(0), m_RenderLayerIDProvider(0)
+		m_EntityIDProvider(0), m_UpdateGroupIDProvider(0), m_RenderLayerIDProvider(0), m_CollisionGroupIDProvider(0)
 	{
 	}
 
@@ -23,6 +23,9 @@ namespace gtk {
 		m_EntityPointerProvider = new Entity[MAX_ENTS];
 
 		Setup();
+
+
+		//// Set up Cameras ////
 
 		ASSERT(m_CameraMap.size() > 0);
 
@@ -56,6 +59,7 @@ namespace gtk {
 			}
 		}
 
+		//// Start Calls ////
 
 		// Call Start on enabled behaviours
 		for (auto& BehMap : m_BehaviorMaps)
@@ -88,6 +92,9 @@ namespace gtk {
 		// Scene is switched after all comps are updated
 		// Look in Scene::Update
 	}
+
+
+	//// TODO: Refactor create entities, too much duplication
 
 	Entity& Scene::CreateEntity()
 	{
@@ -150,6 +157,8 @@ namespace gtk {
 		return *newEnt;
 	}
 
+	//// Object Pools
+
 	ObjectPool& Scene::CreatePool(std::string name, ObjectPool* const pool)
 	{
 		m_ObjectPools.insert({ name, pool });
@@ -161,6 +170,9 @@ namespace gtk {
 		ASSERT(m_ObjectPools.find(name) != m_ObjectPools.end());
 		return *m_ObjectPools.at(name);
 	}
+
+	
+	//// Create Groups and Layers ////
 	
 	UpdateGroup Scene::CreateUpdateGroup()
 	{
@@ -181,6 +193,20 @@ namespace gtk {
 
 		return newRenderLayer;
 	}
+
+	CollisionGroup Scene::CreateCollisionGroup()
+	{
+		m_ColliderMaps.push_back(new std::unordered_map<unsigned int, Collider*>);
+		m_DisabledColliderMaps.push_back(new std::unordered_map<unsigned int, Collider*>);
+
+		CollisionGroup newCollisionGroup(m_CollisionGroupIDProvider++);
+
+		return newCollisionGroup;
+	}
+
+
+
+	//// Adding Componenets ////
 
 	Behavior& Scene::AddBehavior(Entity& entity, const UpdateGroup& group, Behavior* const behavior)
 	{
@@ -260,7 +286,32 @@ namespace gtk {
 		return *renderer;
 	}
 
-	// TODO: Make sure this works with m_MainCam correctly
+
+	Collider& Scene::AddCollider(Entity& entity, const CollisionGroup& group, Collider* const collider)
+	{
+		// Set scene object data
+		collider->Init(entity._id, this, &entity);
+
+		// Set collider data
+		collider->m_GroupID = group._id;
+
+
+		if (entity.Active()) // If entity is active
+		{
+			// Ensure no deplicate collider on same entity
+			ASSERT(m_ColliderMaps[group._id]->find(entity._id) == m_ColliderMaps[group._id]->end());
+			m_ColliderMaps[group._id]->insert({ entity._id, collider });
+		}
+		else
+		{
+			ASSERT(m_DisabledColliderMaps[group._id]->find(entity._id) == m_DisabledColliderMaps[group._id]->end());
+			m_DisabledColliderMaps[group._id]->insert({ entity._id, collider });
+		}
+
+		// Add collider to correct map with the ID
+		return *collider;
+	}
+
 	Camera& Scene::AddCamera(Entity& entity, Camera* const camera)
 	{
 		// Set scene object data
@@ -339,7 +390,7 @@ namespace gtk {
 			// Tag as active
 			entity._Active = true;
 
-			// Loop through disabled map vector
+			// Loop through disabled behavior map vector
 			for (unsigned int i = 0; i < m_DisabledBehaviorMaps.size(); i++) // Maps should be in the same order between vectors
 			{
 				// Does the entity have a behavior in this group?
@@ -358,7 +409,7 @@ namespace gtk {
 			}
 
 
-			// Loop through disabled map vector
+			// Loop through disabled renderer map vector
 			for (unsigned int i = 0; i < m_DisabledRendererMaps.size(); i++) // Maps should be in the same order between vectors
 			{
 				// Does the entity have a renderer in this layer?
@@ -372,6 +423,24 @@ namespace gtk {
 
 						// Erase from disabled map
 						m_DisabledRendererMaps[i]->erase(entity._id);
+					}
+				}
+			}
+
+			// Loop through disabled collider map vector
+			for (unsigned int i = 0; i < m_DisabledColliderMaps.size(); i++) // Maps should be in the same order between vectors
+			{
+				// Does the entity have a collider in this layer?
+				if (m_DisabledColliderMaps[i]->find(entity._id) != m_DisabledColliderMaps[i]->end())
+				{
+					// Collider is tagged as active
+					if (m_DisabledColliderMaps[i]->at(entity._id)->m_Active)
+					{
+						// Move it to the active map
+						m_ColliderMaps[i]->insert({ entity._id , m_DisabledColliderMaps[i]->at(entity._id) });
+
+						// Erase from disabled map
+						m_DisabledColliderMaps[i]->erase(entity._id);
 					}
 				}
 			}
@@ -410,6 +479,20 @@ namespace gtk {
 
 					// Erase from active map
 					m_RendererMaps[i]->erase(entity._id);
+				}
+			}
+
+			// Loop through active collider map vector
+			for (unsigned int i = 0; i < m_ColliderMaps.size(); i++) // Maps should be in the same order between vectors
+			{
+				// Does the entity have a collider in this layer?
+				if (m_ColliderMaps[i]->find(entity._id) != m_ColliderMaps[i]->end())
+				{
+					// Move it to the disabled map
+					m_DisabledColliderMaps[i]->insert({ entity._id , m_ColliderMaps[i]->at(entity._id) });
+
+					// Erase from active map
+					m_ColliderMaps[i]->erase(entity._id);
 				}
 			}
 
@@ -544,10 +627,72 @@ namespace gtk {
 		}
 	}
 
+	void gtk::Scene::ToggleCollider(Collider& collider, bool setActive)
+	{
+		unsigned int id = collider.ID();
+		unsigned int layer = collider.m_GroupID;
+
+		// Get entity
+		Entity& entity = collider.GetEntity();
+
+
+		// If the entity is active we move the collider between maps based on requested state
+		if (entity._Active)
+		{
+			if (setActive)
+			{
+				// Return if already active
+				if (collider.m_Active) { return; }
+
+				// Move the collider back into the active collider map
+				m_ColliderMaps[layer]->
+					insert({ id, m_DisabledColliderMaps[layer]->at(id) });
+
+				// Erase collider from disabled map
+				m_DisabledColliderMaps[layer]->erase(id);
+
+				// Tag collider as active
+				collider.m_Active = true;
+
+			}
+			else
+			{
+				// Return if already disabled
+				if (!collider.m_Active) { return; }
+
+				// Move the collider to the disabled map
+				m_DisabledColliderMaps[layer]->
+					insert({ id, m_ColliderMaps[layer]->at(id) });
+
+				// Remove the collider from collider maps
+				m_ColliderMaps[layer]->erase(id);
+
+				// Tag collider not active
+				collider.m_Active = false;
+			}
+
+		}
+		else // If the entity is not active, we don't move the collider but tag it correctly
+		{
+			if (setActive)
+			{
+				// Tag collider as active
+				collider.m_Active = true;
+
+			}
+			else
+			{
+				// Tag collider not active
+				collider.m_Active = false;
+			}
+		}
+	}
+
 	void gtk::Scene::Update(const float& deltaTime)
 	{
+			
+		/// Update Behaviors ///
 
-		// Loop through the vector of maps
 		for (auto& BehMap : m_BehaviorMaps)
 		{
 			// Loop through behavior map
@@ -556,6 +701,11 @@ namespace gtk {
 				behavior.second->Update(deltaTime);
 			}
 		}
+
+		/// Check Collision ///
+		
+		CheckCollision();
+		
 
 		// Scene update accessible in derived class
 		PostUpdate();
@@ -592,6 +742,15 @@ namespace gtk {
 		}
 	}
 
+	void gtk::Scene::CheckCollision()
+	{
+		// For each collision group
+
+			// Check collision between all pairs
+				// if there's a collision, call OnCollision(Entity& other)
+
+	}
+
 	void gtk::Scene::Shutdown()
 	{
 		// Shred map vectors
@@ -600,6 +759,9 @@ namespace gtk {
 
 		MapVectorShredder(m_RendererMaps);
 		MapVectorShredder(m_DisabledRendererMaps);
+
+		MapVectorShredder(m_ColliderMaps);
+		MapVectorShredder(m_DisabledColliderMaps);
 		
 		// Shred maps
 		MapShredder(m_CameraMap);
@@ -617,6 +779,7 @@ namespace gtk {
 		m_EntityIDProvider = 0;
 		m_UpdateGroupIDProvider = 0;
 		m_RenderLayerIDProvider = 0;
+		m_CollisionGroupIDProvider = 0;
 	}
 
 	void gtk::Scene::UpdateSceneGraph()
