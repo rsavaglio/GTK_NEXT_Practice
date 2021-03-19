@@ -417,3 +417,53 @@ private:
 	vec2 _velGoal;
 	
 };
+
+class MonkeyB : public gtk::Behavior
+{
+
+public:
+	MonkeyB(std::vector<vec3> path, float speed)
+	: _speed(speed), _path(path), _currentNode(1){}
+
+	void Start() override
+	{
+		Trigger(0);
+	}
+
+	void Update(const float& deltaTime) override
+	{
+		// Moving from node to node
+		_T += deltaTime * _speed;
+
+		// If at next node and not at the last node
+		if (_T >= 1.0f && _currentNode != _path.size() - 2)
+		{
+			// Reset lerp
+			_T = 0;
+			_currentNode++;
+		}
+
+		Pos(LERP(_path[_currentNode], _path[_currentNode + 1], _T));
+
+	}
+
+	int Trigger(const int& code) override
+	{
+		Pos(_path.front());
+		return 0;
+	}
+
+	void OnCollision(Entity& other) override
+	{
+
+	}
+
+private:
+
+	float _speed;
+	std::vector<vec3> _path;
+	int _currentNode;
+
+	float _T;
+
+};

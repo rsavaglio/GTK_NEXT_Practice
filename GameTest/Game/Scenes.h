@@ -265,7 +265,7 @@ protected:
 		CollisionGroup col1 = CreateCollisionGroup();
 
 		Entity& tripod = CreateEntity();
-			tripod.Pos(vec3(0.0f, 0.0f, -55.0f));
+			tripod.Pos(vec3(0.0f, 0.0f, -10.0f));
 			tripod.Rot(vec3(0.0f, 00.0f, 0.0f));
 
 		Entity& camera = CreateEntity(tripod);
@@ -275,12 +275,12 @@ protected:
 
 		Entity& cursor = CreateEntity();
 			AddBehavior(cursor, group1, new CursorB(35.0f));
-			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
+			//AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
 			AddCollider(cursor, col1, new SphereCollider());
 
 
+		//// PATH ////
 
-		// Something to automate this would be nice
 		std::vector<vec3> path;
 
 		// Start Node
@@ -300,7 +300,10 @@ protected:
 
 		CreatePath(path, layer1, col1, RED);
 	
-
+		//// Monkeys ////
+		Entity& monkey = CreateEntity();
+			AddBehavior(monkey, group1, new MonkeyB(path, 1.0f));
+			AddRenderer(monkey, layer1, new OBJRenderer(".\\TestData\\Monkey.obj"));
 
 	}
 
