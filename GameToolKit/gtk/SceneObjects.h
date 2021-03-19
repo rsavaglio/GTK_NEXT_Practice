@@ -110,13 +110,13 @@ namespace gtk {
 		const bool& Active(const bool& setActive);
 		const bool& Active();
 
-		virtual int Trigger(const int& code) = 0;
+		virtual int Trigger(const int& code) { return 0; };
 
-		virtual void OnCollision(Entity& other) {}
+		virtual void OnCollision(Entity& other) {};
 
 	protected:
 
-		virtual void Start() = 0;
+		virtual void Start() {};
 		virtual void Update(const float& deltaTime) = 0;
 
 	private:

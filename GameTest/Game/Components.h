@@ -3,6 +3,8 @@
 #include "app/app.h"
 #include "gtk/gtkMath.hpp"
 #include <math.h>
+#include "enums.h"
+
 
 using namespace gtk;
 
@@ -318,12 +320,6 @@ private:
 
 };
 
-enum CursorState
-{
-	ON,
-	OFF
-};
-
 
 class CursorB : public gtk::Behavior
 {
@@ -422,8 +418,8 @@ class MonkeyB : public gtk::Behavior
 {
 
 public:
-	MonkeyB(std::vector<vec3> path, float speed)
-	: _speed(speed), _path(path), _currentNode(1){}
+	MonkeyB(std::vector<vec3> path)
+	: _speed(1.0f), _path(path), _currentNode(1){}
 
 	void Start() override
 	{
@@ -435,12 +431,22 @@ public:
 		// Moving from node to node
 		_T += deltaTime * _speed;
 
-		// If at next node and not at the last node
-		if (_T >= 1.0f && _currentNode != _path.size() - 2)
+		// If at next node and NOT at the last node
+		if (_T >= 1.0f)
 		{
-			// Reset lerp
-			_T = 0;
-			_currentNode++;
+			// If not at the end
+			if (_currentNode != _path.size() - 2)
+			{
+				// Reset lerp and go to next node
+				_T = 0;
+				_currentNode++;
+			}
+			else // MONKEY GETS BANANA!
+			{
+				// Do something bad to player
+				GetEntity().Active(false);
+			}
+
 		}
 
 		Pos(LERP(_path[_currentNode], _path[_currentNode + 1], _T));
@@ -450,6 +456,25 @@ public:
 	int Trigger(const int& code) override
 	{
 		Pos(_path.front());
+		_currentNode = 1;
+
+		switch (code)
+		{
+		case 1:
+			// Spawn standard monkey
+			SetColor(vec3(0.8f, 0.7f, 0.3f));
+			Scale(1.0f);
+			_speed = 5.0f;
+			break;
+
+		case 2:
+			// Spawn standard monkey
+			SetColor(vec3(0.2f, 0.3f, 0.8f));
+			Scale(3.0f);
+			_speed = 2.0f;
+			break;
+		}
+
 		return 0;
 	}
 
@@ -466,4 +491,34 @@ private:
 
 	float _T;
 
+};
+
+class BarrelOfMonkeysB : public gtk::Behavior
+{
+
+public:
+	BarrelOfMonkeysB(ObjectPool& monkeyPool) : _monkeyPool(monkeyPool) {}
+
+
+	void Update(const float& deltaTime) override
+	{
+		// Spawn yellow
+		if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
+		{
+			Entity& newMonkey = _monkeyPool.Create();
+			newMonkey.Trigger(1);
+		}
+
+
+		// Spawn big blue
+		if (App::GetController().CheckButton(XINPUT_GAMEPAD_B))
+		{
+			Entity& newMonkey = _monkeyPool.Create();
+			newMonkey.Trigger(2);
+		}
+
+	}
+
+private:
+	ObjectPool& _monkeyPool;
 };

@@ -541,7 +541,7 @@ namespace gtk {
 		// Get entity
 		Entity& entity = behavior.GetEntity();
 
-		// If the entity is active we move the behavior between maps based on requested state
+		// If the entity is active we move the behavior tag the behaviour based on request
 		if (entity._Active)
 		{
 

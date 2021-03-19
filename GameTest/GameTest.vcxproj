@@ -192,6 +192,7 @@
     <ClInclude Include="App\SimpleSprite.h" />
     <ClInclude Include="App\TextureLoader.h" />
     <ClInclude Include="Game\Colliders.h" />
+    <ClInclude Include="Game\enums.h" />
     <ClInclude Include="Game\Games.h" />
     <ClInclude Include="Game\Components.h" />
     <ClInclude Include="Game\ObjectPools.h" />

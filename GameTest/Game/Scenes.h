@@ -6,6 +6,7 @@
 #include "Renderers.h"
 #include "ObjectPools.h"
 #include "Colliders.h"
+#include "enums.h"
 
 #include <queue>
 
@@ -152,7 +153,6 @@ protected:
 	}
 };
 
-
 class TD_Level_1 : public gtk::Scene
 {
 
@@ -176,15 +176,8 @@ protected:
 		}
 	}
 
-	enum Direction
-	{
-		LEFT,
-		RIGHT,
-		UP,
-		DOWN,
-		FORWARD,
-		BACK
-	};
+
+
 
 	void AddToPath(std::vector<vec3>& nodes, Direction dir, int count)
 	{
@@ -263,6 +256,7 @@ protected:
 		RenderLayer layerUI = CreateRenderLayer();
 
 		CollisionGroup col1 = CreateCollisionGroup();
+		CollisionGroup col2 = CreateCollisionGroup();
 
 		Entity& tripod = CreateEntity();
 			tripod.Pos(vec3(0.0f, 0.0f, -10.0f));
@@ -275,7 +269,7 @@ protected:
 
 		Entity& cursor = CreateEntity();
 			AddBehavior(cursor, group1, new CursorB(35.0f));
-			//AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
+			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
 			AddCollider(cursor, col1, new SphereCollider());
 
 
@@ -301,9 +295,9 @@ protected:
 		CreatePath(path, layer1, col1, RED);
 	
 		//// Monkeys ////
-		Entity& monkey = CreateEntity();
-			AddBehavior(monkey, group1, new MonkeyB(path, 1.0f));
-			AddRenderer(monkey, layer1, new OBJRenderer(".\\TestData\\Monkey.obj"));
+		Entity& barrelOfMonkeys = CreateEntity();
+			ObjectPool& monkeyPool = CreatePool("monkeyPool", new MonkeyPool(barrelOfMonkeys, 20, *this, group1, layer1, col2, path));
+			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(monkeyPool));
 
 	}
 
