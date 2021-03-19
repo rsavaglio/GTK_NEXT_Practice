@@ -5,6 +5,7 @@
 #include "Components.h"
 #include "Renderers.h"
 #include "ObjectPools.h"
+#include "Colliders.h"
 
 #include <queue>
 
@@ -101,7 +102,7 @@ protected:
 
 		Entity& camera = CreateEntity(tripod);
 			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
-			AddBehavior(camera, group1, new CameraB(100.0f));
+			//AddBehavior(camera, group1, new CameraB(100.0f));
 
 		Entity& uiText = CreateEntity(camera);
 			uiText.Pos(vec3(0.0f, 0.0f, 50.0f));
@@ -167,7 +168,7 @@ protected:
 		for (const vec3& pos : nodePos)
 		{
 			Entity& node = CreateEntity("PathNode" + std::to_string(i));
-			AddRenderer(node, layer, new NodeRenderer(color));
+			AddRenderer(node, layer, new CubeRenderer(color));
 			AddCollider(node, colGroup, new SphereCollider());
 			node.Scale(3.0f);
 			node.Pos(pos);
@@ -180,7 +181,9 @@ protected:
 		LEFT,
 		RIGHT,
 		UP,
-		DOWN
+		DOWN,
+		FORWARD,
+		BACK
 	};
 
 	void AddToPath(std::vector<vec3>& nodes, Direction dir, int count)
@@ -193,7 +196,7 @@ protected:
 
 			for (int i = 0; i < count; i++)
 			{
-				nodes.push_back(vec3(nodes.back()) - vec3(6.0f, 0.0f, 0.0f));
+				nodes.push_back(vec3(nodes.back()) + vec3(-6.0f, 0.0f, 0.0f));
 			}
 
 			break;
@@ -211,7 +214,7 @@ protected:
 
 			for (int i = 0; i < count; i++)
 			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 0.0f, 6.0f));
+				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 6.0f, 0.0f));
 			}
 
 			break;
@@ -220,11 +223,31 @@ protected:
 
 			for (int i = 0; i < count; i++)
 			{
-				nodes.push_back(vec3(nodes.back()) - vec3(0.0f, 0.0f, 6.0f));
+				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, -6.0f, 0.0f));
+			}
+
+			break;
+
+		case FORWARD:
+
+			for (int i = 0; i < count; i++)
+			{
+				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 0.0f, 6.0f));
+			}
+
+			break;
+
+		case BACK:
+
+			for (int i = 0; i < count; i++)
+			{
+				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 0.0f, -6.0f));
 			}
 
 			break;
 		}
+
+
 	}
 
 	// Called by game when scene starts
@@ -242,16 +265,17 @@ protected:
 		CollisionGroup col1 = CreateCollisionGroup();
 
 		Entity& tripod = CreateEntity();
-			tripod.Pos(vec3(0.0f, 35.0f, 0.0f));
+			tripod.Pos(vec3(0.0f, 0.0f, -55.0f));
+			tripod.Rot(vec3(0.0f, 00.0f, 0.0f));
 
 		Entity& camera = CreateEntity(tripod);
-			camera.Rot(vec3(90.0f, 0.0f, 0.0f));
+			camera.Rot(vec3(0.0f, 0.0f, 0.0f));
 			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
 			AddBehavior(camera, group1, new CameraB(100.0f));
 
 		Entity& cursor = CreateEntity();
 			AddBehavior(cursor, group1, new CursorB(35.0f));
-			AddRenderer(cursor, layer1, new OBJRenderer(".\\TestData\\sphere.obj"));
+			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
 			AddCollider(cursor, col1, new SphereCollider());
 
 
@@ -260,15 +284,18 @@ protected:
 		std::vector<vec3> path;
 
 		// Start Node
-		path.push_back(vec3(-29.0f, 0.0f, 12.0f));
+		path.push_back(vec3(-28.0f, 12.0f, 0.0f));
 		
 		AddToPath(path, RIGHT, 3);
+		AddToPath(path, FORWARD, 3);
 		AddToPath(path, DOWN, 2);
+		AddToPath(path, BACK, 3);
 		AddToPath(path, LEFT, 2);
 		AddToPath(path, DOWN, 3);
-		AddToPath(path, RIGHT, 5);
+		AddToPath(path, RIGHT, 4);
 		AddToPath(path, UP, 3);
 		AddToPath(path, RIGHT, 3);
+		AddToPath(path, BACK, 2);
 		AddToPath(path, UP, 3);
 
 		CreatePath(path, layer1, col1, RED);

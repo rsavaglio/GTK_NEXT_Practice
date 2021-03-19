@@ -186,7 +186,7 @@ class CubeRenderer : public gtk::Renderer
 
 public:
 
-	CubeRenderer()
+	CubeRenderer(const vec3& color)
 		:
 		_vbo({
 			gtk::vec4( 1.0f, 1.0f,-1.0f, 1.0f),
@@ -202,7 +202,7 @@ public:
 		_ibo({0, 1, 1, 2, 2, 3, 3, 0, 
 			  4, 5, 5, 6, 6, 7, 7, 4,
 			  0, 4, 1, 5, 2, 6, 3, 7}),
-		_anim(0)
+		Renderer(color)
 	{}
 
 	void Start() override
@@ -247,8 +247,6 @@ private:
 
 	std::array<gtk::vec4, 8> _vbo;
 	std::array<int, 24> _ibo;
-
-	float _anim;
 };
 
 class OBJRenderer : public gtk::Renderer

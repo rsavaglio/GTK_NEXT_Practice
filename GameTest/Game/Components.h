@@ -252,49 +252,22 @@ private:
 
 };
 
-
-class SphereCollider : public gtk::Collider
+enum CamState
 {
-
-public:
-	SphereCollider() {}
-
-	void UpdateData() override
-	{
-		// Doesn't work great with children objects
-		_radius = Scale().x > Scale().y ? Scale().x : Scale().y;
-		_radius = _radius > Scale().z ? _radius : Scale().z;
-
-		_center = Pos();
-	}
-
-
-	bool Check(Collider& other) override
-	{
-		if ((_center - other._center).Dot((_center - other.Pos()))
-				<= (_radius + other._radius) * (_radius + other._radius)) // If they collide
-		{
-			return true;
-		}
-
-		return false;
-
-	}
-
-private:
-
-
+	POS1,
+	POS2,
+	TOWER
 };
 
 class CameraB : public gtk::Behavior
 {
 
 public:
-	CameraB(float speed) : _speed(speed) {}
+	CameraB(float speed) : 
+		_speed(speed) {}
 
 	void Start() override
 	{
-
 	}
 
 	void Update(const float& deltaTime) override
@@ -315,7 +288,6 @@ public:
 			Rot().z
 		), true);
 
-
 	}
 
 	int Trigger(const int& code) override
@@ -332,6 +304,17 @@ public:
 private:
 
 	float _speed;
+
+
+	bool _pos1;
+	vec3 _triPos1;
+	vec3 _triRot1;
+
+	vec3 _triPos2;
+	vec3 _triRot2;
+
+	vec3 _targetPos;
+	vec3 _targetRot;
 
 };
 
@@ -369,28 +352,28 @@ public:
 		// Set position from velocity
 		Pos(vec3(
 			Pos().x + _vel.x * deltaTime,
-			Pos().y,
-			Pos().z + _vel.y * deltaTime
+			Pos().y + _vel.y * deltaTime,
+			Pos().z
 		));
 
 
 		// Don't go out of bounds
-		if (Pos().z > 25.0f)
+		if (Pos().y > 25.0f)
 		{
-			Pos(vec3(Pos().x, 0.0f, 25.0f));
+			Pos(vec3(Pos().x, 25.0f, Pos().z));
 		}
-		else if (Pos().z < -25.0f)
+		else if (Pos().y < -25.0f)
 		{
-			Pos(vec3(Pos().x, 0.0f, -25.0f));
+			Pos(vec3(Pos().x, -25.0f, Pos().z));
 		}
 
-		if (Pos().x > 34.0f)
+		if (Pos().x > 32.0f)
 		{
-			Pos(vec3(34.0f, 0.0f, Pos().z));
+			Pos(vec3(32.0f, Pos().y, Pos().z));
 		}
-		else if (Pos().x < -34.0f)
+		else if (Pos().x < -32.0f)
 		{
-			Pos(vec3(-34.0f, 0.0f, Pos().z));
+			Pos(vec3(-32.0f, Pos().y, Pos().z));
 		}
 
 
@@ -421,10 +404,7 @@ public:
 
 	void OnCollision(Entity& other) override
 	{
-
 		_state = OFF;
-
-
 	}
 
 
