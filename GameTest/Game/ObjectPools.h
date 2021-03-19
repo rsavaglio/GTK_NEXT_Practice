@@ -66,7 +66,7 @@ public:
 		for (int i = 0; i < _count; i++)
 		{
 			// Create entity and add it to pool
-			Entity* entity = &_scene.CreateEntity();
+			Entity* entity = &_scene.CreateEntity("monkey");
 			_pool.push(entity);
 
 			// Setup here

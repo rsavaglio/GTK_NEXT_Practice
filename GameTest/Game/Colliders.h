@@ -10,7 +10,7 @@ class SphereCollider : public gtk::Collider
 {
 
 public:
-	SphereCollider() {}
+	SphereCollider(float radiusMod = 1.0f) : _radiusMod(radiusMod) {}
 
 	void UpdateData() override
 	{
@@ -18,6 +18,7 @@ public:
 		_radius = Scale().x > Scale().y ? Scale().x : Scale().y;
 		_radius = _radius > Scale().z ? _radius : Scale().z;
 
+		_radius *= _radiusMod;
 		_center = Pos();
 	}
 
@@ -35,6 +36,6 @@ public:
 	}
 
 private:
-
+	float _radiusMod;
 
 };

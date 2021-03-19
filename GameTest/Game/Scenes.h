@@ -255,8 +255,8 @@ protected:
 		RenderLayer layer2 = CreateRenderLayer();
 		RenderLayer layerUI = CreateRenderLayer();
 
-		CollisionGroup col1 = CreateCollisionGroup();
-		CollisionGroup col2 = CreateCollisionGroup();
+		CollisionGroup cursorSelectionCol = CreateCollisionGroup();
+		CollisionGroup towerSightCol = CreateCollisionGroup();
 
 		Entity& tripod = CreateEntity();
 			tripod.Pos(vec3(0.0f, 0.0f, -10.0f));
@@ -267,10 +267,7 @@ protected:
 			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
 			AddBehavior(camera, group1, new CameraB(100.0f));
 
-		Entity& cursor = CreateEntity();
-			AddBehavior(cursor, group1, new CursorB(35.0f));
-			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
-			AddCollider(cursor, col1, new SphereCollider());
+
 
 
 		//// PATH ////
@@ -292,12 +289,26 @@ protected:
 		AddToPath(path, BACK, 2);
 		AddToPath(path, UP, 3);
 
-		CreatePath(path, layer1, col1, RED);
+		CreatePath(path, layer1, cursorSelectionCol, RED);
 	
 		//// Monkeys ////
 		Entity& barrelOfMonkeys = CreateEntity();
-			ObjectPool& monkeyPool = CreatePool("monkeyPool", new MonkeyPool(barrelOfMonkeys, 20, *this, group1, layer1, col2, path));
+			ObjectPool& monkeyPool = CreatePool("monkeyPool", new MonkeyPool(barrelOfMonkeys, 20, *this, group1, layer1, towerSightCol, path));
 			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(monkeyPool));
+
+		//// Towers ////
+		Entity& tower = CreateEntity();
+			AddBehavior(tower, group1, new TowerB());
+			AddRenderer(tower, layer2, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
+			AddCollider(tower, towerSightCol, new SphereCollider(10.0f));
+			AddCollider(tower, cursorSelectionCol, new SphereCollider());
+
+			tower.Active(false);
+
+		Entity& cursor = CreateEntity("cursor");
+			AddBehavior(cursor, group1, new CursorB(tower, 35.0f));
+			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
+			AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 
 	}
 

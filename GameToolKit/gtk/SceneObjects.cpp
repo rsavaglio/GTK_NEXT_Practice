@@ -7,6 +7,12 @@ namespace gtk {
 
 	SceneObject::SceneObject() : _id(0), _scene(nullptr), _ent(nullptr) {}
 
+	const std::string& SceneObject::GetName()
+	{
+		// TODO: insert return statement here
+		return _ent->_Name;
+	}
+
 	const vec3& SceneObject::Pos()
 	{
 		return _ent->_Pos;

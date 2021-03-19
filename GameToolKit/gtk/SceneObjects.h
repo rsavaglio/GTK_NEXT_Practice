@@ -28,6 +28,8 @@ namespace gtk {
 		SceneObject();
 		virtual ~SceneObject() {}
 
+		const std::string& GetName();
+
 		const vec3& Pos();
 		const vec3& Pos(const vec3& pos);
 		const vec3& Pos(const vec3& pos, const bool& add);

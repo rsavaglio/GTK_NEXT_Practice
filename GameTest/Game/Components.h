@@ -325,8 +325,8 @@ class CursorB : public gtk::Behavior
 {
 
 public:
-	CursorB(const float& speed)
-		: _state(ON), _speed(speed), _vel(), _velGoal() {}
+	CursorB(Entity& tower, const float& speed)
+		: _tower(tower), _state(ON), _speed(speed), _vel(), _velGoal() {}
 
 	void Update(const float& deltaTime) override
 	{
@@ -375,6 +375,13 @@ public:
 			// GREEN
 			SetColor(vec3(0.0f, 1.0f, 0.0f));
 
+			// If the player presses X
+			if (App::GetController().CheckButton(XINPUT_GAMEPAD_X, true))
+			{
+				_tower.Active(true);
+				_tower.Pos(Pos());
+			}
+
 			break;
 		case OFF:
 
@@ -401,6 +408,8 @@ public:
 
 
 private:
+
+	Entity& _tower;
 
 	CursorState _state;
 	float _speed;
@@ -517,4 +526,69 @@ public:
 
 private:
 	ObjectPool& _monkeyPool;
+};
+
+
+
+class TowerB : public gtk::Behavior
+{
+
+public:
+	TowerB() {}
+
+	void Start() override
+	{
+
+	}
+
+	void Update(const float& deltaTime) override
+	{
+
+
+		// TODO: If target is too far
+		if (true)
+		{
+			_target = nullptr;
+		}
+		else
+		{
+			// Shoot the monkey!
+
+		}
+	}
+
+	int Trigger(const int& code) override
+	{
+		return 0;
+	}
+
+	void OnCollision(Entity& other) override
+	{
+		// If there is no target
+		if (_target == nullptr)
+		{
+			// if other is an monkey
+			if (other.GetName() == "monkey")
+			{
+				// Must destory
+				_target = &other;
+
+				SetColor(vec3(1.0f, 0.0f, 0.0f));
+			}
+		}
+
+		if (other.GetName() == "cursor")
+		{
+			SetColor(vec3(1.0f, 1.0f, 1.0f));
+		}
+
+	}
+
+
+
+private:
+
+	Entity* _target;
+	
+	float _shootDelay;
 };
