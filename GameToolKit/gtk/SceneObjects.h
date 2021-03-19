@@ -392,7 +392,7 @@ namespace gtk {
 	public:
 
 		Collider()
-			: m_GroupID(0), m_Active(true) {}
+			: _center(), _radius(1.0f), m_GroupID(0), m_Active(true) {}
 		virtual ~Collider() {}
 
 

@@ -328,11 +328,6 @@ public:
 	CursorB(const float& speed)
 		: _state(ON), _speed(speed), _vel(), _velGoal() {}
 
-	void Start() override
-	{
-
-	}
-
 	void Update(const float& deltaTime) override
 	{
 
@@ -419,7 +414,7 @@ class MonkeyB : public gtk::Behavior
 
 public:
 	MonkeyB(std::vector<vec3> path)
-	: _speed(1.0f), _path(path), _currentNode(1){}
+	: _speed(1.0f), _path(path), _currentNode(0){}
 
 	void Start() override
 	{
@@ -443,8 +438,9 @@ public:
 			}
 			else // MONKEY GETS BANANA!
 			{
-				// Do something bad to player
+				// Disable Monkey
 				GetEntity().Active(false);
+				
 			}
 
 		}
@@ -456,7 +452,7 @@ public:
 	int Trigger(const int& code) override
 	{
 		Pos(_path.front());
-		_currentNode = 1;
+		_currentNode = 0;
 
 		switch (code)
 		{

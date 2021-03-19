@@ -43,21 +43,6 @@ namespace gtk {
 			}
 		}
 
-		// Loop through the vector of maps
-		for (auto& RenderLayer : m_DisabledRendererMaps)
-		{
-			// Loop through render map
-			for (auto& Rend : *RenderLayer)
-			{
-				// If the renderer has not been given a camera
-				if (Rend.second->m_Camera == nullptr)
-				{
-					// Give it the main camera
-					Rend.second->m_Camera = m_MainCam;
-				}
-			}
-		}
-
 		//// Start Calls ////
 
 		// Call Start on enabled behaviours
@@ -176,7 +161,6 @@ namespace gtk {
 	UpdateGroup Scene::CreateUpdateGroup()
 	{
 		m_BehaviorMaps.push_back(new std::unordered_map<unsigned int, Behavior*>);
-		m_DisabledBehaviorMaps.push_back(new std::unordered_map<unsigned int, Behavior*>);
 
 		UpdateGroup newBehaviorGroup(m_UpdateGroupIDProvider++);
 
@@ -186,7 +170,6 @@ namespace gtk {
 	RenderLayer Scene::CreateRenderLayer()
 	{
 		m_RendererMaps.push_back(new std::unordered_map<unsigned int, Renderer*>);
-		m_DisabledRendererMaps.push_back(new std::unordered_map<unsigned int, Renderer*>);
 
 		RenderLayer newRenderLayer(m_RenderLayerIDProvider++);
 
@@ -215,19 +198,11 @@ namespace gtk {
 		// Set behavior data
 		behavior->m_GroupID = group._id;
 
-		if (entity.Active())
-		{
-			// Ensure no deplicate behaviors on same entity
-			ASSERT(m_BehaviorMaps[group._id]->find(entity._id) == m_BehaviorMaps[group._id]->end());
+		// Ensure no deplicate behaviors on same entity
+		ASSERT(m_BehaviorMaps[group._id]->find(entity._id) == m_BehaviorMaps[group._id]->end());
 
-			// Add behavior to correct map with the ID
-			m_BehaviorMaps[group._id]->insert({ entity._id, behavior });
-		}
-		else
-		{
-			ASSERT(m_DisabledBehaviorMaps[group._id]->find(entity._id) == m_DisabledBehaviorMaps[group._id]->end());
-			m_DisabledBehaviorMaps[group._id]->insert({ entity._id, behavior });
-		}
+		// Add behavior to correct map with the ID
+		m_BehaviorMaps[group._id]->insert({ entity._id, behavior });
 
 		return *behavior;
 	}
@@ -241,20 +216,8 @@ namespace gtk {
 		renderer->m_Camera = &camera;
 		renderer->m_LayerID = layer._id;
 
-
-		if (entity.Active())
-		{
-			// Ensure no deplicate renderer on same entity
-			ASSERT(m_RendererMaps[layer._id]->find(entity._id) == m_RendererMaps[layer._id]->end());
-			m_RendererMaps[layer._id]->insert({ entity._id, renderer });
-		}
-		else
-		{
-			ASSERT(m_DisabledRendererMaps[layer._id]->find(entity._id) == m_DisabledRendererMaps[layer._id]->end());
-			m_DisabledRendererMaps[layer._id]->insert({ entity._id, renderer });
-		}
-
-		// Add renderer to correct map with the ID
+		// Ensure no deplicate renderer on same entity
+		ASSERT(m_RendererMaps[layer._id]->find(entity._id) == m_RendererMaps[layer._id]->end());
 		m_RendererMaps[layer._id]->insert({ entity._id, renderer });
 
 		return *renderer;
@@ -268,18 +231,9 @@ namespace gtk {
 		// Set renderer data, m_Camera is set in Scene::Init()
 		renderer->m_LayerID = layer._id;
 
-
-		if (entity.Active())
-		{
-			// Ensure no deplicate renderer on same entity
-			ASSERT(m_RendererMaps[layer._id]->find(entity._id) == m_RendererMaps[layer._id]->end());
-			m_RendererMaps[layer._id]->insert({ entity._id, renderer });
-		}
-		else
-		{
-			ASSERT(m_DisabledRendererMaps[layer._id]->find(entity._id) == m_DisabledRendererMaps[layer._id]->end());
-			m_DisabledRendererMaps[layer._id]->insert({ entity._id, renderer });
-		}
+		// Ensure no deplicate renderer on same entity
+		ASSERT(m_RendererMaps[layer._id]->find(entity._id) == m_RendererMaps[layer._id]->end());
+		m_RendererMaps[layer._id]->insert({ entity._id, renderer });
 
 		// Add renderer to correct map with the ID
 		return *renderer;
@@ -377,8 +331,9 @@ namespace gtk {
 			// If entity has a behviour in the map
 			if (CompMap->find(id) != CompMap->end())
 			{
-				// Trigger the behaviour
-				CompMap->at(id)->OnCollision(other);
+				// Trigger the behaviour if it's active
+				if(CompMap->at(id)->m_Active)
+					CompMap->at(id)->OnCollision(other);
 			}
 		}
 	}
@@ -400,16 +355,34 @@ namespace gtk {
 
 	void gtk::Scene::ToggleEntity(Entity& entity, bool setActive)
 	{
-		// Update is only called on components and renderers in the active maps.
-		// Disabled components and renderers are moved to disabled maps, where they are not updated.
-		// This avoids having to check each if component is active each time they are updated. 
+		// Tag behaviors and renderers
+		//Move colliders between maps based on state
 
-		// Disabling an entity essentially just disables all of its components.
-		// However, components' active tags are preserved.
+		// Loop though behavior maps
+		for (unsigned int i = 0; i < m_BehaviorMaps.size(); i++) // Maps should be in the same order between vectors
+		{
+			// If entity has a behavior in this group
+			if (m_BehaviorMaps[i]->find(entity._id) != m_BehaviorMaps[i]->end())
+			{
+				// Set it to active 
+				m_BehaviorMaps[i]->at(entity._id)->m_Active = setActive;
+			}
 
-		// When setting an entity to active, only components tagged as active get moved
-		// to the active maps.
+		}
 
+		// Loop though renderer maps
+		for (unsigned int i = 0; i < m_RendererMaps.size(); i++) // Maps should be in the same order between vectors
+		{
+			// If entity has a renderer in this layer
+			if (m_RendererMaps[i]->find(entity._id) != m_RendererMaps[i]->end())
+			{
+				// Set it to active 
+				m_RendererMaps[i]->at(entity._id)->m_Active = setActive;
+			}
+
+		}
+
+		// Move colliders between maps 
 		if (setActive)
 		{
 			// Return if entity is already active
@@ -417,43 +390,6 @@ namespace gtk {
 
 			// Tag as active
 			entity._Active = true;
-
-			// Loop through disabled behavior map vector
-			for (unsigned int i = 0; i < m_DisabledBehaviorMaps.size(); i++) // Maps should be in the same order between vectors
-			{
-				// Does the entity have a behavior in this group?
-				if (m_DisabledBehaviorMaps[i]->find(entity._id) != m_DisabledBehaviorMaps[i]->end())
-				{
-					// Behavior is tagged as active
-					if (m_DisabledBehaviorMaps[i]->at(entity._id)->m_Active)
-					{
-						// Move it to the active map
-						m_BehaviorMaps[i]->insert({ entity._id , m_DisabledBehaviorMaps[i]->at(entity._id) });
-
-						// Erase from disabled map
-						m_DisabledBehaviorMaps[i]->erase(entity._id);
-					}
-				}
-			}
-
-
-			// Loop through disabled renderer map vector
-			for (unsigned int i = 0; i < m_DisabledRendererMaps.size(); i++) // Maps should be in the same order between vectors
-			{
-				// Does the entity have a renderer in this layer?
-				if (m_DisabledRendererMaps[i]->find(entity._id) != m_DisabledRendererMaps[i]->end())
-				{
-					// Renderer is tagged as active
-					if (m_DisabledRendererMaps[i]->at(entity._id)->m_Active)
-					{
-						// Move it to the active map
-						m_RendererMaps[i]->insert({ entity._id , m_DisabledRendererMaps[i]->at(entity._id) });
-
-						// Erase from disabled map
-						m_DisabledRendererMaps[i]->erase(entity._id);
-					}
-				}
-			}
 
 			// Loop through disabled collider map vector
 			for (unsigned int i = 0; i < m_DisabledColliderMaps.size(); i++) // Maps should be in the same order between vectors
@@ -481,34 +417,6 @@ namespace gtk {
 
 			// Tag as inactive
 			entity._Active = false;
-
-			// Loop through active behavior map vector
-			for (unsigned int i = 0; i < m_BehaviorMaps.size(); i++) // Maps should be in the same order between vectors
-			{
-				// Does the entity have a behavior in this group?
-				if (m_BehaviorMaps[i]->find(entity._id) != m_BehaviorMaps[i]->end())
-				{
-					// Move it to the disabled map
-					m_DisabledBehaviorMaps[i]->insert({ entity._id , m_BehaviorMaps[i]->at(entity._id) });
-
-					// Erase from active map
-					m_BehaviorMaps[i]->erase(entity._id);
-				}
-			}
-
-			// Loop through active renderer map vector
-			for (unsigned int i = 0; i < m_RendererMaps.size(); i++) // Maps should be in the same order between vectors
-			{
-				// Does the entity have a renderer in this layer?
-				if (m_RendererMaps[i]->find(entity._id) != m_RendererMaps[i]->end())
-				{
-					// Move it to the disabled map
-					m_DisabledRendererMaps[i]->insert({ entity._id , m_RendererMaps[i]->at(entity._id) });
-
-					// Erase from active map
-					m_RendererMaps[i]->erase(entity._id);
-				}
-			}
 
 			// Loop through active collider map vector
 			for (unsigned int i = 0; i < m_ColliderMaps.size(); i++) // Maps should be in the same order between vectors
@@ -538,120 +446,34 @@ namespace gtk {
 		unsigned int id = behavior.ID();
 		unsigned int group = behavior.m_GroupID;
 
-		// Get entity
-		Entity& entity = behavior.GetEntity();
-
-		// If the entity is active we move the behavior tag the behaviour based on request
-		if (entity._Active)
+		if (setActive)
 		{
-
-			if (setActive)
-			{
-				// Return if already active
-				if (behavior.m_Active) { return; }
-
-				// Move the behavior back into the active behavior map
-				m_BehaviorMaps[group]->
-					insert({ id, m_DisabledBehaviorMaps[group]->at(id) });
-
-				// Erase behavior from disabled map
-				m_DisabledBehaviorMaps[group]->erase(id);
-
-				// Tag behavior as active
-				behavior.m_Active = true;
-
-			}
-			else
-			{
-				// Return if already disabled
-				if (!behavior.m_Active) { return; }
-
-				// Move the behavior to the disabled map
-				m_DisabledBehaviorMaps[group]->
-					insert({ id, m_BehaviorMaps[group]->at(id) });
-
-				// Remove the behavior from behavior maps
-				m_BehaviorMaps[group]->erase(id);
-
-				// Tag behavior not active
-				behavior.m_Active = false;
-			}
+			// Tag behavior as active
+			behavior.m_Active = true;
 
 		}
-		else // If the entity is not active, we don't move the behavior but tag it correctly
+		else
 		{
-			if (setActive)
-			{
-				// Tag behavior as active
-				behavior.m_Active = true;
-
-			}
-			else
-			{
-				// Tag behavior not active
-				behavior.m_Active = false;
-			}
+			// Tag behavior not active
+			behavior.m_Active = false;
 		}
 	}
 
 	void gtk::Scene::ToggleRenderer(Renderer& renderer, bool setActive)
 	{
 		unsigned int id = renderer.ID();
-		unsigned int layer = renderer.m_LayerID;
+		unsigned int group = renderer.m_LayerID;
 
-		// Get entity
-		Entity& entity = renderer.GetEntity();
-
-
-		// If the entity is active we move the renderer between maps based on requested state
-		if (entity._Active)
+		if (setActive)
 		{
-			if (setActive)
-			{
-				// Return if already active
-				if (renderer.m_Active) { return; }
-
-				// Move the renderer back into the active renderer map
-				m_RendererMaps[layer]->
-					insert({ id, m_DisabledRendererMaps[layer]->at(id) });
-
-				// Erase renderer from disabled map
-				m_DisabledRendererMaps[layer]->erase(id);
-
-				// Tag renderer as active
-				renderer.m_Active = true;
-
-			}
-			else
-			{
-				// Return if already disabled
-				if (!renderer.m_Active) { return; }
-
-				// Move the renderer to the disabled map
-				m_DisabledRendererMaps[layer]->
-					insert({ id, m_RendererMaps[layer]->at(id) });
-
-				// Remove the renderer from renderer maps
-				m_RendererMaps[layer]->erase(id);
-
-				// Tag renderer not active
-				renderer.m_Active = false;
-			}
+			// Tag renderer as active
+			renderer.m_Active = true;
 
 		}
-		else // If the entity is not active, we don't move the renderer but tag it correctly
+		else
 		{
-			if (setActive)
-			{
-				// Tag renderer as active
-				renderer.m_Active = true;
-
-			}
-			else
-			{
-				// Tag renderer not active
-				renderer.m_Active = false;
-			}
+			// Tag renderer not active
+			renderer.m_Active = false;
 		}
 	}
 
@@ -660,59 +482,36 @@ namespace gtk {
 		unsigned int id = collider.ID();
 		unsigned int layer = collider.m_GroupID;
 
-		// Get entity
-		Entity& entity = collider.GetEntity();
-
-
-		// If the entity is active we move the collider between maps based on requested state
-		if (entity._Active)
+		if (setActive)
 		{
-			if (setActive)
-			{
-				// Return if already active
-				if (collider.m_Active) { return; }
+			// Return if already active
+			if (collider.m_Active) { return; }
 
-				// Move the collider back into the active collider map
-				m_ColliderMaps[layer]->
-					insert({ id, m_DisabledColliderMaps[layer]->at(id) });
+			// Move the collider back into the active collider map
+			m_ColliderMaps[layer]->
+				insert({ id, m_DisabledColliderMaps[layer]->at(id) });
 
-				// Erase collider from disabled map
-				m_DisabledColliderMaps[layer]->erase(id);
+			// Erase collider from disabled map
+			m_DisabledColliderMaps[layer]->erase(id);
 
-				// Tag collider as active
-				collider.m_Active = true;
-
-			}
-			else
-			{
-				// Return if already disabled
-				if (!collider.m_Active) { return; }
-
-				// Move the collider to the disabled map
-				m_DisabledColliderMaps[layer]->
-					insert({ id, m_ColliderMaps[layer]->at(id) });
-
-				// Remove the collider from collider maps
-				m_ColliderMaps[layer]->erase(id);
-
-				// Tag collider not active
-				collider.m_Active = false;
-			}
+			// Tag collider as active
+			collider.m_Active = true;
 
 		}
-		else // If the entity is not active, we don't move the collider but tag it correctly
+		else
 		{
-			if (setActive)
-			{
-				// Tag collider as active
-				collider.m_Active = true;
+			// Return if already disabled
+			if (!collider.m_Active) { return; }
 
-			}
-			else
-			{
-				// Tag collider not active
-				collider.m_Active = false;
-			}
+			// Move the collider to the disabled map
+			m_DisabledColliderMaps[layer]->
+				insert({ id, m_ColliderMaps[layer]->at(id) });
+
+			// Remove the collider from collider maps
+			m_ColliderMaps[layer]->erase(id);
+
+			// Tag collider not active
+			collider.m_Active = false;
 		}
 	}
 
@@ -726,7 +525,10 @@ namespace gtk {
 			// Loop through behavior map
 			for (auto& behavior : *BehMap)
 			{
-				behavior.second->Update(deltaTime);
+				if (behavior.second->m_Active)
+				{
+					behavior.second->Update(deltaTime);
+				}
 			}
 		}
 
@@ -775,15 +577,16 @@ namespace gtk {
 			// Loop through render map
 			for (auto& Rend : *RenderLayer)
 			{
-				Rend.second->Draw();
+				if (Rend.second->m_Active)
+				{
+					Rend.second->Draw();
+				}
 			}
 		}
 	}
 
 	void gtk::Scene::CheckCollision()
 	{
-		// TODO: Optimize this it's awful
-
 
 		// For each collision group
 		for (auto& ColGroup : m_ColliderMaps)
@@ -812,10 +615,8 @@ namespace gtk {
 	{
 		// Shred map vectors
 		MapVectorShredder(m_BehaviorMaps);
-		MapVectorShredder(m_DisabledBehaviorMaps);
 
 		MapVectorShredder(m_RendererMaps);
-		MapVectorShredder(m_DisabledRendererMaps);
 
 		MapVectorShredder(m_ColliderMaps);
 		MapVectorShredder(m_DisabledColliderMaps);

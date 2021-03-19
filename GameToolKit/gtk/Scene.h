@@ -61,7 +61,6 @@ namespace gtk {
 		CollisionGroup CreateCollisionGroup();
 
 		Behavior& AddBehavior(Entity& entity, const UpdateGroup& group, Behavior* const behavior);
-
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Renderer* const renderer);
 		Renderer& AddRenderer(Entity& entity, const RenderLayer& layer, Camera& camera, Renderer* const renderer);
 
@@ -93,10 +92,7 @@ namespace gtk {
 		std::unordered_map<unsigned int, Entity*> m_RootEntityMap;
 
 		std::vector<std::unordered_map<unsigned int, Behavior*>*> m_BehaviorMaps;
-		std::vector<std::unordered_map<unsigned int, Behavior*>*> m_DisabledBehaviorMaps;
-
 		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_RendererMaps;
-		std::vector<std::unordered_map<unsigned int, Renderer*>*> m_DisabledRendererMaps;
 
 		std::vector<std::unordered_map<unsigned int, Collider*>*> m_ColliderMaps;
 		std::vector<std::unordered_map<unsigned int, Collider*>*> m_DisabledColliderMaps;
