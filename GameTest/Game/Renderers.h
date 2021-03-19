@@ -257,15 +257,10 @@ class OBJRenderer : public gtk::Renderer
 
 public:
 
-	OBJRenderer(std::string filePath) : _color(gtk::vec3(0.5f, 0.5f, 0.2f)), _vbo(), _ibo()
-	{
-		LoadObject(filePath);
-	}
 
-	OBJRenderer(std::string filePath, gtk::vec3 color) : _color(color), _vbo(), _ibo()
+	OBJRenderer(std::string filePath, gtk::vec3 color = vec3(0.5f, 0.5f, 0.2f)) : _vbo(), _ibo(), Renderer(color)
 	{
 		LoadObject(filePath);
-		_color = color;
 	}
 
 	void Start() override
@@ -311,10 +306,13 @@ private:
 	void LoadObject(std::string filePath)
 	{
 		using namespace std;
+		
+		// TODO: Add flyweight here, longer load time for every object that needs an obj
 
 		// Open File
 		fstream file;
-		file.open(filePath); // TODO: ASSERT that this worked!!
+		file.open(filePath);
+		ASSERT(file.is_open());
 
 		string prefix;
 
@@ -376,8 +374,6 @@ private:
 
 		file.close();
 	}
-
-	gtk::vec3 _color;
 	std::vector<gtk::vec4> _vbo;
 	std::vector<int> _ibo;
 };
@@ -460,4 +456,112 @@ public:
 		}
 	}
 
+};
+
+class LineRenderer : public gtk::Renderer
+{
+
+public:
+	vec4 _s;
+	vec4 _e;
+
+	LineRenderer(const vec3& s, const vec3& e, const vec3& color) : _s(vec4(s.x, s.y, s.z, 1.0f)), _e(vec4(e.x, e.y, e.z, 1.0f)), Renderer(color) {}
+
+	void Start() override
+	{
+		// Called first frame
+	}
+
+	void Draw() override
+	{
+		Entity& ent = GetEntity();
+
+		gtk::mat4 model = TRS();
+		gtk::mat4 view = GetView();
+		gtk::mat4 proj = GetProj();
+
+		gtk::mat4 mvp = proj * view * model;
+
+		gtk::vec4 s = mvp * _s;
+		gtk::vec4 e = mvp * _e;
+
+
+		// Draw draw lines
+
+		if (s.z > 0 && e.z > 0)
+		{
+			App::DrawLine(
+				s.x / s.z, s.y / s.z,
+				e.x / e.z, e.y / e.z,
+				_color.x, _color.y, _color.z);
+		}
+	}
+
+};
+
+
+class NodeRenderer : public gtk::Renderer
+{
+
+
+public:
+
+	NodeRenderer(const vec3& color)
+		:
+		_vbo({
+			gtk::vec4(1.0f, 0.0f, 1.0f, 1.0f),
+			gtk::vec4(1.0f, 0.0f,-1.0f, 1.0f),
+			gtk::vec4(-1.0f, 0.0f,-1.0f, 1.0f),
+			gtk::vec4(-1.0f, 0.0f,1.0f, 1.0f) 
+			
+			}),
+
+		_ibo({ 0, 1, 
+			   1, 2, 
+			   2, 3, 
+			   3, 0}),
+		Renderer(color)
+	{}
+
+	void Start() override
+	{
+		// Called first frame
+	}
+
+	void Draw() override
+	{
+		gtk::vec4 s;
+		gtk::vec4 e;
+
+		gtk::mat4 model = TRS();
+		gtk::mat4 view = GetView();
+		gtk::mat4 proj = GetProj();
+
+		gtk::mat4 mvp = proj * view * model;
+
+
+		for (int i = 0; i < 8; i += 2)
+		{
+			s = { _vbo[_ibo[i]].x, _vbo[_ibo[i]].y, _vbo[_ibo[i]].z, 1 };
+			e = { _vbo[_ibo[i + 1]].x, _vbo[_ibo[i + 1]].y, _vbo[_ibo[i + 1]].z, 1 };
+
+			s = mvp * s;
+			e = mvp * e;
+
+			// Both points infront of camera
+			if (s.z > 0 && e.z > 0)
+			{
+				App::DrawLine(
+					s.x / s.z, s.y / s.z,
+					e.x / e.z, e.y / e.z,
+					_color.x, _color.y, _color.z);
+			}
+		}
+	}
+
+
+private:
+
+	std::array<gtk::vec4, 4> _vbo;
+	std::array<int, 8> _ibo;
 };

@@ -17,7 +17,7 @@ public:
 	}
 };
 
-class PracGame : public gtk::Game
+class TowerDefenseGame : public gtk::Game
 {
 
 public:
@@ -25,6 +25,6 @@ public:
 	void Init() override
 	{
 		// Add the scenes of the game here
-		AddScene("PracScene", new PracScene(*this));
+		AddScene("L1", new TD_Level_1(*this));
 	}
 };

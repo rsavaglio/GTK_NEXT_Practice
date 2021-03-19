@@ -1,5 +1,4 @@
 #include "Scene.h"
-
 #include "Game.h"
 
 namespace gtk {
@@ -354,6 +353,21 @@ namespace gtk {
 			}
 		}
 	}
+
+	void gtk::Scene::SetColourOnRenderer(const unsigned int& id, const vec3& color)
+	{
+		// Check each map
+		for (auto& CompMap : m_RendererMaps)
+		{
+			// If entity has a behviour in the map
+			if (CompMap->find(id) != CompMap->end())
+			{
+				// Trigger the behaviour
+				CompMap->at(id)->SetColor(color);
+			}
+		}
+	}
+
 
 	void gtk::Scene::TriggerOnCollision(const unsigned int& id, Entity& other)
 	{

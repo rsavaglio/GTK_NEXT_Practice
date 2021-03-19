@@ -49,11 +49,13 @@ namespace gtk {
 		vec3 Up();
 		vec3 Forward();
 
+
 		const int& State();
 		const int& State(const int& newState);
 
 		void Trigger(const int& code);
 		void TriggerCollision(Entity& other);
+		void SetColor(const vec3& color);
 
 		void SwitchScene(std::string name);
 
@@ -159,8 +161,6 @@ namespace gtk {
 
 	private:
 
-		mat4 TraverseForTR(Entity& ent);
-
 	};
 
 	class PerspectiveCam : public Camera
@@ -219,8 +219,8 @@ namespace gtk {
 
 	public:
 
-		Renderer()
-			: m_LayerID(), m_Camera(nullptr), m_Active(true) {}
+		Renderer(vec3 color = vec3(0.5f, 0.5f, 0.2f))
+			: _color(color), m_LayerID(), m_Camera(nullptr), m_Active(true) {}
 		virtual ~Renderer() {}
 
 		const bool& Active(const bool& setActive);
@@ -246,9 +246,19 @@ namespace gtk {
 
 	protected:
 
+		vec3 _color;
 		unsigned int m_LayerID;
 
 	private:
+
+		void SetColor(const vec3 color)
+		{
+			_color = color;
+		}
+		vec3 GetColor()
+		{
+			return _color;
+		}
 
 		Camera* m_Camera;
 		bool m_Active;

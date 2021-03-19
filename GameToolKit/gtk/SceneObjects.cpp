@@ -105,6 +105,11 @@ namespace gtk {
 		return f;
 	}
 
+	void SceneObject::SetColor(const vec3& color)
+	{
+		_scene->SetColourOnRenderer(_ent->ID(), color);
+	}
+
 	const int& SceneObject::State()
 	{
 		return _scene->GetState();

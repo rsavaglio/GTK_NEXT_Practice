@@ -27,6 +27,12 @@ public:
 		return 0;
 	}
 
+	void OnCollision(Entity& other) override
+	{
+
+	}
+
+
 
 private:
 
@@ -100,105 +106,12 @@ private:
 };
 
 
-class CameraController : public gtk::Behavior
-{
-public:
-	CameraController(float speed)
-		: m_Speed(speed) {}
-
-	void Start() override
-	{
-
-	}
-
-	void Update(const float& deltaTime) override
-	{
-		using namespace std;
-
-		vec3 forward = vec3(
-
-			sin(Rot().y) * cos(Rot().x),
-			-sin(Rot().x),
-			cos(Rot().x) * cos(Rot().y)
-		);
-
-
-		// Need Quaternions!!!
-
-		Pos( Forward() * (App::GetController().GetLeftThumbStickY() * -m_Speed), true);
-		Pos( Right() * (App::GetController().GetLeftThumbStickX() * m_Speed), true);
-
-		Rot(vec3(
-			(App::GetController().GetRightThumbStickY() * -m_Speed/10),
-			(App::GetController().GetRightThumbStickX() * m_Speed/10), 
-			Rot().z), 
-			true);
-	}
-
-	int Trigger(const int& code)
-	{
-		return 0;
-	}
-
-
-private:
-
-	float m_Speed;
-
-};
-
-class SphereManager : public gtk::Behavior
-{
-
-public:
-	SphereManager(const float& delay, ObjectPool& pool) : _delay(delay), _time(0), _spherePool(pool) {}
-
-	void Start() override
-	{
-
-	}
-
-	void Update(const float& deltaTime) override
-	{
-		_time += deltaTime;
-
-		if (_time >= _delay)
-		{
-			Entity& newSphere = _spherePool.Create();
-
-			newSphere.Pos(vec3(((rand() % 20) - 10), 0.0f, 0.0f));
-
-			// Resets velocity on sphere
-			newSphere.Trigger(1);
-
-			_time = 0;
-
-		}
-
-	}
-
-	int Trigger(const int& code) override
-	{
-
-		return 0;
-	}
-
-
-private:
-
-	float _delay;
-	float _time;
-	ObjectPool& _spherePool;
-
-};
-
-
 class ShooterB : public gtk::Behavior
 {
 
 public:
-	ShooterB(const float& speed, ObjectPool& bulletPool) 
-		: _speed(speed), _vel(), _velGoal(), _bulletPool(bulletPool) {}
+	ShooterB(const float& speed)
+		: _speed(speed), _vel(), _velGoal() {}
 
 	void Start() override
 	{
@@ -232,8 +145,8 @@ public:
 
 			if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
 			{
-				Entity& bullet = _bulletPool.Create();
-				bullet.Trigger(1);
+				//Entity& bullet = _bulletPool.Create();
+				//bullet.Trigger(1);
 			}
 
 		}
@@ -256,7 +169,6 @@ private:
 	float _speed;
 	vec2 _vel;
 	vec2 _velGoal;
-	ObjectPool& _bulletPool;
 };
 
 class LERPatState : public gtk::Behavior
@@ -411,9 +323,117 @@ public:
 		return 0;
 	}
 
+	void OnCollision(Entity& other) override
+	{
+
+	}
+
 
 private:
 
 	float _speed;
 
+};
+
+enum CursorState
+{
+	ON,
+	OFF
+};
+
+
+class CursorB : public gtk::Behavior
+{
+
+public:
+	CursorB(const float& speed)
+		: _state(ON), _speed(speed), _vel(), _velGoal() {}
+
+	void Start() override
+	{
+
+	}
+
+	void Update(const float& deltaTime) override
+	{
+
+		//// Movement ////
+
+		// Update velocity goal from input
+		_velGoal.x = App::GetController().GetLeftThumbStickX() * _speed;
+		_velGoal.y = App::GetController().GetLeftThumbStickY() * _speed;
+
+		// Lerp current velocity to goal
+		_vel = LERP(_vel, _velGoal, deltaTime * 20.0f);
+
+		// Set position from velocity
+		Pos(vec3(
+			Pos().x + _vel.x * deltaTime,
+			Pos().y,
+			Pos().z + _vel.y * deltaTime
+		));
+
+
+		// Don't go out of bounds
+		if (Pos().z > 25.0f)
+		{
+			Pos(vec3(Pos().x, 0.0f, 25.0f));
+		}
+		else if (Pos().z < -25.0f)
+		{
+			Pos(vec3(Pos().x, 0.0f, -25.0f));
+		}
+
+		if (Pos().x > 34.0f)
+		{
+			Pos(vec3(34.0f, 0.0f, Pos().z));
+		}
+		else if (Pos().x < -34.0f)
+		{
+			Pos(vec3(-34.0f, 0.0f, Pos().z));
+		}
+
+
+		switch (_state)
+		{
+		case ON:
+
+			// GREEN
+			SetColor(vec3(0.0f, 1.0f, 0.0f));
+
+			break;
+		case OFF:
+
+			// RED
+			SetColor(vec3(1.0f, 0.0f, 0.0f));
+
+			break;
+		}
+
+		_state = ON;
+	}
+
+	int Trigger(const int& code) override
+	{
+		return 0;
+	}
+
+
+	void OnCollision(Entity& other) override
+	{
+
+		_state = OFF;
+
+
+	}
+
+
+
+private:
+
+	CursorState _state;
+	float _speed;
+	vec2 _vel;
+	vec2 _velGoal;
+	
 };

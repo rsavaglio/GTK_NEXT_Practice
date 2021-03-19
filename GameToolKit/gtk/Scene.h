@@ -73,6 +73,7 @@ namespace gtk {
 
 		void TriggerBehaviours(const unsigned int& id, const int& code);
 		void TriggerOnCollision(const unsigned int& id, Entity& other);
+		void SetColourOnRenderer(const unsigned int& id, const vec3& color);
 
 
 		const int& GetState();
