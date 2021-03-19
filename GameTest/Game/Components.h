@@ -276,26 +276,13 @@ public:
 		
 		App::PlaySound(".\\TestData\\Layer4.wav", true);
 		App::SetSoundVolume(".\\TestData\\Layer4.wav", -10000);
+
+		State(2);
 	}
 
 	void Update(const float& deltaTime) override
 	{
-		
-		if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
-		{
-			State(1);
-		}
 
-		if (State() == _state)
-		{
-			Pos(LERP(Pos(), _targetPos, deltaTime * _speed));
-			Rot(LERP(Rot(), _targetRot, deltaTime * _speed));
-
-			if (Pos() == _targetPos)
-			{
-				State(2);
-			}
-		}
 
 	}
 
@@ -362,6 +349,7 @@ public:
 
 	void UpdateData() override
 	{
+		// Doesn't work great with children objects
 		_radius = Scale().x > Scale().y ? Scale().x : Scale().y;
 		_radius = _radius > Scale().z ? _radius : Scale().z;
 
@@ -383,5 +371,49 @@ public:
 
 private:
 
+
+};
+
+class CameraB : public gtk::Behavior
+{
+
+public:
+	CameraB(float speed) : _speed(speed) {}
+
+	void Start() override
+	{
+
+	}
+
+	void Update(const float& deltaTime) override
+	{
+
+		// Rotate parent's y
+
+		Parent().Rot(vec3(
+			Parent().Rot().x,
+			App::GetController().GetRightThumbStickX() * _speed * deltaTime,
+			Parent().Rot().z
+		), true);
+
+		// Rotate my x
+		Rot(vec3(
+			App::GetController().GetRightThumbStickY() * -_speed * deltaTime,
+			Rot().y,
+			Rot().z
+		), true);
+
+
+	}
+
+	int Trigger(const int& code) override
+	{
+		return 0;
+	}
+
+
+private:
+
+	float _speed;
 
 };

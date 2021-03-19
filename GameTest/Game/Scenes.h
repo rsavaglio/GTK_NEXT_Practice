@@ -92,12 +92,14 @@ protected:
 
 
 
-		Entity& camera = CreateEntity();
-			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
-			camera.Pos(vec3(600.0f, 1000.0f, 400.0f));
-			camera.Rot(vec3(20.0f, 50.0f, -30.0f));
-			AddBehavior(camera, group1, new LERPatState(INTRO, 2.0f, vec3(0.0f, 0.0f, -50.0f), vec3(0.0f, 0.0f, 0.0f)));
+		Entity& tripod = CreateEntity();
+			tripod.Pos(vec3(0.0f, 0.0f, -50.0f));
+			tripod.Rot(vec3(0.0f, 0.0f, 0.0f));
+			AddBehavior(tripod, group1, new LERPatState(INTRO, 2.0f, vec3(0.0f, 0.0f, -50.0f), vec3(0.0f, 0.0f, 0.0f)));
 
+		Entity& camera = CreateEntity(tripod);
+			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
+			AddBehavior(camera, group1, new CameraB(100.0f));
 
 		Entity& donut = CreateEntity();
 			donut.Scale(50.0f);
