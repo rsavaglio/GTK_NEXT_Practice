@@ -307,7 +307,10 @@ protected:
 					sawIcon.Scale(vec3(0.7f));
 					AddRenderer(sawIcon, UI2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
 
-			AddBehavior(towerMenu, group2, new TowerMenuB(shooterIcon, laserIcon, sawIcon));
+			// Add behavior to tower menu
+			TowerMenuB* towerMenuBehavior = new TowerMenuB(shooterIcon, laserIcon, sawIcon);
+			AddBehavior(towerMenu, group2, towerMenuBehavior);
+
 
 		//// PATH ////
 #pragma region PathCreation
@@ -376,9 +379,8 @@ protected:
 			saw.Active(false);
 
 
-
 		Entity& cursor = CreateEntity("cursor");
-			AddBehavior(cursor, group1, new CursorB(tower, laser, saw, 35.0f));
+			AddBehavior(cursor, group1, new CursorB(*towerMenuBehavior, tower, laser, saw, 35.0f));
 			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
 			AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 

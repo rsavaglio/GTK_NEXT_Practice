@@ -320,118 +320,6 @@ public:
 };
 
 
-class CursorB : public gtk::Behavior
-{
-
-private:
-
-	Entity& _tower;
-	Entity& _laser;
-	Entity& _saw;
-
-	CursorState _state;
-	float _speed;
-	vec2 _vel;
-	vec2 _velGoal;
-
-public:
-	CursorB(Entity& tower, Entity& laser, Entity& saw, const float& speed)
-		: _tower(tower), _laser(laser), _saw(saw), _state(ON), _speed(speed), _vel(), _velGoal() {}
-
-	void Update(const float& deltaTime) override
-	{
-
-		//// Movement ////
-
-		// Update velocity goal from input
-		_velGoal.x = App::GetController().GetLeftThumbStickX() * _speed;
-		_velGoal.y = App::GetController().GetLeftThumbStickY() * _speed;
-
-		// Lerp current velocity to goal
-		_vel = LERP(_vel, _velGoal, deltaTime * 20.0f);
-
-		// Set position from velocity
-		Pos(vec3(
-			Pos().x + _vel.x * deltaTime,
-			Pos().y + _vel.y * deltaTime,
-			Pos().z
-		));
-
-
-		// Don't go out of bounds
-		if (Pos().y > 25.0f)
-		{
-			Pos(vec3(Pos().x, 25.0f, Pos().z));
-		}
-		else if (Pos().y < -25.0f)
-		{
-			Pos(vec3(Pos().x, -25.0f, Pos().z));
-		}
-
-		if (Pos().x > 32.0f)
-		{
-			Pos(vec3(32.0f, Pos().y, Pos().z));
-		}
-		else if (Pos().x < -32.0f)
-		{
-			Pos(vec3(-32.0f, Pos().y, Pos().z));
-		}
-
-		/// Tower Control ///
-		_saw.Pos(Pos());
-
-		switch (_state)
-		{
-		case ON:
-
-			// GREEN
-			SetColor(vec3(0.0f, 1.0f, 0.0f));
-
-			// If the player presses X
-			if (App::GetController().CheckButton(XINPUT_GAMEPAD_X, true))
-			{
-				_tower.Active(true);
-				_tower.Pos(Pos());
-				_tower.Trigger(-1);
-			}
-
-			if (App::GetController().CheckButton(XINPUT_GAMEPAD_Y, true))
-			{
-				_laser.Active(true);
-				_laser.Pos(Pos());
-				_laser.Trigger(-1);
-			}
-
-			if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
-			{
-				_saw.Active(true);
-			}
-
-			break;
-		case OFF:
-
-			// RED
-			SetColor(vec3(1.0f, 0.0f, 0.0f));
-
-			break;
-		}
-
-		_state = ON;
-	}
-
-	int Trigger(const int& code) override
-	{
-		return 0;
-	}
-
-
-	void OnCollision(Entity& other) override
-	{
-		_state = OFF;
-	}
-
-	
-};
 
 class MonkeyB : public gtk::Behavior
 {
@@ -1031,8 +919,10 @@ enum class TowerSelection
 };
 class TowerMenuB : public gtk::Behavior
 {
-private:
+public:
 	TowerSelection _selection;
+
+private:
 	
 	Entity& _shooterIcon;
 	Entity& _laserIcon;
@@ -1052,12 +942,12 @@ public:
 	void Update(const float& deltaTime) override
 	{
 		// Rotate the currently selected icon
-		_currentIcon->Rot(vec3(0.0f, 70.0f * deltaTime, 0.0f), true);
+		_currentIcon->Rot(vec3(0.0f, 90.0f * deltaTime, 0.0f), true);
 
 		/// Menu Selection with bumpers //
 #pragma region MenuSelectionBumpers
 
-		if (App::GetController().CheckButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+		if (App::GetController().CheckButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) || App::GetController().CheckButton(XINPUT_GAMEPAD_DPAD_RIGHT))
 		{
 			switch (_selection)
 			{
@@ -1088,7 +978,7 @@ public:
 
 		}
 
-		if (App::GetController().CheckButton(XINPUT_GAMEPAD_LEFT_SHOULDER))
+		if (App::GetController().CheckButton(XINPUT_GAMEPAD_LEFT_SHOULDER) || App::GetController().CheckButton(XINPUT_GAMEPAD_DPAD_LEFT))
 		{
 			switch (_selection)
 			{
@@ -1133,5 +1023,138 @@ public:
 	{
 
 	}
+
+};
+
+
+class CursorB : public gtk::Behavior
+{
+
+private:
+
+	TowerMenuB& _towerMenu;
+	Entity& _tower;
+	Entity& _laser;
+	Entity& _saw;
+
+	CursorState _state;
+	float _speed;
+	vec2 _vel;
+	vec2 _velGoal;
+
+public:
+	CursorB(TowerMenuB& towerMenu, Entity& tower, Entity& laser, Entity& saw, const float& speed)
+		: _towerMenu(towerMenu), _tower(tower), _laser(laser), _saw(saw), _state(ON), _speed(speed), _vel(), _velGoal() {}
+
+	void Update(const float& deltaTime) override
+	{
+		_saw.Pos(Pos());
+
+		//// Movement ////
+#pragma region Movement
+
+		// Update velocity goal from input
+		_velGoal.x = App::GetController().GetLeftThumbStickX() * _speed;
+		_velGoal.y = App::GetController().GetLeftThumbStickY() * _speed;
+
+		// Lerp current velocity to goal
+		_vel = LERP(_vel, _velGoal, deltaTime * 20.0f);
+
+		// Set position from velocity
+		Pos(vec3(
+			Pos().x + _vel.x * deltaTime,
+			Pos().y + _vel.y * deltaTime,
+			Pos().z
+		));
+
+
+		// Don't go out of bounds
+		if (Pos().y > 25.0f)
+		{
+			Pos(vec3(Pos().x, 25.0f, Pos().z));
+		}
+		else if (Pos().y < -25.0f)
+		{
+			Pos(vec3(Pos().x, -25.0f, Pos().z));
+		}
+
+		if (Pos().x > 32.0f)
+		{
+			Pos(vec3(32.0f, Pos().y, Pos().z));
+		}
+		else if (Pos().x < -32.0f)
+		{
+			Pos(vec3(-32.0f, Pos().y, Pos().z));
+		}
+
+#pragma endregion
+
+		/// Tower Control ///
+
+		
+		
+		switch (_state)
+		{
+		case ON: // if not colliding
+
+			// GREEN
+			SetColor(vec3(0.0f, 1.0f, 0.0f));
+
+			if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
+			{
+				switch (_towerMenu._selection)
+				{
+				case TowerSelection::SHOOTER:
+
+					_tower.Active(true);
+					_tower.Pos(Pos());
+					_tower.Trigger(-1);
+
+					break;
+
+				case TowerSelection::LASER:
+
+					_laser.Active(true);
+					_laser.Pos(Pos());
+					_laser.Trigger(-1);
+
+					break;
+				
+				case TowerSelection::SAW:
+
+					_saw.Active(true);
+
+					break;
+				}
+
+
+			}
+			break;
+		case OFF:
+
+			if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
+			{
+				// Make unhappy sound
+			}
+			
+
+			break;
+		}
+
+		_state = ON;
+	}
+
+	int Trigger(const int& code) override
+	{
+		return 0;
+	}
+
+
+	void OnCollision(Entity& other) override
+	{
+		_state = OFF;
+		SetColor(vec3(1.0f, 0.0f, 0.0f));
+	}
+
 
 };
