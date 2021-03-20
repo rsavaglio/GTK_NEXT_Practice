@@ -380,6 +380,7 @@ public:
 			{
 				_tower.Active(true);
 				_tower.Pos(Pos());
+				_tower.Trigger(-1);
 			}
 
 			break;
@@ -427,7 +428,6 @@ public:
 
 	void Start() override
 	{
-		Trigger(0);
 	}
 
 	void Update(const float& deltaTime) override
@@ -435,18 +435,21 @@ public:
 		// Moving from node to node
 		_T += deltaTime * _speed;
 
-		// If at next node and NOT at the last node
+		// If at next node
 		if (_T >= 1.0f)
 		{
-			// If not at the end
+			// If not at the end of path
 			if (_currentNode != _path.size() - 2)
 			{
 				// Reset lerp and go to next node
 				_T = 0;
 				_currentNode++;
 			}
-			else // MONKEY GETS BANANA!
+			else // Monkey reaches banana!
 			{
+				// TODO: Do something bad to the player
+
+
 				// Disable Monkey
 				GetEntity().Active(false);
 				
@@ -460,25 +463,35 @@ public:
 
 	int Trigger(const int& code) override
 	{
-		Pos(_path.front());
-		_currentNode = 0;
-
-		switch (code)
+		if (code > 0)
 		{
-		case 1:
-			// Spawn standard monkey
-			SetColor(vec3(0.8f, 0.7f, 0.3f));
-			Scale(1.0f);
-			_speed = 5.0f;
-			break;
+			// Take damage
 
-		case 2:
-			// Spawn standard monkey
-			SetColor(vec3(0.2f, 0.3f, 0.8f));
-			Scale(3.0f);
-			_speed = 2.0f;
-			break;
 		}
+		else
+		{
+			// Spawn Monkey
+			Pos(_path.front());
+			_currentNode = 0;
+
+			switch (code)
+			{
+			case -1:
+				// Spawn speedy yellow monkey
+				SetColor(vec3(0.8f, 0.7f, 0.3f));
+				Scale(1.0f);
+				_speed = 5.0f;
+				break;
+
+			case -2:
+				// Spawn big blue monkey
+				SetColor(vec3(0.2f, 0.3f, 0.8f));
+				Scale(3.0f);
+				_speed = 2.0f;
+				break;
+			}
+		}
+		
 
 		return 0;
 	}
@@ -511,7 +524,7 @@ public:
 		if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
 		{
 			Entity& newMonkey = _monkeyPool.Create();
-			newMonkey.Trigger(1);
+			newMonkey.Trigger(-1);
 		}
 
 
@@ -519,7 +532,7 @@ public:
 		if (App::GetController().CheckButton(XINPUT_GAMEPAD_B))
 		{
 			Entity& newMonkey = _monkeyPool.Create();
-			newMonkey.Trigger(2);
+			newMonkey.Trigger(-2);
 		}
 
 	}
@@ -534,7 +547,7 @@ class TowerB : public gtk::Behavior
 {
 
 public:
-	TowerB() {}
+	TowerB(float shootDelay) : _shootDelay(shootDelay), _timeSinceShot(0) {}
 
 	void Start() override
 	{
@@ -543,6 +556,8 @@ public:
 
 	void Update(const float& deltaTime) override
 	{
+		// Update time
+		_timeSinceShot += deltaTime;
 
 		// If there's a target
 		if (_target != nullptr)
@@ -550,15 +565,17 @@ public:
 			// Do collision on target
 			vec3 pos = Pos();
 			vec3 tPos = _target->Pos();
-
-			// Range
-			float r = 10.0f;
-			float tr = 10.0f;
+			float range = 100;
 
 			// If they collide
-			if ((pos - tPos).Dot((pos - tPos)) <= (r + tr) * (r + tr))
+			if ((pos - tPos).Dot((pos - tPos)) <= range)
 			{
-				// Shoot the monkey!
+				if (_timeSinceShot > _shootDelay)
+				{
+					_timeSinceShot = 0;
+					// Shoot the monkey!
+
+				}
 			}
 			else
 			{
@@ -572,6 +589,10 @@ public:
 
 	int Trigger(const int& code) override
 	{
+		if (code == -1)
+		{
+			SetColor(vec3(0.0f, 0.0f, 1.0f));
+		}
 		return 0;
 	}
 
@@ -588,12 +609,6 @@ public:
 				SetColor(vec3(1.0f, 0.0f, 0.0f));
 			}
 		}
-
-		if (other.GetName() == "cursor")
-		{
-			SetColor(vec3(1.0f, 1.0f, 1.0f));
-		}
-
 	}
 
 private:
@@ -601,4 +616,5 @@ private:
 	Entity* _target;
 	
 	float _shootDelay;
+	float _timeSinceShot;
 };

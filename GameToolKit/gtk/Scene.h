@@ -22,11 +22,7 @@ namespace gtk {
 
 	class Scene {
 
-		// TODO: Needs to be refactored 
-		// Sub systems for each component type
-		// Or use a generic AddComponent function?
-
-		
+		// TODO: Could use some feedback and refactoring here 
 
 		friend class Game;
 
@@ -81,8 +77,9 @@ namespace gtk {
 
 	protected:
 
-		// Implemented in custom scene
 		void Init();
+
+		// Implemented in custom scene
 		virtual void Setup() = 0;
 		virtual void PostUpdate() = 0;
 
@@ -137,7 +134,5 @@ namespace gtk {
 		unsigned int m_UpdateGroupIDProvider;
 		unsigned int m_RenderLayerIDProvider;
 		unsigned int m_CollisionGroupIDProvider;
-
-
 	};
 }

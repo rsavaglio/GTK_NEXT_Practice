@@ -175,10 +175,6 @@ protected:
 			i++;
 		}
 	}
-
-
-
-
 	void AddToPath(std::vector<vec3>& nodes, Direction dir, int count)
 	{
 		ASSERT(nodes.size() > 0);
@@ -258,6 +254,8 @@ protected:
 		CollisionGroup cursorSelectionCol = CreateCollisionGroup();
 		CollisionGroup towerSightCol = CreateCollisionGroup();
 
+		//// Camera ////
+
 		Entity& tripod = CreateEntity();
 			tripod.Pos(vec3(0.0f, 0.0f, -10.0f));
 			tripod.Rot(vec3(0.0f, 00.0f, 0.0f));
@@ -267,11 +265,8 @@ protected:
 			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
 			AddBehavior(camera, group1, new CameraB(100.0f));
 
-
-
-
 		//// PATH ////
-
+#pragma region PathCreation
 		std::vector<vec3> path;
 
 		// Start Node
@@ -290,6 +285,7 @@ protected:
 		AddToPath(path, UP, 3);
 
 		CreatePath(path, layer1, cursorSelectionCol, RED);
+#pragma endregion
 	
 		//// Monkeys ////
 		Entity& barrelOfMonkeys = CreateEntity();
@@ -298,11 +294,10 @@ protected:
 
 		//// Towers ////
 		Entity& tower = CreateEntity("tower");
-			AddBehavior(tower, group1, new TowerB());
+			AddBehavior(tower, group1, new TowerB(1000.0f));
 			AddRenderer(tower, layer2, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
 			AddCollider(tower, towerSightCol, new SphereCollider(10.0f));
 			AddCollider(tower, cursorSelectionCol, new SphereCollider());
-
 			tower.Active(false);
 
 		Entity& cursor = CreateEntity("cursor");

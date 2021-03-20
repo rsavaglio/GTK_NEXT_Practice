@@ -23,7 +23,6 @@ namespace gtk {
 
 		Setup();
 
-
 		//// Set up Cameras ////
 
 		ASSERT(m_CameraMap.size() > 0);
@@ -65,6 +64,8 @@ namespace gtk {
 				renderer.second->Start();
 			}
 		}
+
+		UpdateSceneGraph();
 
 	}
 
