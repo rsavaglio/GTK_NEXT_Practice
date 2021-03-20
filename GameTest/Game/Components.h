@@ -39,6 +39,41 @@ private:
 
 };
 
+
+class SphereCollider : public gtk::Collider
+{
+
+public:
+	SphereCollider(float radiusMod = 1.0f) : _radiusMod(radiusMod) {}
+
+	void UpdateData() override
+	{
+		// Doesn't work great with children objects
+		_radius = Scale().x > Scale().y ? Scale().x : Scale().y;
+		_radius = _radius > Scale().z ? _radius : Scale().z;
+
+		_radius *= _radiusMod;
+		_center = GlobalPos();
+	}
+
+
+	bool Check(Collider& other) override
+	{
+		if ((_center - other._center).Dot((_center - other.Pos()))
+			<= (_radius + other._radius) * (_radius + other._radius)) // If they collide
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
+private:
+	float _radiusMod;
+
+};
+
 class SphereB : public gtk::Behavior
 {
 public:
@@ -293,6 +328,7 @@ private:
 
 	Entity& _tower;
 	Entity& _laser;
+	Entity& _saw;
 
 	CursorState _state;
 	float _speed;
@@ -300,8 +336,8 @@ private:
 	vec2 _velGoal;
 
 public:
-	CursorB(Entity& tower, Entity& laser, const float& speed)
-		: _tower(tower), _laser(laser), _state(ON), _speed(speed), _vel(), _velGoal() {}
+	CursorB(Entity& tower, Entity& laser, Entity& saw, const float& speed)
+		: _tower(tower), _laser(laser), _saw(saw), _state(ON), _speed(speed), _vel(), _velGoal() {}
 
 	void Update(const float& deltaTime) override
 	{
@@ -363,6 +399,13 @@ public:
 				_laser.Active(true);
 				_laser.Pos(Pos());
 				_laser.Trigger(-1);
+			}
+
+			if (App::GetController().CheckButton(XINPUT_GAMEPAD_START, true));
+			{
+				_saw.Active(true);
+				_saw.Pos(Pos());
+				_saw.Trigger(-1);
 			}
 
 			break;
@@ -664,6 +707,11 @@ class RayCollider : public gtk::Collider
 {
 
 public:
+	vec3 _dir;
+private:
+	float _radiusMod;
+
+public:
 	RayCollider(float radiusMod = 1.0f) : _radiusMod(radiusMod), _dir(vec3()) {}
 
 	void UpdateData() override
@@ -673,26 +721,39 @@ public:
 		_radius = _radius > Scale().z ? _radius : Scale().z;
 
 		_radius *= _radiusMod;
-		_center = Pos();
+		_center = GlobalPos();
 	}
 
 
 	bool Check(Collider& other) override
 	{
-		if ((_center - other._center).Dot((_center - other.Pos()))
-			<= (_radius + other._radius) * (_radius + other._radius)) // If they collide
+
+		vec3 w = other._center - _center;
+		float wsq = w.Dot(w);
+		float proj = w.Dot(_dir);
+		float rsq = other._radius * other._radius;
+
+		// if sphere behind ray, no intersection
+		if (proj < 0.0f && wsq > rsq)
 		{
-			return true;
+			return false;
 		}
 
-		return false;
+		float vsq = _dir.Dot(_dir);
+
+		// Tesxt length of difference vs. radius
+		return (vsq*wsq - proj*proj <= vsq*other._radius*other._radius);
 
 	}
 
-private:
-	float _radiusMod;
-	vec3 _dir;
+};
 
+enum
+{
+	SEARCHING,
+	SHOOTING,
+	CHARGING,
+	SHOOT
 };
 
 class LaserB : public gtk::Behavior
@@ -703,12 +764,15 @@ private:
 	Entity* _target;
 	LineRenderer& _lineRend;
 	RayCollider& _rayCol;
+	SphereCollider& _rangeCol;
 	float _shootDelay;
 	float _timeSinceShot;
+	int _state;
 
 public:
-	LaserB(LineRenderer& lineRend, RayCollider& rayCol, const float& shootDelay) 
-		:  _target(nullptr), _lineRend(lineRend), _rayCol(rayCol), _shootDelay(shootDelay), _timeSinceShot(0) {}
+	LaserB(LineRenderer& lineRend, RayCollider& rayCol, SphereCollider& rangeCol, const float& shootDelay)
+		: _target(nullptr), _lineRend(lineRend), _rayCol(rayCol), _rangeCol(rangeCol),
+		_shootDelay(shootDelay), _timeSinceShot(0), _state(SEARCHING)  {}
 
 	void Start() override
 	{
@@ -717,35 +781,93 @@ public:
 
 	void Update(const float& deltaTime) override
 	{
-		// Update time
 		_timeSinceShot += deltaTime;
 
-		// If there's a target
-		if (_target != nullptr)
+		vec3 pos;
+		vec3 tPos;
+		vec3 dir;
+		vec3 end;
+		float range;
+
+		switch (_state)
 		{
-			vec3 pos = Pos();
-			vec3 tPos = _target->Pos();
-			float range = 100;
+		case SEARCHING:
 
-			vec3 dir = tPos - pos;
-			vec3 end = dir * 10;
-			_lineRend.Active(true);
+			// Turn on range collider
+			_rayCol.Active(false);
+			_rangeCol.Active(true);
+			_lineRend.Active(false);
 
-			// Shoot the monkey!
-			_lineRend._e = vec4(end.x, end.y, end.z, 1.0f);
+			// Set Colour
+			SetColor(vec3(0.5f, 0.0f, 0.0f));
 
-			// If out of range or dead
-			if (!(pos - tPos).Dot((pos - tPos)) <= range || !_target->Active())
+			// If target found go to recharging
+			if (_target != nullptr)
 			{
-				// Set to no target
-				_target = nullptr;
-				SetColor(vec3(0.5f, 0.0f, 0.0f));
+				_state = CHARGING;
 			}
 
-		}
-		else
-		{
-			_lineRend.Active(false);
+			break;
+
+		case CHARGING:
+
+			_rayCol.Active(false);
+			_rangeCol.Active(false);
+
+			// Set Colour
+			SetColor(vec3(1.0f, 0.0f, 0.0f));
+
+			pos = Pos();
+			tPos = _target->Pos();
+			range = (_rangeCol._radius + 6.0f) * (_rangeCol._radius + 6.0f);
+
+			// If target is dead
+			if (!_target->Active())
+			{
+				_state = SEARCHING;
+				_target = nullptr;
+
+			}
+			else if ((pos - tPos).Dot(pos - tPos) >= range)
+			{
+				_state = SEARCHING;
+				_target = nullptr;
+			}
+			else
+			{
+				// If charged go to shooting
+				if (_timeSinceShot > _shootDelay)
+				{
+					_timeSinceShot = 0;
+					_state = SHOOTING;
+				}
+			}
+
+			break;
+
+		case SHOOTING:
+
+			_rayCol.Active(true);
+			_rangeCol.Active(false);
+
+			pos = Pos();
+			tPos = _target->Pos();
+			range = 100;
+			dir = tPos - pos;
+			end = dir * 5;
+
+			_rayCol._dir = dir;
+
+			_lineRend.Active(true);
+			_lineRend._e = vec4(end.x, end.y, end.z, 1.0f);
+
+			// If shot fired go to charging
+			_state = SHOOT;
+			break;
+		
+		case SHOOT:
+			_state = CHARGING;
+			break;
 		}
 
 	}
@@ -754,8 +876,8 @@ public:
 	{
 		if (code == -1)
 		{
-			SetColor(vec3(0.0f, 0.0f, 1.0f));
-			//_lineRend.Active(false);
+			SetColor(vec3(0.5f, 0.0f, 0.0f));
+			_state = SEARCHING;
 		}
 		return 0;
 	}
@@ -765,27 +887,47 @@ public:
 
 		if (other.GetName() == "monkey")
 		{
-			// If there is no target
-			if (_target == nullptr)
+			
+			switch (_state)
 			{
+			case SEARCHING:
+			
 				// Target it!
 				_target = &other;
 				SetColor(vec3(1.0f, 0.0f, 0.0f));
-
-			}
-			else
-			{
-				// Shoot laser
-				if (_timeSinceShot > _shootDelay)
-				{
-					_timeSinceShot = 0;
 					
-					// TODO:
+				break;
 
-				}
+			case SHOOT:
+
+				other.Trigger(5);
+
+				break;
 			}
 		}
 
+	}
+
+};
+
+class SawB : public gtk::Behavior 
+{
+
+private:
+
+	Entity& _hSpinner;
+	Entity& _vSpinner;
+	float _speed;
+
+public:
+	SawB(Entity& hSpinner, Entity& vSpinner)
+		: _hSpinner(hSpinner), _vSpinner(vSpinner), _speed(300.0f) {}
+
+
+	void Update(const float& deltaTime) override
+	{
+
+		_hSpinner.Rot(vec3(0.0f, deltaTime * _speed, 0.0f), true);
 	}
 
 };

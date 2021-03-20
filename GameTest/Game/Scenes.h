@@ -308,12 +308,26 @@ protected:
 			AddRenderer(laser, layer2, line);
 			RayCollider* ray = new RayCollider();
 			AddCollider(laser, bulletsCol, ray);
-			AddCollider(laser, towerSightCol, new SphereCollider(10.0f));
-			AddBehavior(laser, group1, new LaserB(*line, *ray, 2.0f));
+			SphereCollider* sphereCol = new SphereCollider(10.0f);
+			AddCollider(laser, towerSightCol, sphereCol);
+			AddBehavior(laser, group1, new LaserB(*line, *ray, *sphereCol, 0.5f));
 			laser.Active(false);
 
+		Entity& saw = CreateEntity("saw");
+			Entity& hSpinner = CreateEntity();
+				Entity& hBlade = CreateEntity(hSpinner);
+				AddRenderer(hBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(1.0f, 0.0f, 0.0f)));
+				AddCollider(hBlade, cursorSelectionCol, new SphereCollider(2.0f));
+				hBlade.Pos(vec3(5.0f, 0.0f, 0.0f));
+			Entity& vSpinner = CreateEntity();
+				Entity& vBlade = CreateEntity(vSpinner);
+
+				AddBehavior(saw, group1, new SawB(hSpinner, vSpinner));
+
+
+
 		Entity& cursor = CreateEntity("cursor");
-			AddBehavior(cursor, group1, new CursorB(tower, laser, 35.0f));
+			AddBehavior(cursor, group1, new CursorB(tower, laser, saw, 35.0f));
 			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
 			AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 

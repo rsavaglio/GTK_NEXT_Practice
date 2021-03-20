@@ -93,6 +93,11 @@ namespace gtk {
 		return _ent->_TRS;
 	}
 
+	const vec3& SceneObject::GlobalPos()
+	{
+		return _ent->_globalPos;
+	}
+
 	vec3 SceneObject::Right()
 	{
 		vec3 r = _ent->_right;
@@ -382,7 +387,7 @@ namespace gtk {
 
 	Entity::Entity()
 		: _Name(""), _Parent(nullptr), _Children(), _Active(true),
-		_Pos(0.0f), _Rot(0.0f), _Scale(1.0f), _TRS(1.0f) {}
+		_Pos(0.0f), _Rot(0.0f), _Scale(1.0f), _TRS(1.0f), _globalPos(1.0f) {}
 
 
 	const mat4& Entity::GetTRS()
@@ -447,6 +452,9 @@ namespace gtk {
 	void Entity::UpdateRootTRS()
 	{
 
+		// Global Position
+		_globalPos = vec3(_Pos.x, _Pos.y, _Pos.z);
+
 		// This version does not multiply by a parent
 		_TRS = CalcTRS();
 
@@ -460,7 +468,6 @@ namespace gtk {
 		_up.x = _TRS[1][0];
 		_up.y = _TRS[1][1];
 		_up.z = _TRS[1][2];
-		_up.Normalize();
 		_up.Normalize();
 
 		// Forward
@@ -479,6 +486,13 @@ namespace gtk {
 	void Entity::UpdateTRS()
 	{
 
+		// Global Position
+		vec4 p = vec4(_Pos.x, _Pos.y, _Pos.z, 1.0f);
+		p = _Parent->_TRS * p;
+		_globalPos = vec3(p.x, p.y, p.z);
+
+
+		// Get full transform
 		_TRS = _Parent->_TRS * CalcTRS();
 
 
@@ -506,6 +520,8 @@ namespace gtk {
 		_forward.z = t.z;
 		_forward.Normalize();
 
+
+
 		// Update Children's TRS
 		for (auto& child : _Children)
 		{
@@ -529,5 +545,15 @@ namespace gtk {
 	const bool& Entity::Active()
 	{
 		return _Active;
+	}
+	const bool& Collider::Active(const bool& setActive)
+	{
+		GetScene().ToggleCollider(*this, setActive);
+
+		return setActive;
+	}
+	const bool& Collider::Active()
+	{
+		return m_Active;
 	}
 }

@@ -46,6 +46,7 @@ namespace gtk {
 
 		Entity& Parent();
 		const mat4& TRS();
+		const vec3& GlobalPos();
 
 		vec3 Right();
 		vec3 Up();
@@ -315,6 +316,8 @@ namespace gtk {
 		vec3 _right;
 		vec3 _up;
 		vec3 _forward;
+
+		vec3 _globalPos;
 		
 		mat4 _TRS;
 
@@ -385,6 +388,8 @@ namespace gtk {
 			: _center(), _radius(1.0f), m_GroupID(0), m_Active(true) {}
 		virtual ~Collider() {}
 
+		const bool& Active(const bool& setActive);
+		const bool& Active();
 
 		vec3 _center;
 		float _radius;

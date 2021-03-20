@@ -7,7 +7,7 @@ namespace gtk {
 		:m_SceneState(0), m_MainCam(nullptr),
 		m_SwitchScene(false), m_NextScene(""),
 		m_Game(game),
-		MAX_ENTS(100), m_EntityPointerProvider(nullptr),
+		MAX_ENTS(1000), m_EntityPointerProvider(nullptr),
 		m_EntityIDProvider(0), m_UpdateGroupIDProvider(0), m_RenderLayerIDProvider(0), m_CollisionGroupIDProvider(0)
 	{
 	}
