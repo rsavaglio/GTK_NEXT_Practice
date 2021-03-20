@@ -335,19 +335,7 @@ namespace gtk {
 		virtual void GeneratePool() = 0;
 
 
-		Entity& Create(vec3 pos)
-		{
-			Entity* ent = _pool.front();
-			_pool.pop();
-			_pool.push(ent);
-
-			ent->Active(true);
-			ent->Pos(pos);
-
-			return *ent;
-		}
-
-		Entity& Create()
+		virtual Entity& Create(const vec3& vec = vec3())
 		{
 			Entity* ent = _pool.front();
 			_pool.pop();

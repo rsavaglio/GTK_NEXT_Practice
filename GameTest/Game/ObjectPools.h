@@ -11,13 +11,30 @@ using namespace gtk;
 
 class BulletPool : public ObjectPool
 {
+private:
+
+	UpdateGroup _group;
+	RenderLayer _layer;
+	CollisionGroup _colGroup;
 
 public:
 
-	BulletPool(Entity& shooter, int count, Scene& scene, gtk::UpdateGroup& group, gtk::RenderLayer& layer)
-		: _shooter(shooter), _group(group), _layer(layer), ObjectPool(count, scene)
+	BulletPool(int count, Scene& scene, gtk::UpdateGroup& group, gtk::RenderLayer& layer, gtk::CollisionGroup colGroup)
+		: _group(group), _layer(layer), _colGroup(colGroup), ObjectPool(count, scene)
 	{
 		GeneratePool();
+	}
+
+	virtual Entity& Create(const vec3& vec = vec3())
+	{
+		Entity* ent = _pool.front();
+		_pool.pop();
+		_pool.push(ent);
+
+		ent->Active(true);
+		ent->Rot(vec);
+
+		return *ent;
 	}
 
 	void GeneratePool() override
@@ -27,22 +44,19 @@ public:
 			// Create entity and add it to pool
 			Entity* entity = &_scene.CreateEntity();
 			_pool.push(entity);
-			entity->Active(false);
 
 			// Setup here
-			_scene.AddBehavior(*entity, _group, new BulletB(_shooter));
-			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\sphere.obj", vec3(0.7f, 0.3, 0.0f)));
+			_scene.AddBehavior(*entity, _group, new BulletB());
+			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\ico.obj", vec3(0.8f, 0.5, 0.3f)));
+			_scene.AddCollider(*entity, _colGroup, new SphereCollider());
+			entity->Scale(0.5f);
 			
+			entity->Active(false);
 		}
 
 	}
 
-private:
 
-	Entity& _shooter;
-
-	UpdateGroup& _group;
-	RenderLayer& _layer;
 
 };
 

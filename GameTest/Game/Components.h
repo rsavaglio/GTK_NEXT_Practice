@@ -173,53 +173,17 @@ private:
 	vec2 _velGoal;
 };
 
-class LERPatState : public gtk::Behavior
-{
-
-public:
-	LERPatState(int state, float speed, const vec3& pos, const vec3& rot) : _state(state), _speed(speed), _targetPos(pos), _targetRot(rot) {}
-
-	void Start() override
-	{
-		// Start Music
-		App::PlaySound(".\\TestData\\Layer1.wav", true);
-		App::PlaySound(".\\TestData\\Layer2.wav", true);
-
-		App::PlaySound(".\\TestData\\Layer3.wav", true);
-		App::SetSoundVolume(".\\TestData\\Layer3.wav", -10000);
-		
-		App::PlaySound(".\\TestData\\Layer4.wav", true);
-		App::SetSoundVolume(".\\TestData\\Layer4.wav", -10000);
-
-		State(2);
-	}
-
-	void Update(const float& deltaTime) override
-	{
-
-
-	}
-
-	int Trigger(const int& code) override
-	{
-		return 0;
-	}
-
-
-private:
-
-	int _state;
-	float _speed;
-	vec3 _targetPos;
-	vec3 _targetRot;
-
-};
-
 class BulletB : public gtk::Behavior
 {
 
+private:
+
+	vec3 _dir;
+	vec3 _vel;
+	float _speed;
+
 public:
-	BulletB(Entity& shooter) : _vel(), _speed(5.0), _shooter(shooter) {}
+	BulletB() :_dir(), _vel(), _speed(15.0) {}
 
 	void Start() override
 	{
@@ -235,8 +199,7 @@ public:
 	int Trigger(const int& code) override
 	{
 		// Shoot from shooter position and direction
-		_vel = _shooter.Forward();
-		Pos(_shooter.Pos());
+		_vel = Rot();
 		return 0;
 	}
 
@@ -244,13 +207,6 @@ public:
 	{
 		// BOOM
 	}
-
-
-private:
-
-	vec3 _vel;
-	float _speed;
-	Entity& _shooter;
 
 };
 
@@ -263,6 +219,21 @@ enum CamState
 
 class CameraB : public gtk::Behavior
 {
+
+private:
+
+	float _speed;
+
+
+	bool _pos1;
+	vec3 _triPos1;
+	vec3 _triRot1;
+
+	vec3 _triPos2;
+	vec3 _triRot2;
+
+	vec3 _targetPos;
+	vec3 _targetRot;
 
 public:
 	CameraB(float speed) : 
@@ -302,27 +273,20 @@ public:
 
 	}
 
-
-private:
-
-	float _speed;
-
-
-	bool _pos1;
-	vec3 _triPos1;
-	vec3 _triRot1;
-
-	vec3 _triPos2;
-	vec3 _triRot2;
-
-	vec3 _targetPos;
-	vec3 _targetRot;
-
 };
 
 
 class CursorB : public gtk::Behavior
 {
+
+private:
+
+	Entity& _tower;
+
+	CursorState _state;
+	float _speed;
+	vec2 _vel;
+	vec2 _velGoal;
 
 public:
 	CursorB(Entity& tower, const float& speed)
@@ -406,21 +370,19 @@ public:
 		_state = OFF;
 	}
 
-
-
-private:
-
-	Entity& _tower;
-
-	CursorState _state;
-	float _speed;
-	vec2 _vel;
-	vec2 _velGoal;
 	
 };
 
 class MonkeyB : public gtk::Behavior
 {
+
+private:
+
+	float _speed;
+	std::vector<vec3> _path;
+	int _currentNode;
+
+	float _T;
 
 public:
 	MonkeyB(std::vector<vec3> path)
@@ -501,18 +463,15 @@ public:
 
 	}
 
-private:
 
-	float _speed;
-	std::vector<vec3> _path;
-	int _currentNode;
-
-	float _T;
 
 };
 
 class BarrelOfMonkeysB : public gtk::Behavior
 {
+
+private:
+	ObjectPool& _monkeyPool;
 
 public:
 	BarrelOfMonkeysB(ObjectPool& monkeyPool) : _monkeyPool(monkeyPool) {}
@@ -537,8 +496,6 @@ public:
 
 	}
 
-private:
-	ObjectPool& _monkeyPool;
 };
 
 
@@ -546,8 +503,16 @@ private:
 class TowerB : public gtk::Behavior
 {
 
+private:
+
+	Entity* _target;
+	ObjectPool& _bulletPool;
+
+	float _shootDelay;
+	float _timeSinceShot;
+
 public:
-	TowerB(float shootDelay) : _shootDelay(shootDelay), _timeSinceShot(0) {}
+	TowerB(ObjectPool& bulletPool, float shootDelay) : _bulletPool(bulletPool), _shootDelay(shootDelay), _timeSinceShot(0) {}
 
 	void Start() override
 	{
@@ -573,8 +538,16 @@ public:
 				if (_timeSinceShot > _shootDelay)
 				{
 					_timeSinceShot = 0;
-					// Shoot the monkey!
 
+					// Shoot the monkey!
+					Entity& newBullet = _bulletPool.Create();
+					newBullet.Pos(Pos());
+
+					// Get direction for bullet
+					vec3 dir = tPos - pos;
+
+					newBullet.Rot(dir);
+					newBullet.Trigger(-1);
 				}
 			}
 			else
@@ -611,10 +584,5 @@ public:
 		}
 	}
 
-private:
 
-	Entity* _target;
-	
-	float _shootDelay;
-	float _timeSinceShot;
 };

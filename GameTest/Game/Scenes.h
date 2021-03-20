@@ -84,7 +84,7 @@ protected:
 		Entity& monkey = CreateEntity("monkey");
 			monkey.Pos(vec3(0.0f, -8.0f, -40.0f));
 			monkey.Rot(vec3(0.0f, 0.0f, 0.0f));
-			ObjectPool& bullets = CreatePool("monkeyBullets", new BulletPool(monkey, 10, *this, group1, layer2));
+			//ObjectPool& bullets = CreatePool("monkeyBullets", new BulletPool(monkey, 10, *this, group1, layer2));
 			AddCollider(monkey, col1, new SphereCollider());
 			//AddBehavior(monkey, group1, new ShooterB(30.0f, bullets));
 			AddBehavior(monkey, group2, new RotatorB(vec3(0.0f, -100.0f, 0.0f)));
@@ -99,7 +99,6 @@ protected:
 		Entity& tripod = CreateEntity();
 			tripod.Pos(vec3(0.0f, 0.0f, -50.0f));
 			tripod.Rot(vec3(0.0f, 0.0f, 0.0f));
-			AddBehavior(tripod, group1, new LERPatState(INTRO, 2.0f, vec3(0.0f, 0.0f, -50.0f), vec3(0.0f, 0.0f, 0.0f)));
 
 		Entity& camera = CreateEntity(tripod);
 			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
@@ -253,6 +252,7 @@ protected:
 
 		CollisionGroup cursorSelectionCol = CreateCollisionGroup();
 		CollisionGroup towerSightCol = CreateCollisionGroup();
+		CollisionGroup bulletsCol = CreateCollisionGroup();
 
 		//// Camera ////
 
@@ -294,7 +294,8 @@ protected:
 
 		//// Towers ////
 		Entity& tower = CreateEntity("tower");
-			AddBehavior(tower, group1, new TowerB(1000.0f));
+			ObjectPool& bulletPool = CreatePool("bulletPool", new BulletPool(20, *this, group1, layer2, bulletsCol));
+			AddBehavior(tower, group1, new TowerB(bulletPool, 0.2f));
 			AddRenderer(tower, layer2, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
 			AddCollider(tower, towerSightCol, new SphereCollider(10.0f));
 			AddCollider(tower, cursorSelectionCol, new SphereCollider());

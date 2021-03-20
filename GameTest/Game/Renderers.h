@@ -340,7 +340,6 @@ private:
 			file >> prefix;
 		}
 
-
 		int e1 = 0;
 		int e2 = 0;
 		int e3 = 0;
