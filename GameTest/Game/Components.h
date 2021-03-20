@@ -703,6 +703,48 @@ public:
 
 };
 
+class LineRenderer2 : public gtk::Renderer
+{
+
+public:
+	gtk::vec4 _s;
+	gtk::vec4 _e;
+
+	LineRenderer2(const gtk::vec3& color, const gtk::vec3& s = vec3(), const gtk::vec3& e = vec3())
+		: _s(gtk::vec4(s.x, s.y, s.z, 1.0f)), _e(gtk::vec4(e.x, e.y, e.z, 1.0f)), Renderer(color) {}
+
+	void Start() override
+	{
+		// Called first frame
+	}
+
+	void Draw() override
+	{
+		Entity& ent = GetEntity();
+
+		gtk::mat4 model = TRS();
+		gtk::mat4 view = GetView();
+		gtk::mat4 proj = GetProj();
+
+		gtk::mat4 mvp = proj * view * model;
+
+		gtk::vec4 s = mvp * _s;
+		gtk::vec4 e = mvp * _e;
+
+
+		// Draw draw lines
+
+		if (s.z > 0 && e.z > 0)
+		{
+			App::DrawLine(
+				s.x / s.z, s.y / s.z,
+				e.x / e.z, e.y / e.z,
+				_color.x, _color.y, _color.z);
+		}
+	}
+
+};
+
 class RayCollider : public gtk::Collider
 {
 
@@ -963,7 +1005,7 @@ public:
 		{
 			if (_timeSinceHit > _delay)
 			{
-				//other.Trigger(10);
+				other.Trigger(10);
 				_state = WAITING;
 				_timeSinceHit = 0;
 			}

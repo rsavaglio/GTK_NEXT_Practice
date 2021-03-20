@@ -248,7 +248,8 @@ protected:
 
 		RenderLayer layer1 = CreateRenderLayer();
 		RenderLayer layer2 = CreateRenderLayer();
-		RenderLayer layerUI = CreateRenderLayer();
+		RenderLayer UI1 = CreateRenderLayer();
+		RenderLayer UI2 = CreateRenderLayer();
 
 		CollisionGroup cursorSelectionCol = CreateCollisionGroup();
 		CollisionGroup towerSightCol = CreateCollisionGroup();
@@ -264,6 +265,51 @@ protected:
 			camera.Rot(vec3(0.0f, 0.0f, 0.0f));
 			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
 			AddBehavior(camera, group1, new CameraB(100.0f));
+
+		//// UI ////
+		Entity& uiBackdrop = CreateEntity(camera);
+			uiBackdrop.Pos(vec3(0.0f, -220.0f, 100.0f));
+			uiBackdrop.Scale(1.0f);
+			AddRenderer(uiBackdrop, UI1, new SpriteRenderer(".\\TestData\\UI_Backdrop.bmp", 1, 1));
+
+		Entity& uiBorder = CreateEntity(camera);
+			AddRenderer(uiBorder, UI1, new LineRenderer2(vec3(0.8, 0.2f, 0.8f), vec3(-15.0f, -4.9f, 10.0f), vec3(15.0f, -4.9f, 10.0f)));
+
+		Entity& towerMenu = CreateEntity(camera);
+			towerMenu.Pos(vec3(0.0f, -3.7f, 5.0f));
+			towerMenu.Rot(vec3(10.0f, 0.0f, 0.0f));
+			towerMenu.Scale(0.28);
+
+			Entity& shooterText = CreateEntity(towerMenu);
+				shooterText.Pos(vec3(-1.0f, -1.0f, 0.0f));
+				AddRenderer(shooterText, UI2, new TextRenderer("$5"));
+
+				Entity& shooterIcon = CreateEntity(shooterText);
+					shooterIcon.Pos(vec3(0.4f, 2.5f, 0.0f));
+					AddRenderer(shooterIcon, UI2, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
+					AddBehavior(shooterIcon, group2, new RotatorB(vec3(0.0f, 50.0f, 0.0f)));
+			
+			Entity& laserText = CreateEntity(towerMenu);
+				laserText.Pos(vec3(3.0f, -1.0f, 0.0f));
+				AddRenderer(laserText, UI2, new TextRenderer("$8"));
+
+				Entity& laserIcon = CreateEntity(laserText);
+					laserIcon.Pos(vec3(0.6f, 2.3f, 0.0f));
+					AddRenderer(laserIcon, UI2, new OBJRenderer(".\\TestData\\ico.obj", vec3(1.0f, 0.0f, 0.0f)));
+					AddBehavior(laserIcon, group2, new RotatorB(vec3(0.0f, 50.0f, 0.0f)));
+				
+			Entity& sawText = CreateEntity(towerMenu);
+				sawText.Pos(vec3(7.0f, -1.0f, 0.0f));
+				AddRenderer(sawText, UI2, new TextRenderer("$10"));
+
+				Entity& sawIcon = CreateEntity(sawText);
+					sawIcon.Pos(vec3(0.6f, 2.3f, 0.0f));
+					sawIcon.Rot(vec3(-70.0f, 0.0f, 0.0f));
+					sawIcon.Scale(vec3(0.8f, 1.0f, 0.8f));
+					AddRenderer(sawIcon, UI2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
+					AddBehavior(sawIcon, group2, new RotatorB(vec3(0.0f, 50.0f, 0.0f)));
+
+
 
 		//// PATH ////
 #pragma region PathCreation
