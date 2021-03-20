@@ -1022,3 +1022,116 @@ private:
 	float _timeSinceHit;
 	float _delay;
 };
+
+enum class TowerSelection
+{
+	SHOOTER,
+	LASER,
+	SAW
+};
+class TowerMenuB : public gtk::Behavior
+{
+private:
+	TowerSelection _selection;
+	
+	Entity& _shooterIcon;
+	Entity& _laserIcon;
+	Entity& _sawIcon;
+
+	Entity* _currentIcon;
+
+public:
+	TowerMenuB(Entity& shooter, Entity& laser, Entity& saw) 
+		: _shooterIcon(shooter), _laserIcon(laser), _sawIcon(saw), _currentIcon(&shooter) {}
+
+	void Start() override
+	{
+		_shooterIcon.Scale(1.2f);
+	}
+
+	void Update(const float& deltaTime) override
+	{
+		// Rotate the currently selected icon
+		_currentIcon->Rot(vec3(0.0f, 70.0f * deltaTime, 0.0f), true);
+
+		/// Menu Selection with bumpers //
+#pragma region MenuSelectionBumpers
+
+		if (App::GetController().CheckButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
+		{
+			switch (_selection)
+			{
+			case TowerSelection::SHOOTER:
+				_selection = TowerSelection::LASER;
+				_currentIcon = &_laserIcon;
+				_laserIcon.Scale(1.2f);
+				_sawIcon.Scale(vec3(0.7f));
+				_shooterIcon.Scale(0.7f);
+				break;
+
+			case TowerSelection::LASER:
+				_selection = TowerSelection::SAW;
+				_sawIcon.Scale(vec3(1.1f));
+				_currentIcon = &_sawIcon;
+				_laserIcon.Scale(0.7f);
+				_shooterIcon.Scale(0.7f);
+				break;
+
+			case TowerSelection::SAW:
+				_selection = TowerSelection::SHOOTER;
+				_currentIcon = &_shooterIcon;
+				_shooterIcon.Scale(1.2f);
+				_sawIcon.Scale(vec3(0.7f));
+				_laserIcon.Scale(0.7f);
+				break;
+			}
+
+		}
+
+		if (App::GetController().CheckButton(XINPUT_GAMEPAD_LEFT_SHOULDER))
+		{
+			switch (_selection)
+			{
+			case TowerSelection::SHOOTER:
+				_selection = TowerSelection::SAW;
+				_sawIcon.Scale(vec3(1.1f));
+				_currentIcon = &_sawIcon;
+				_laserIcon.Scale(0.7f);
+				_shooterIcon.Scale(0.7f);
+				break;
+
+			case TowerSelection::LASER:
+				_selection = TowerSelection::SHOOTER;
+				_currentIcon = &_shooterIcon;
+				_shooterIcon.Scale(1.2f);
+				_sawIcon.Scale(vec3(0.7f));
+				_laserIcon.Scale(0.7f);
+				break;
+
+			case TowerSelection::SAW:
+				_selection = TowerSelection::LASER;
+				_currentIcon = &_laserIcon;
+				_laserIcon.Scale(1.2f);
+				_sawIcon.Scale(vec3(0.7f));
+				_shooterIcon.Scale(0.7f);
+				break;
+			}
+
+		}
+
+#pragma endregion	
+
+
+	}
+
+	int Trigger(const int& code) override
+	{
+		return 0;
+	}
+
+	void OnCollision(Entity& other) override
+	{
+
+	}
+
+};
