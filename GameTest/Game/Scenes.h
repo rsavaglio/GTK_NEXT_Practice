@@ -371,21 +371,33 @@ protected:
 					AddCollider(hBlade, bulletsCol, new SphereCollider(2.0f));
 					AddBehavior(hBlade, group1, new SawBladeB());
 					hBlade.Pos(vec3(3.0f, 0.0f, 0.0f));
-			Entity& vSpinner = CreateEntity(saw);
+				hSpinner.Active(false);
+			
+					Entity& vSpinner = CreateEntity(saw);
 				Entity& vBlade = CreateEntity(vSpinner);
 					AddRenderer(vBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
 					AddCollider(vBlade, bulletsCol, new SphereCollider(2.0f));
 					AddBehavior(vBlade, group1, new SawBladeB());
 					vBlade.Pos(vec3(0.0f, 3.0f, 0.0f));
 					vBlade.Rot(vec3(0.0f, 0.0f, 90.0f));
+				vSpinner.Active(false);
+			
+			Entity& dSpinner = CreateEntity(saw);
+				Entity& dBlade = CreateEntity(dSpinner);
+					AddRenderer(dBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
+					AddCollider(dBlade, bulletsCol, new SphereCollider(2.0f));
+					AddBehavior(dBlade, group1, new SawBladeB());
+					dBlade.Pos(vec3(0.0f, -0.2f, 0.0f));
+					dBlade.Scale(1.5f);
+				dSpinner.Active(false);
 
-			AddBehavior(saw, group1, new SawB(hSpinner, vSpinner));
-			saw.Active(false);
+			// Give saw the spinners
+			AddBehavior(saw, group1, new SawB(hSpinner, vSpinner, dSpinner));
 
 
 		Entity& cursor = CreateEntity("cursor");
 			AddBehavior(cursor, group1, new CursorB(*towerMenuBehavior, shooterPool, laserPool, saw, 35.0f));
-			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
+			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\ufo.obj"));
 			AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 
 	}

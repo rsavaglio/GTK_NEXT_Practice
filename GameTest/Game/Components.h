@@ -396,8 +396,8 @@ public:
 			case -1:
 				// Spawn speedy yellow monkey
 				SetColor(vec3(0.8f, 0.7f, 0.3f));
-				Scale(1.0f);
-				_speed = 5.0f;
+				Scale(1.5f);
+				_speed = 3.0f;
 				_health = 20;
 				break;
 
@@ -847,17 +847,42 @@ private:
 
 	Entity& _hSpinner;
 	Entity& _vSpinner;
+	Entity& _dSpinner;
+
 	float _speed;
 
 public:
-	SawB(Entity& hSpinner, Entity& vSpinner)
-		: _hSpinner(hSpinner), _vSpinner(vSpinner), _speed(300.0f) {}
+	SawB(Entity& hSpinner, Entity& vSpinner, Entity& dSpinner)
+		: _hSpinner(hSpinner), _vSpinner(vSpinner), _dSpinner(dSpinner), _speed(300.0f) {}
 
 
 	void Update(const float& deltaTime) override
 	{
 		_hSpinner.Rot(vec3(0.0f, deltaTime * _speed, 0.0f), true);
 		_vSpinner.Rot(vec3(deltaTime * _speed, 0.0f, 0.0f), true);
+		_dSpinner.Rot(vec3(0.0f, deltaTime * _speed, 0.0f), true);
+	}
+
+
+	int Trigger(const int& code) override
+	{
+		switch (code)
+		{
+		case 1:
+			_dSpinner.Active(true);
+			break;
+
+		case 2:
+			_hSpinner.Active(true);
+			break;
+
+		case 3:
+			_vSpinner.Active(true);
+			break;
+		}
+
+
+		return 0;
 	}
 
 };
@@ -903,6 +928,7 @@ public:
 			}
 		}
 	}
+
 
 private:
 
@@ -1038,13 +1064,39 @@ private:
 	Entity& _saw;
 
 	CursorState _state;
+	int _numSaws;
 	float _speed;
 	vec3 _vel;
 	vec3 _velGoal;
 
+	void SawTriggerHelper()
+	{
+		// Can have up to three saws
+
+		if (_numSaws == 0)
+		{
+			_saw.Trigger(1);
+			_numSaws++;
+		}
+		else if (_numSaws == 1)
+		{
+			_saw.Trigger(2);
+			_numSaws++;
+		}
+		else if (_numSaws == 2)
+		{
+			_saw.Trigger(3);
+			_numSaws++;
+		}
+		else
+		{
+			// made unhappy sound
+		}
+	}
+
 public:
 	CursorB(TowerMenuB& towerMenu, ObjectPool& shooterPool, ObjectPool& laserPool, Entity& saw, const float& speed)
-		: _towerMenu(towerMenu), _shooterPool(shooterPool), _laserPool(laserPool), _saw(saw), _state(ON), _speed(speed), _vel(), _velGoal() {}
+		: _towerMenu(towerMenu), _shooterPool(shooterPool), _laserPool(laserPool), _saw(saw), _state(ON), _numSaws(0), _speed(speed), _vel(), _velGoal() {}
 
 	void Update(const float& deltaTime) override
 	{
@@ -1139,7 +1191,7 @@ public:
 				
 				case TowerSelection::SAW:
 
-					_saw.Active(true);
+					SawTriggerHelper();
 
 					break;
 				}
@@ -1151,7 +1203,15 @@ public:
 
 			if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
 			{
-				// Make unhappy sound
+				
+				if (_towerMenu._selection == TowerSelection::SAW)
+				{
+					SawTriggerHelper();
+				}
+				else
+				{
+					// Make unhappy sound
+				}
 			}
 			
 
