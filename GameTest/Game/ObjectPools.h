@@ -42,7 +42,7 @@ public:
 		for (int i = 0; i < _count; i++)
 		{
 			// Create entity and add it to pool
-			Entity* entity = &_scene.CreateEntity();
+			Entity* entity = &_scene.CreateEntity("bullet");
 			_pool.push(entity);
 
 			// Setup here
@@ -64,13 +64,23 @@ public:
 class MonkeyPool : public ObjectPool
 {
 
+private:
+
+	std::vector<vec3> _path;
+
+	Entity& _barrel;
+	UpdateGroup _group;
+	RenderLayer _layer;
+	CollisionGroup _colGroup;
+	CollisionGroup _colGroup2;
+
 public:
 
 	MonkeyPool(Entity& barrel, int count, Scene& scene,
-		const gtk::UpdateGroup& group, const gtk::RenderLayer& layer, const gtk::CollisionGroup colGroup,
+		const gtk::UpdateGroup& group, const gtk::RenderLayer& layer, const gtk::CollisionGroup colGroup, const gtk::CollisionGroup colGroup2,
 		std::vector<vec3> path)
-		: _barrel(barrel), _group(group), _layer(layer), _colGroup(colGroup),
-		_path(path), ObjectPool(count, scene)
+		: _path(path), _barrel(barrel), _group(group), _layer(layer), _colGroup(colGroup), _colGroup2(colGroup2),
+		ObjectPool(count, scene)
 	{
 		GeneratePool();
 	}
@@ -87,19 +97,12 @@ public:
 			_scene.AddBehavior(*entity, _group, new MonkeyB(_path));
 			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\monkey.obj", vec3(1.0f, 0.0f, 0.0f)));
 			_scene.AddCollider(*entity, _colGroup, new SphereCollider());
+			_scene.AddCollider(*entity, _colGroup2, new SphereCollider());
 
 			entity->Active(false);
 		}
 	}
 
-private:
-
-	std::vector<vec3> _path;
-
-	Entity& _barrel;
-	UpdateGroup _group;
-	RenderLayer _layer;
-	CollisionGroup _colGroup;
 
 
 };

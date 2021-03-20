@@ -289,7 +289,7 @@ protected:
 	
 		//// Monkeys ////
 		Entity& barrelOfMonkeys = CreateEntity();
-			ObjectPool& monkeyPool = CreatePool("monkeyPool", new MonkeyPool(barrelOfMonkeys, 20, *this, group1, layer1, towerSightCol, path));
+			ObjectPool& monkeyPool = CreatePool("monkeyPool", new MonkeyPool(barrelOfMonkeys, 20, *this, group1, layer1, towerSightCol, bulletsCol, path));
 			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(monkeyPool));
 
 		//// Towers ////

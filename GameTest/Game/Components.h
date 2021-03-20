@@ -181,9 +181,10 @@ private:
 	vec3 _dir;
 	vec3 _vel;
 	float _speed;
+	bool _Dead;
 
 public:
-	BulletB() :_dir(), _vel(), _speed(15.0) {}
+	BulletB() :_dir(), _vel(), _speed(10.0), _Dead(true) {}
 
 	void Start() override
 	{
@@ -194,11 +195,17 @@ public:
 	{
 		// Update position
 		Pos(_vel * deltaTime * _speed, true);
+
+		if (_Dead)
+		{
+			GetEntity().Active(false);
+		}
 	}
 
 	int Trigger(const int& code) override
 	{
 		// Shoot from shooter position and direction
+		_Dead = false;
 		_vel = Rot();
 		return 0;
 	}
@@ -206,6 +213,10 @@ public:
 	void OnCollision(Entity& other) override
 	{
 		// BOOM
+		if (other.GetName() == "monkey")
+		{
+			_Dead = true;
+		}
 	}
 
 };
@@ -379,6 +390,7 @@ class MonkeyB : public gtk::Behavior
 private:
 
 	float _speed;
+	int _health;
 	std::vector<vec3> _path;
 	int _currentNode;
 
@@ -386,7 +398,7 @@ private:
 
 public:
 	MonkeyB(std::vector<vec3> path)
-	: _speed(1.0f), _path(path), _currentNode(0){}
+		: _speed(1.0f), _health(5), _path(path), _currentNode(0) {}
 
 	void Start() override
 	{
@@ -394,6 +406,11 @@ public:
 
 	void Update(const float& deltaTime) override
 	{
+		if (_health <= 0)
+		{
+			GetEntity().Active(false);
+		}
+
 		// Moving from node to node
 		_T += deltaTime * _speed;
 
@@ -428,7 +445,7 @@ public:
 		if (code > 0)
 		{
 			// Take damage
-
+			_health -= code;
 		}
 		else
 		{
@@ -443,6 +460,7 @@ public:
 				SetColor(vec3(0.8f, 0.7f, 0.3f));
 				Scale(1.0f);
 				_speed = 5.0f;
+				_health = 1;
 				break;
 
 			case -2:
@@ -450,6 +468,7 @@ public:
 				SetColor(vec3(0.2f, 0.3f, 0.8f));
 				Scale(3.0f);
 				_speed = 2.0f;
+				_health = 10;
 				break;
 			}
 		}
@@ -460,6 +479,11 @@ public:
 
 	void OnCollision(Entity& other) override
 	{
+
+		if (other.GetName() == "bullet")
+		{
+			Trigger(1);
+		}
 
 	}
 
@@ -533,7 +557,7 @@ public:
 			float range = 100;
 
 			// If they collide
-			if ((pos - tPos).Dot((pos - tPos)) <= range)
+			if ((pos - tPos).Dot((pos - tPos)) <= range && _target->Active())
 			{
 				if (_timeSinceShot > _shootDelay)
 				{
