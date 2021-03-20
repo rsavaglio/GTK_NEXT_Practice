@@ -283,6 +283,16 @@ protected:
 		Entity& uiBorder = CreateEntity(camera);
 			AddRenderer(uiBorder, UI1, new LineRenderer2(vec3(0.8, 0.2f, 0.8f), vec3(-15.0f, -4.9f, 10.0f), vec3(15.0f, -4.9f, 10.0f)));
 
+		//// Money ////
+		
+		Entity& uiMoney = CreateEntity(camera);
+			uiMoney.Pos(vec3(2.8f, -3.4f, 5.0f));
+			Entity& uiMoneyTitle = CreateEntity(uiMoney);
+				AddRenderer(uiMoneyTitle, UI2, new TextRenderer("Money"));
+			Entity& uiMoneyAmount = CreateEntity(uiMoney);
+				AddRenderer(uiMoneyAmount, UI2, new TextRenderer("$100"));
+				uiMoneyAmount.Pos(vec3(0.0f, -0.3f, 0.0f));
+
 		/// Tower Selection Menu
 		
 		Entity& towerMenu = CreateEntity(camera);
@@ -352,18 +362,23 @@ protected:
 			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(monkeyPool));
 
 		//// Towers ////
-			ObjectPool& bulletPool = CreatePool("bulletPool", new BulletPool(100, *this, group1, layer2, bulletsCol));
+#pragma region Towers
+		
+		// Bullet pool used by all shooters
+		ObjectPool& bulletPool = CreatePool("bulletPool", new BulletPool(100, *this, group1, layer2, bulletsCol));
 
-			ObjectPool& shooterPool = CreatePool("shooterPool",
-				new ShooterPool(10, *this, group1, layer2, towerSightCol, cursorSelectionCol, bulletPool));
-			
-			ObjectPool& laserPool = CreatePool("laserPool",
+		// 10 Shooters
+		ObjectPool& shooterPool = CreatePool("shooterPool",
+			new ShooterPool(10, *this, group1, layer2, towerSightCol, cursorSelectionCol, bulletPool));
+		
+		// 10 Lasers
+		ObjectPool& laserPool = CreatePool("laserPool",
 				new LaserPool(10, *this, 
-					group1,
-					layer1, layer2, 
-					towerSightCol, cursorSelectionCol, bulletsCol));
+				group1,
+				layer1, layer2, 
+				towerSightCol, cursorSelectionCol, bulletsCol));
 
-
+		// 3 Saws
 		Entity& saw = CreateEntity("saw");
 			Entity& hSpinner = CreateEntity(saw);
 				Entity& hBlade = CreateEntity(hSpinner);
@@ -391,9 +406,10 @@ protected:
 					dBlade.Scale(1.5f);
 				dSpinner.Active(false);
 
-			// Give saw the spinners
-			AddBehavior(saw, group1, new SawB(hSpinner, vSpinner, dSpinner));
+		// Give saw the spinners
+		AddBehavior(saw, group1, new SawB(hSpinner, vSpinner, dSpinner));
 
+#pragma endregion
 
 		Entity& cursor = CreateEntity("cursor");
 			AddBehavior(cursor, group1, new CursorB(*towerMenuBehavior, shooterPool, laserPool, saw, 35.0f));
@@ -402,7 +418,7 @@ protected:
 
 	}
 
-	// Called after all entities are updated
+	// Called after all entities and collision are updated
 	void PostUpdate() override
 	{
 		

@@ -1069,7 +1069,7 @@ private:
 	vec3 _vel;
 	vec3 _velGoal;
 
-	void SawTriggerHelper()
+	void SpawnSawHelper()
 	{
 		// Can have up to three saws
 
@@ -1191,7 +1191,7 @@ public:
 				
 				case TowerSelection::SAW:
 
-					SawTriggerHelper();
+					SpawnSawHelper();
 
 					break;
 				}
@@ -1206,7 +1206,7 @@ public:
 				
 				if (_towerMenu._selection == TowerSelection::SAW)
 				{
-					SawTriggerHelper();
+					SpawnSawHelper();
 				}
 				else
 				{

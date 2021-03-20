@@ -110,6 +110,11 @@ private:
 class TextRenderer : public gtk::Renderer
 {
 
+private:
+
+	gtk::vec3 _color;
+	const char* _text;
+
 public:
 
 	TextRenderer(const char* text, gtk::vec3 color = gtk::vec3(0.5f, 0.5f, 0.2f)) : _color(color), _text(text)
@@ -173,10 +178,7 @@ public:
 
 	}
 
-private:
 
-	gtk::vec3 _color;
-	const char* _text;
 
 };
 
