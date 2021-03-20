@@ -93,11 +93,16 @@ public:
 			Entity* entity = &_scene.CreateEntity("monkey");
 			_pool.push(entity);
 
+
 			// Setup here
 			_scene.AddBehavior(*entity, _group, new MonkeyB(_path));
 			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\monkey.obj", vec3(1.0f, 0.0f, 0.0f)));
 			_scene.AddCollider(*entity, _colGroup, new SphereCollider());
 			_scene.AddCollider(*entity, _colGroup2, new SphereCollider());
+
+
+			entity->Pos(1000.0f);
+			entity->Scale(0.0f);
 
 			entity->Active(false);
 		}

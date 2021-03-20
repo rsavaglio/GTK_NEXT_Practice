@@ -257,7 +257,7 @@ protected:
 		//// Camera ////
 
 		Entity& tripod = CreateEntity();
-			tripod.Pos(vec3(0.0f, 0.0f, -10.0f));
+			tripod.Pos(vec3(0.0f, 0.0f, -25.0f));
 			tripod.Rot(vec3(0.0f, 00.0f, 0.0f));
 
 		Entity& camera = CreateEntity(tripod);
@@ -273,15 +273,15 @@ protected:
 		path.push_back(vec3(-28.0f, 12.0f, 0.0f));
 		
 		AddToPath(path, RIGHT, 3);
-		AddToPath(path, FORWARD, 3);
+		AddToPath(path, FORWARD, 2);
 		AddToPath(path, DOWN, 2);
-		AddToPath(path, BACK, 3);
+		AddToPath(path, BACK, 2);
 		AddToPath(path, LEFT, 2);
 		AddToPath(path, DOWN, 3);
 		AddToPath(path, RIGHT, 4);
 		AddToPath(path, UP, 3);
 		AddToPath(path, RIGHT, 3);
-		AddToPath(path, BACK, 2);
+		AddToPath(path, BACK, 1);
 		AddToPath(path, UP, 3);
 
 		CreatePath(path, layer1, cursorSelectionCol, RED);
@@ -308,21 +308,28 @@ protected:
 			AddRenderer(laser, layer2, line);
 			RayCollider* ray = new RayCollider();
 			AddCollider(laser, bulletsCol, ray);
-			SphereCollider* sphereCol = new SphereCollider(10.0f);
+			SphereCollider* sphereCol = new SphereCollider(15.0f);
 			AddCollider(laser, towerSightCol, sphereCol);
 			AddBehavior(laser, group1, new LaserB(*line, *ray, *sphereCol, 0.5f));
 			laser.Active(false);
 
 		Entity& saw = CreateEntity("saw");
-			Entity& hSpinner = CreateEntity();
+			Entity& hSpinner = CreateEntity(saw);
 				Entity& hBlade = CreateEntity(hSpinner);
-				AddRenderer(hBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(1.0f, 0.0f, 0.0f)));
-				AddCollider(hBlade, cursorSelectionCol, new SphereCollider(2.0f));
-				hBlade.Pos(vec3(5.0f, 0.0f, 0.0f));
-			Entity& vSpinner = CreateEntity();
+					AddRenderer(hBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(1.0f, 0.0f, 0.0f)));
+					AddCollider(hBlade, bulletsCol, new SphereCollider(2.0f));
+					AddBehavior(hBlade, group1, new SawBladeB());
+					hBlade.Pos(vec3(3.0f, 0.0f, 0.0f));
+			Entity& vSpinner = CreateEntity(saw);
 				Entity& vBlade = CreateEntity(vSpinner);
+					AddRenderer(vBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(1.0f, 0.0f, 0.0f)));
+					AddCollider(vBlade, bulletsCol, new SphereCollider(2.0f));
+					AddBehavior(vBlade, group1, new SawBladeB());
+					vBlade.Pos(vec3(0.0f, 3.0f, 0.0f));
+					vBlade.Rot(vec3(0.0f, 0.0f, 90.0f));
 
-				AddBehavior(saw, group1, new SawB(hSpinner, vSpinner));
+			AddBehavior(saw, group1, new SawB(hSpinner, vSpinner));
+			saw.Active(false);
 
 
 

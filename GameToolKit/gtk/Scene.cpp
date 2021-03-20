@@ -533,6 +533,11 @@ namespace gtk {
 			}
 		}
 
+		
+		// Update Scene Graph
+		UpdateSceneGraph();
+
+		
 		/// Collision ///
 		
 		// Update collision data
@@ -544,15 +549,10 @@ namespace gtk {
 				col.second->UpdateData();
 			}
 		}
-		
 		CheckCollision();
 		
-
 		// Scene update accessible in derived class
 		PostUpdate();
-
-		// Updates all pos, rot, scale
-		UpdateSceneGraph();
 
 		// This deletes all behaviors and moves to next scene
 		// So it has to happen last

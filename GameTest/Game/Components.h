@@ -48,7 +48,6 @@ public:
 
 	void UpdateData() override
 	{
-		// Doesn't work great with children objects
 		_radius = Scale().x > Scale().y ? Scale().x : Scale().y;
 		_radius = _radius > Scale().z ? _radius : Scale().z;
 
@@ -378,6 +377,8 @@ public:
 			Pos(vec3(-32.0f, Pos().y, Pos().z));
 		}
 
+		/// Tower Control ///
+		_saw.Pos(Pos());
 
 		switch (_state)
 		{
@@ -401,11 +402,9 @@ public:
 				_laser.Trigger(-1);
 			}
 
-			if (App::GetController().CheckButton(XINPUT_GAMEPAD_START, true));
+			if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
 			{
 				_saw.Active(true);
-				_saw.Pos(Pos());
-				_saw.Trigger(-1);
 			}
 
 			break;
@@ -502,6 +501,7 @@ public:
 			// Spawn Monkey
 			Pos(_path.front());
 			_currentNode = 0;
+			_T = 0;
 
 			switch (code)
 			{
@@ -510,7 +510,7 @@ public:
 				SetColor(vec3(0.8f, 0.7f, 0.3f));
 				Scale(1.0f);
 				_speed = 5.0f;
-				_health = 1;
+				_health = 20;
 				break;
 
 			case -2:
@@ -518,7 +518,7 @@ public:
 				SetColor(vec3(0.2f, 0.3f, 0.8f));
 				Scale(3.0f);
 				_speed = 2.0f;
-				_health = 10;
+				_health = 100;
 				break;
 			}
 		}
@@ -926,8 +926,57 @@ public:
 
 	void Update(const float& deltaTime) override
 	{
-
 		_hSpinner.Rot(vec3(0.0f, deltaTime * _speed, 0.0f), true);
+		_vSpinner.Rot(vec3(deltaTime * _speed, 0.0f, 0.0f), true);
 	}
 
+};
+
+enum
+{
+	READY,
+	WAITING,
+	HIT
+};
+
+class SawBladeB : public gtk::Behavior
+{
+
+public:
+	SawBladeB() : _state(READY), _timeSinceHit(0), _delay(0.2f) {}
+
+
+	void Update(const float& deltaTime) override
+	{
+
+		_timeSinceHit += deltaTime;
+		if (_timeSinceHit > _delay)
+		{
+			SetColor(vec3(1.0f, 0.0f, 0.0f));
+		}
+
+	}
+
+	void OnCollision(Entity& other) override
+	{
+		if (other.GetName() == "monkey")
+		{
+			if (_timeSinceHit > _delay)
+			{
+				//other.Trigger(10);
+				_state = WAITING;
+				_timeSinceHit = 0;
+			}
+			else
+			{
+				SetColor(vec3(0.0f, 1.0f, 1.0f));
+			}
+		}
+	}
+
+private:
+
+	float _state;
+	float _timeSinceHit;
+	float _delay;
 };
