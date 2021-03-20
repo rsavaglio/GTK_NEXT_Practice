@@ -297,7 +297,7 @@ protected:
 			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(monkeyPool));
 
 		//// Towers ////
-		Entity& tower = CreateEntity();
+		Entity& tower = CreateEntity("tower");
 			AddBehavior(tower, group1, new TowerB());
 			AddRenderer(tower, layer2, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
 			AddCollider(tower, towerSightCol, new SphereCollider(10.0f));

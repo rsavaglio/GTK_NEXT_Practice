@@ -544,17 +544,30 @@ public:
 	void Update(const float& deltaTime) override
 	{
 
-
-		// TODO: If target is too far
-		if (true)
+		// If there's a target
+		if (_target != nullptr)
 		{
-			_target = nullptr;
-		}
-		else
-		{
-			// Shoot the monkey!
+			// Do collision on target
+			vec3 pos = Pos();
+			vec3 tPos = _target->Pos();
 
+			// Range
+			float r = 10.0f;
+			float tr = 10.0f;
+
+			// If they collide
+			if ((pos - tPos).Dot((pos - tPos)) <= (r + tr) * (r + tr))
+			{
+				// Shoot the monkey!
+			}
+			else
+			{
+				// Set to no target
+				_target = nullptr;
+				SetColor(vec3(0.0f, 0.0f, 1.0f));
+			}
 		}
+
 	}
 
 	int Trigger(const int& code) override
@@ -567,12 +580,11 @@ public:
 		// If there is no target
 		if (_target == nullptr)
 		{
-			// if other is an monkey
+			// if other is a monkey
 			if (other.GetName() == "monkey")
 			{
-				// Must destory
+				// Target it!
 				_target = &other;
-
 				SetColor(vec3(1.0f, 0.0f, 0.0f));
 			}
 		}
@@ -583,8 +595,6 @@ public:
 		}
 
 	}
-
-
 
 private:
 
