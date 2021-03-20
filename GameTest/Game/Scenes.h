@@ -80,13 +80,10 @@ protected:
 		CollisionGroup col1 = CreateCollisionGroup();
 	
 
-
 		Entity& monkey = CreateEntity("monkey");
 			monkey.Pos(vec3(0.0f, -8.0f, -40.0f));
 			monkey.Rot(vec3(0.0f, 0.0f, 0.0f));
-			//ObjectPool& bullets = CreatePool("monkeyBullets", new BulletPool(monkey, 10, *this, group1, layer2));
 			AddCollider(monkey, col1, new SphereCollider());
-			//AddBehavior(monkey, group1, new ShooterB(30.0f, bullets));
 			AddBehavior(monkey, group2, new RotatorB(vec3(0.0f, -100.0f, 0.0f)));
 			AddRenderer(monkey, layer2, new OBJRenderer(".\\TestData\\monkey.obj", vec3(0.7f, 0.7, 0.3f)));
 
@@ -243,6 +240,10 @@ protected:
 	{
 		using namespace gtk;
 
+
+		//// Groups and Layers ////
+#pragma region GroupsLayers
+
 		UpdateGroup group1 = CreateUpdateGroup();
 		UpdateGroup group2 = CreateUpdateGroup();
 
@@ -255,18 +256,25 @@ protected:
 		CollisionGroup towerSightCol = CreateCollisionGroup();
 		CollisionGroup bulletsCol = CreateCollisionGroup();
 
+#pragma endregion
+
 		//// Camera ////
 
 		Entity& tripod = CreateEntity();
 			tripod.Pos(vec3(0.0f, 0.0f, -25.0f));
-			tripod.Rot(vec3(0.0f, 00.0f, 0.0f));
 
 		Entity& camera = CreateEntity(tripod);
 			camera.Rot(vec3(0.0f, 0.0f, 0.0f));
 			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
 			AddBehavior(camera, group1, new CameraB(100.0f));
 
+
 		//// UI ////
+#pragma region UI_TowerSelectionMenu
+
+
+		/// Backdrop
+		
 		Entity& uiBackdrop = CreateEntity(camera);
 			uiBackdrop.Pos(vec3(0.0f, -220.0f, 100.0f));
 			uiBackdrop.Scale(1.0f);
@@ -275,11 +283,12 @@ protected:
 		Entity& uiBorder = CreateEntity(camera);
 			AddRenderer(uiBorder, UI1, new LineRenderer2(vec3(0.8, 0.2f, 0.8f), vec3(-15.0f, -4.9f, 10.0f), vec3(15.0f, -4.9f, 10.0f)));
 
+		/// Tower Selection Menu
+		
 		Entity& towerMenu = CreateEntity(camera);
-			towerMenu.Pos(vec3(0.0f, -3.7f, 5.0f));
+			towerMenu.Pos(vec3(-1.0f, -3.7f, 5.0f));
 			towerMenu.Rot(vec3(10.0f, 0.0f, 0.0f));
 			towerMenu.Scale(0.28);
-
 
 			Entity& shooterText = CreateEntity(towerMenu);
 				shooterText.Pos(vec3(-1.0f, -1.0f, 0.0f));
@@ -311,6 +320,8 @@ protected:
 			TowerMenuB* towerMenuBehavior = new TowerMenuB(shooterIcon, laserIcon, sawIcon);
 			AddBehavior(towerMenu, group2, towerMenuBehavior);
 
+#pragma endregion 
+
 
 		//// PATH ////
 #pragma region PathCreation
@@ -334,19 +345,17 @@ protected:
 		CreatePath(path, layer1, cursorSelectionCol, RED);
 #pragma endregion
 	
+
 		//// Monkeys ////
 		Entity& barrelOfMonkeys = CreateEntity();
 			ObjectPool& monkeyPool = CreatePool("monkeyPool", new MonkeyPool(barrelOfMonkeys, 20, *this, group1, layer1, towerSightCol, bulletsCol, path));
 			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(monkeyPool));
 
 		//// Towers ////
-		Entity& tower = CreateEntity("tower");
-			ObjectPool& bulletPool = CreatePool("bulletPool", new BulletPool(20, *this, group1, layer2, bulletsCol));
-			AddBehavior(tower, group1, new TowerB(bulletPool, 0.2f));
-			AddRenderer(tower, layer2, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
-			AddCollider(tower, towerSightCol, new SphereCollider(10.0f));
-			AddCollider(tower, cursorSelectionCol, new SphereCollider());
-			tower.Active(false);
+			ObjectPool& bulletPool = CreatePool("bulletPool", new BulletPool(100, *this, group1, layer2, bulletsCol));
+
+			ObjectPool& shooterPool = CreatePool("shooterPool",
+				new ShooterPool(10, *this, group1, layer2, towerSightCol, cursorSelectionCol, bulletPool));
 
 
 		Entity& laser = CreateEntity("Laser");
@@ -363,13 +372,13 @@ protected:
 		Entity& saw = CreateEntity("saw");
 			Entity& hSpinner = CreateEntity(saw);
 				Entity& hBlade = CreateEntity(hSpinner);
-					AddRenderer(hBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(1.0f, 0.0f, 0.0f)));
+					AddRenderer(hBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
 					AddCollider(hBlade, bulletsCol, new SphereCollider(2.0f));
 					AddBehavior(hBlade, group1, new SawBladeB());
 					hBlade.Pos(vec3(3.0f, 0.0f, 0.0f));
 			Entity& vSpinner = CreateEntity(saw);
 				Entity& vBlade = CreateEntity(vSpinner);
-					AddRenderer(vBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(1.0f, 0.0f, 0.0f)));
+					AddRenderer(vBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
 					AddCollider(vBlade, bulletsCol, new SphereCollider(2.0f));
 					AddBehavior(vBlade, group1, new SawBladeB());
 					vBlade.Pos(vec3(0.0f, 3.0f, 0.0f));
@@ -380,7 +389,7 @@ protected:
 
 
 		Entity& cursor = CreateEntity("cursor");
-			AddBehavior(cursor, group1, new CursorB(*towerMenuBehavior, tower, laser, saw, 35.0f));
+			AddBehavior(cursor, group1, new CursorB(*towerMenuBehavior, shooterPool, laser, saw, 35.0f));
 			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
 			AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 

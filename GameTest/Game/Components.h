@@ -882,7 +882,7 @@ public:
 		_timeSinceHit += deltaTime;
 		if (_timeSinceHit > _delay)
 		{
-			SetColor(vec3(1.0f, 0.0f, 0.0f));
+			SetColor(vec3(0.3f, 0.3f, 1.0f));
 		}
 
 	}
@@ -1033,18 +1033,18 @@ class CursorB : public gtk::Behavior
 private:
 
 	TowerMenuB& _towerMenu;
-	Entity& _tower;
+	ObjectPool& _shooterPool;
 	Entity& _laser;
 	Entity& _saw;
 
 	CursorState _state;
 	float _speed;
-	vec2 _vel;
-	vec2 _velGoal;
+	vec3 _vel;
+	vec3 _velGoal;
 
 public:
-	CursorB(TowerMenuB& towerMenu, Entity& tower, Entity& laser, Entity& saw, const float& speed)
-		: _towerMenu(towerMenu), _tower(tower), _laser(laser), _saw(saw), _state(ON), _speed(speed), _vel(), _velGoal() {}
+	CursorB(TowerMenuB& towerMenu, ObjectPool& shooterPool, Entity& laser, Entity& saw, const float& speed)
+		: _towerMenu(towerMenu), _shooterPool(shooterPool), _laser(laser), _saw(saw), _state(ON), _speed(speed), _vel(), _velGoal() {}
 
 	void Update(const float& deltaTime) override
 	{
@@ -1056,6 +1056,7 @@ public:
 		// Update velocity goal from input
 		_velGoal.x = App::GetController().GetLeftThumbStickX() * _speed;
 		_velGoal.y = App::GetController().GetLeftThumbStickY() * _speed;
+		_velGoal.z = (App::GetController().GetRightTrigger() * _speed) - (App::GetController().GetLeftTrigger() * _speed);
 
 		// Lerp current velocity to goal
 		_vel = LERP(_vel, _velGoal, deltaTime * 20.0f);
@@ -1064,20 +1065,13 @@ public:
 		Pos(vec3(
 			Pos().x + _vel.x * deltaTime,
 			Pos().y + _vel.y * deltaTime,
-			Pos().z
+			Pos().z + _vel.z * deltaTime
 		));
 
 
 		// Don't go out of bounds
-		if (Pos().y > 25.0f)
-		{
-			Pos(vec3(Pos().x, 25.0f, Pos().z));
-		}
-		else if (Pos().y < -25.0f)
-		{
-			Pos(vec3(Pos().x, -25.0f, Pos().z));
-		}
 
+		// X 
 		if (Pos().x > 32.0f)
 		{
 			Pos(vec3(32.0f, Pos().y, Pos().z));
@@ -1087,12 +1081,35 @@ public:
 			Pos(vec3(-32.0f, Pos().y, Pos().z));
 		}
 
+		// Y
+		if (Pos().y > 25.0f)
+		{
+			Pos(vec3(Pos().x, 25.0f, Pos().z));
+		}
+		else if (Pos().y < -25.0f)
+		{
+			Pos(vec3(Pos().x, -25.0f, Pos().z));
+		}
+
+		// Z
+		if (Pos().z > 25.0f)
+		{
+			Pos(vec3(Pos().x, Pos().y, 25.0f));
+		}
+		else if (Pos().z < -15.0f)
+		{
+			Pos(vec3(Pos().x, Pos().y, -15.0f));
+		}
+
+
+
+
 #pragma endregion
 
 		/// Tower Control ///
+		Entity* newShooter;
 
-		
-		
+
 		switch (_state)
 		{
 		case ON: // if not colliding
@@ -1106,9 +1123,9 @@ public:
 				{
 				case TowerSelection::SHOOTER:
 
-					_tower.Active(true);
-					_tower.Pos(Pos());
-					_tower.Trigger(-1);
+					newShooter = &_shooterPool.Create();
+					newShooter->Pos(Pos());
+					newShooter->Trigger(-1);
 
 					break;
 
