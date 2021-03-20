@@ -301,8 +301,19 @@ protected:
 			AddCollider(tower, cursorSelectionCol, new SphereCollider());
 			tower.Active(false);
 
+
+		Entity& laser = CreateEntity("Laser");
+			AddRenderer(laser, layer1, new OBJRenderer(".\\TestData\\ico.obj", vec3(1.0f, 0.0f, 0.0f)));
+			LineRenderer* line = new LineRenderer(vec3(1.0f, 0.0f, 0.0f));
+			AddRenderer(laser, layer2, line);
+			RayCollider* ray = new RayCollider();
+			AddCollider(laser, bulletsCol, ray);
+			AddCollider(laser, towerSightCol, new SphereCollider(10.0f));
+			AddBehavior(laser, group1, new LaserB(*line, *ray, 2.0f));
+			laser.Active(false);
+
 		Entity& cursor = CreateEntity("cursor");
-			AddBehavior(cursor, group1, new CursorB(tower, 35.0f));
+			AddBehavior(cursor, group1, new CursorB(tower, laser, 35.0f));
 			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
 			AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 

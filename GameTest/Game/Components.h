@@ -5,7 +5,6 @@
 #include <math.h>
 #include "enums.h"
 
-
 using namespace gtk;
 
 class BehaviorTemplate : public gtk::Behavior
@@ -293,6 +292,7 @@ class CursorB : public gtk::Behavior
 private:
 
 	Entity& _tower;
+	Entity& _laser;
 
 	CursorState _state;
 	float _speed;
@@ -300,8 +300,8 @@ private:
 	vec2 _velGoal;
 
 public:
-	CursorB(Entity& tower, const float& speed)
-		: _tower(tower), _state(ON), _speed(speed), _vel(), _velGoal() {}
+	CursorB(Entity& tower, Entity& laser, const float& speed)
+		: _tower(tower), _laser(laser), _state(ON), _speed(speed), _vel(), _velGoal() {}
 
 	void Update(const float& deltaTime) override
 	{
@@ -356,6 +356,13 @@ public:
 				_tower.Active(true);
 				_tower.Pos(Pos());
 				_tower.Trigger(-1);
+			}
+
+			if (App::GetController().CheckButton(XINPUT_GAMEPAD_Y, true))
+			{
+				_laser.Active(true);
+				_laser.Pos(Pos());
+				_laser.Trigger(-1);
 			}
 
 			break;
@@ -608,5 +615,177 @@ public:
 		}
 	}
 
+
+};
+
+
+
+class LineRenderer : public gtk::Renderer
+{
+
+public:
+	gtk::vec4 _e;
+
+	LineRenderer(const gtk::vec3& color, const gtk::vec3& e = vec3() )
+		: _e(gtk::vec4(e.x, e.y, e.z, 1.0f)), Renderer(color) {}
+
+	void Start() override
+	{
+		// Called first frame
+	}
+
+	void Draw() override
+	{
+		Entity& ent = GetEntity();
+
+		gtk::mat4 model = TRS();
+		gtk::mat4 view = GetView();
+		gtk::mat4 proj = GetProj();
+
+
+		gtk::vec4 s = proj * view * vec4(Pos().x, Pos().y, Pos().z, 1.0f);
+		gtk::vec4 e = proj * view * model * _e;
+
+
+		// Draw draw lines
+
+		if (s.z > 0 && e.z > 0)
+		{
+			App::DrawLine(
+				s.x / s.z, s.y / s.z,
+				e.x / e.z, e.y / e.z,
+				_color.x, _color.y, _color.z);
+		}
+	}
+
+};
+
+class RayCollider : public gtk::Collider
+{
+
+public:
+	RayCollider(float radiusMod = 1.0f) : _radiusMod(radiusMod), _dir(vec3()) {}
+
+	void UpdateData() override
+	{
+		// Doesn't work great with children objects
+		_radius = Scale().x > Scale().y ? Scale().x : Scale().y;
+		_radius = _radius > Scale().z ? _radius : Scale().z;
+
+		_radius *= _radiusMod;
+		_center = Pos();
+	}
+
+
+	bool Check(Collider& other) override
+	{
+		if ((_center - other._center).Dot((_center - other.Pos()))
+			<= (_radius + other._radius) * (_radius + other._radius)) // If they collide
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
+private:
+	float _radiusMod;
+	vec3 _dir;
+
+};
+
+class LaserB : public gtk::Behavior
+{
+
+private:
+
+	Entity* _target;
+	LineRenderer& _lineRend;
+	RayCollider& _rayCol;
+	float _shootDelay;
+	float _timeSinceShot;
+
+public:
+	LaserB(LineRenderer& lineRend, RayCollider& rayCol, const float& shootDelay) 
+		:  _target(nullptr), _lineRend(lineRend), _rayCol(rayCol), _shootDelay(shootDelay), _timeSinceShot(0) {}
+
+	void Start() override
+	{
+
+	}
+
+	void Update(const float& deltaTime) override
+	{
+		// Update time
+		_timeSinceShot += deltaTime;
+
+		// If there's a target
+		if (_target != nullptr)
+		{
+			vec3 pos = Pos();
+			vec3 tPos = _target->Pos();
+			float range = 100;
+
+			vec3 dir = tPos - pos;
+			vec3 end = dir * 10;
+			_lineRend.Active(true);
+
+			// Shoot the monkey!
+			_lineRend._e = vec4(end.x, end.y, end.z, 1.0f);
+
+			// If out of range or dead
+			if (!(pos - tPos).Dot((pos - tPos)) <= range || !_target->Active())
+			{
+				// Set to no target
+				_target = nullptr;
+				SetColor(vec3(0.5f, 0.0f, 0.0f));
+			}
+
+		}
+		else
+		{
+			_lineRend.Active(false);
+		}
+
+	}
+
+	int Trigger(const int& code) override
+	{
+		if (code == -1)
+		{
+			SetColor(vec3(0.0f, 0.0f, 1.0f));
+			//_lineRend.Active(false);
+		}
+		return 0;
+	}
+
+	void OnCollision(Entity& other) override
+	{
+
+		if (other.GetName() == "monkey")
+		{
+			// If there is no target
+			if (_target == nullptr)
+			{
+				// Target it!
+				_target = &other;
+				SetColor(vec3(1.0f, 0.0f, 0.0f));
+
+			}
+			else
+			{
+				// Shoot laser
+				if (_timeSinceShot > _shootDelay)
+				{
+					_timeSinceShot = 0;
+					
+					// TODO:
+
+				}
+			}
+		}
+
+	}
 
 };
