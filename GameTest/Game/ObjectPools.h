@@ -166,3 +166,73 @@ public:
 
 
 };
+
+
+class LaserPool : public ObjectPool
+{
+private:
+
+	UpdateGroup _group;
+	RenderLayer _bodyRend;
+	RenderLayer _lineRend;
+	CollisionGroup _towerSightCol;
+	CollisionGroup _cursorSelectionCol;
+	CollisionGroup _bulletCol;
+
+public:
+
+	LaserPool(int count, Scene& scene,
+		gtk::UpdateGroup& group,
+		gtk::RenderLayer& bodyRend, gtk::RenderLayer& lineRend,
+		gtk::CollisionGroup sightCol, gtk::CollisionGroup cursorCol, gtk::CollisionGroup bulletCol)
+		: _group(group),
+		_bodyRend(bodyRend), _lineRend(lineRend),
+		_towerSightCol(sightCol), _cursorSelectionCol(cursorCol), _bulletCol(bulletCol),
+		ObjectPool(count, scene)
+	{
+		GeneratePool();
+	}
+
+	virtual Entity& Create()
+	{
+		Entity* ent = _pool.front();
+		_pool.pop();
+		_pool.push(ent);
+
+		ent->Active(true);
+
+		return *ent;
+	}
+
+	void GeneratePool() override
+	{
+		for (int i = 0; i < _count; i++)
+		{
+			// Create entity and add it to pool
+			Entity* entity = &_scene.CreateEntity("shooter");
+			_pool.push(entity);
+
+
+			// Setup here
+			
+			LineRenderer* line = new LineRenderer(vec3(1.0f, 0.0f, 0.0f));
+			_scene.AddRenderer(*entity, _lineRend, line);
+			_scene.AddRenderer(*entity, _bodyRend, new OBJRenderer(".\\TestData\\ico.obj", vec3(1.0f, 0.0f, 0.0f)));
+			
+			RayCollider* ray = new RayCollider();
+			SphereCollider* sphereCol = new SphereCollider(15.0f);
+			_scene.AddCollider(*entity, _bulletCol, ray);
+			_scene.AddCollider(*entity, _towerSightCol, sphereCol);
+			_scene.AddCollider(*entity, _cursorSelectionCol, new SphereCollider());
+			
+			_scene.AddBehavior(*entity, _group, new LaserB(*line, *ray, *sphereCol, 0.5f));
+
+
+			entity->Active(false);
+		}
+
+	}
+
+
+
+};

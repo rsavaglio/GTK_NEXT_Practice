@@ -1034,7 +1034,7 @@ private:
 
 	TowerMenuB& _towerMenu;
 	ObjectPool& _shooterPool;
-	Entity& _laser;
+	ObjectPool& _laserPool;
 	Entity& _saw;
 
 	CursorState _state;
@@ -1043,8 +1043,8 @@ private:
 	vec3 _velGoal;
 
 public:
-	CursorB(TowerMenuB& towerMenu, ObjectPool& shooterPool, Entity& laser, Entity& saw, const float& speed)
-		: _towerMenu(towerMenu), _shooterPool(shooterPool), _laser(laser), _saw(saw), _state(ON), _speed(speed), _vel(), _velGoal() {}
+	CursorB(TowerMenuB& towerMenu, ObjectPool& shooterPool, ObjectPool& laserPool, Entity& saw, const float& speed)
+		: _towerMenu(towerMenu), _shooterPool(shooterPool), _laserPool(laserPool), _saw(saw), _state(ON), _speed(speed), _vel(), _velGoal() {}
 
 	void Update(const float& deltaTime) override
 	{
@@ -1108,7 +1108,7 @@ public:
 
 		/// Tower Control ///
 		Entity* newShooter;
-
+		Entity* newLaser;
 
 		switch (_state)
 		{
@@ -1131,9 +1131,9 @@ public:
 
 				case TowerSelection::LASER:
 
-					_laser.Active(true);
-					_laser.Pos(Pos());
-					_laser.Trigger(-1);
+					newLaser = &_laserPool.Create();
+					newLaser->Pos(Pos());
+					newLaser->Trigger(-1);
 
 					break;
 				

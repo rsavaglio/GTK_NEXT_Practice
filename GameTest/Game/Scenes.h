@@ -356,18 +356,13 @@ protected:
 
 			ObjectPool& shooterPool = CreatePool("shooterPool",
 				new ShooterPool(10, *this, group1, layer2, towerSightCol, cursorSelectionCol, bulletPool));
+			
+			ObjectPool& laserPool = CreatePool("laserPool",
+				new LaserPool(10, *this, 
+					group1,
+					layer1, layer2, 
+					towerSightCol, cursorSelectionCol, bulletsCol));
 
-
-		Entity& laser = CreateEntity("Laser");
-			AddRenderer(laser, layer1, new OBJRenderer(".\\TestData\\ico.obj", vec3(1.0f, 0.0f, 0.0f)));
-			LineRenderer* line = new LineRenderer(vec3(1.0f, 0.0f, 0.0f));
-			AddRenderer(laser, layer2, line);
-			RayCollider* ray = new RayCollider();
-			AddCollider(laser, bulletsCol, ray);
-			SphereCollider* sphereCol = new SphereCollider(15.0f);
-			AddCollider(laser, towerSightCol, sphereCol);
-			AddBehavior(laser, group1, new LaserB(*line, *ray, *sphereCol, 0.5f));
-			laser.Active(false);
 
 		Entity& saw = CreateEntity("saw");
 			Entity& hSpinner = CreateEntity(saw);
@@ -389,7 +384,7 @@ protected:
 
 
 		Entity& cursor = CreateEntity("cursor");
-			AddBehavior(cursor, group1, new CursorB(*towerMenuBehavior, shooterPool, laser, saw, 35.0f));
+			AddBehavior(cursor, group1, new CursorB(*towerMenuBehavior, shooterPool, laserPool, saw, 35.0f));
 			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\sphere.obj"));
 			AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 
