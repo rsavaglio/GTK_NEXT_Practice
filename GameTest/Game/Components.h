@@ -612,11 +612,13 @@ struct SpawnGroup
 
 struct Wave
 {
-	// Monkey type, how many, spawn delay between each
+	int numMonkeys = 0;
 	std::vector<SpawnGroup> _spawnList;
 
+	// Count, Type of monkey, spawn delay between each
 	void AddToWave(const int& count, const int& monkeyType, const float& delay)
 	{
+		numMonkeys += count;
 		_spawnList.push_back({ count, monkeyType, delay });
 	}
 
@@ -625,8 +627,10 @@ struct Wave
 enum
 {
 	SPAWNING,
-	BREAK,
-	WIN
+	WAIT,
+	COUNTDOWN,
+	WIN,
+	LOSE
 };
 
 class BarrelOfMonkeysB : public gtk::Behavior
@@ -634,6 +638,7 @@ class BarrelOfMonkeysB : public gtk::Behavior
 
 private:
 
+	Entity& _cursor;
 	ObjectPool& _monkeyPool;
 	NumUIRenderer& _waveUIRend;
 
@@ -646,7 +651,9 @@ private:
 	int _spawnIndex;
 	int _spawnCount;
 
-private:
+	float _countdown;
+
+public:
 
 	Wave GetWave()
 	{
@@ -668,17 +675,24 @@ private:
 		return _waves[_waveIndex]._spawnList[_spawnIndex]._count;
 	}
 
+	int GetCountInWave()
+	{
+		int i = _waves[_waveIndex].numMonkeys;
+		return i;
+	}
+
 
 public:
-	BarrelOfMonkeysB(NumUIRenderer& waveUIRend, std::vector<Wave> waves, ObjectPool& monkeyPool) :
-		_waveUIRend(waveUIRend),_monkeyPool(monkeyPool), _waves(waves),
-		_state(SPAWNING), _spawnTimer(2.0f), _timeSinceSpawn(0), _waveIndex(0), _spawnIndex(0), _spawnCount(0) {}
+	BarrelOfMonkeysB(Entity& cursor, NumUIRenderer& waveUIRend, std::vector<Wave> waves, ObjectPool& monkeyPool) :
+		_cursor(cursor), _waveUIRend(waveUIRend),_monkeyPool(monkeyPool), _waves(waves),
+		_state(COUNTDOWN), _spawnTimer(2.0f), _timeSinceSpawn(0), _waveIndex(0), _spawnIndex(0), _spawnCount(0), _countdown(11.0f) {}
 
 
 	void Update(const float& deltaTime) override
 	{
 		float time;
 		int type;
+		int i;
 
 		switch (_state)
 		{
@@ -708,21 +722,13 @@ public:
 					// if at end of wave
 					if (_spawnIndex == GetWave()._spawnList.size())
 					{
-						_waveIndex++;
+						
 						_spawnIndex = 0;
 
-						// If not at end
-						if(_waveIndex == _waves.size())
-						{
-							// YOU WIN!
-							_state = WIN;
-						}
-						else
-						{
-							// Update the UI
-							_waveUIRend.SetNum(_waveIndex + 1);
+						// End of wave
+						// Wait for monkeys to die
+						_state = WAIT;
 							
-						}
 					}
 				}
 
@@ -730,41 +736,77 @@ public:
 
 
 			break;
+
+		case WAIT:
+			
+			// All monkeys in wave have spawned, wait for last monkey to die
+			i = 0;
+			
+			break;
+
+		case COUNTDOWN:
+
+			_countdown -= deltaTime;
+
+			_waveUIRend.SetNum(_countdown);
+			
+			if (_countdown <= 0.0f)
+			{
+				_state = SPAWNING;
+				_countdown = 11.0f;
+				// Update the UI
+				_waveUIRend.SetNum(_waveIndex + 1);
+
+				// Tell cursor new round started
+				_cursor.Trigger(0);
+			}
+
+			break;
+
+
 		case WIN:
 			// Hooray
 
+			i = 0;
+
+			break;
+		
+		case LOSE:
+			// sad
+
+			i = 0;
 
 			break;
 
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-		//// Spawn yellow
-		//if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
-		//{
-		//	Entity& newMonkey = _monkeyPool.Create();
-		//	newMonkey.Trigger(-1);
-		//}
-
-
-		//// Spawn big blue
-		//if (App::GetController().CheckButton(XINPUT_GAMEPAD_B))
-		//{
-		//	Entity& newMonkey = _monkeyPool.Create();
-		//	newMonkey.Trigger(-2);
-		//}
-
 	}
+
+	int Trigger(const int& code) override
+	{
+
+		// Wave has ended 
+		if (code == -1)
+		{
+			if (_waveIndex < _waves.size() -1 )
+			{
+				_state = COUNTDOWN;
+				_waveIndex++;
+			}
+			else
+			{
+				_state = WIN;
+			}
+
+		}
+		else if (code == -2)
+		{
+			_state = LOSE;
+		}
+
+
+		return 0;
+	}
+
 
 };
 
@@ -1367,6 +1409,7 @@ class CursorB : public gtk::Behavior
 
 private:
 
+	BarrelOfMonkeysB& _barrelOfMonkeys;
 	TowerMenuB& _towerMenu;
 	ObjectPool& _shooterPool;
 	ObjectPool& _laserPool;
@@ -1387,6 +1430,7 @@ private:
 	int _sawPrice;
 
 	int _hp;
+	int _deadMonkeyCount;
 
 	void SpawnSawHelper()
 	{
@@ -1430,13 +1474,13 @@ private:
 	}
 
 public:
-	CursorB(TowerMenuB& towerMenu, ObjectPool& shooterPool, ObjectPool& laserPool, Entity& saw, 
+	CursorB(BarrelOfMonkeysB& barrelOfMonkeys, TowerMenuB& towerMenu, ObjectPool& shooterPool, ObjectPool& laserPool, Entity& saw, 
 		NumUIRenderer& moneyUI, NumUIRenderer& sawPriceUI, NumUIRenderer& hpRendUI,
 			const float& speed)
-		: _towerMenu(towerMenu), _shooterPool(shooterPool), _laserPool(laserPool), _saw(saw), 
+		: _barrelOfMonkeys(barrelOfMonkeys), _towerMenu(towerMenu), _shooterPool(shooterPool), _laserPool(laserPool), _saw(saw), 
 		_moneyUI(moneyUI), _sawPriceUI(sawPriceUI), _hpRendUI(hpRendUI),
 		_state(ON), _numSaws(0), _speed(speed), _vel(), _velGoal(),
-		_money(1000), _shooterPrice(5), _laserPrice(8), _sawPrice(10), _hp(50) {}
+		_money(1000), _shooterPrice(5), _laserPrice(8), _sawPrice(10), _hp(50), _deadMonkeyCount(0) {}
 
 	void Update(const float& deltaTime) override
 	{
@@ -1581,25 +1625,39 @@ public:
 
 	int Trigger(const int& code) override
 	{
-		// if mokey died
+		// Track dying monkeys with 
+
+		// A code of 0 means a new round has started
+
+		//if (code == 0)
+		//{
+		//	_deadMonkeyCount = 0;
+		//}
+
+		// if monkey died
 		if (code > 0)
 		{
+			_deadMonkeyCount++;
+
 			//Get Money
 			_money += code;
 		}
-		else // Monkey got to the end
+		else if (code < 0) // Monkey got to the end
 		{
+			_deadMonkeyCount++;
+
 			// Update Health
 			_hp += code;
 
 			if (_hp > 0)
 			{
+				// Set health UI
 				_hpRendUI.SetNum(_hp);
 			}
 			else
 			{
 				// GAME OVER sad
-				
+				_barrelOfMonkeys.Trigger(-2);
 				_hpRendUI.SetNum(0);
 				int i = 0;
 
@@ -1607,6 +1665,13 @@ public:
 
 		}
 
+		int waveCount = _barrelOfMonkeys.GetCountInWave();
+		if (_deadMonkeyCount >= waveCount)
+		{
+			// Wave has ended
+			_deadMonkeyCount = 0;
+			_barrelOfMonkeys.Trigger(-1);
+		}
 
 
 		return 0;

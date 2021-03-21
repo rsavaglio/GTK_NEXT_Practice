@@ -297,7 +297,8 @@ protected:
 		/// Wave ///
 		Entity& waveTitle = CreateEntity(camera);
 			waveTitle.Pos(vec3(-5.2f, -3.3f, 5.0f));
-			AddRenderer(waveTitle, UI2, new TextRenderer("Wave"));
+			TextRenderer* waveTextRend = new TextRenderer("Wave");
+			AddRenderer(waveTitle, UI2, waveTextRend);
 		Entity& waveNumUI = CreateEntity(waveTitle);
 			waveNumUI.Pos(vec3(0.6f, 0.0f, 0.0f));
 			NumUIRenderer* waveUIRend = new NumUIRenderer(1);
@@ -428,11 +429,7 @@ protected:
 
 #pragma endregion
 
-		Entity& cursor = CreateEntity("cursor");
-			AddBehavior(cursor, group1, new CursorB(*towerMenuBehavior, shooterPool, laserPool, saw,
-				*moneyRend, *sawTextRend, *hpUIRend,  35.0f));
-			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\ufo.obj"));
-			AddCollider(cursor, cursorSelectionCol, new SphereCollider());
+	
 
 
 		//// Monkeys ////
@@ -442,31 +439,41 @@ protected:
 		std::vector<Wave> waves;
 
 		Wave wave1;
-		wave1.AddToWave(2, STANDARD, 1.0f);
-		wave1.AddToWave(5, BRUTE, 0.1f);
-		wave1.AddToWave(2, STANDARD, 0.2f);
+		wave1.AddToWave(20, STANDARD, 0.1f);
+		wave1.AddToWave(2, BRUTE, 1.0f);
 		waves.push_back(wave1);
 
 		Wave wave2;
 		wave2.AddToWave(3, BRUTE, 0.5f);
-		wave2.AddToWave(3, STANDARD, 1.5f);
-		wave2.AddToWave(3, BRUTE, 0.5f);
 		waves.push_back(wave2);
 
 		Wave wave3;
-		wave3.AddToWave(1, BRUTE, 0.5f);
+		wave3.AddToWave(1, BRUTE, 1.5f);
 		waves.push_back(wave3);
 
 		Wave wave4;
-		wave4.AddToWave(20, BRUTE, 0.1f);
+		wave4.AddToWave(3, BRUTE, 0.8f);
 		wave4.AddToWave(2, BRUTE, 0.6f);
 		waves.push_back(wave4);
 
+
+
+
+		// Cursor
+		Entity& cursor = CreateEntity("cursor");
+		
+		// Monkey Spawner
 		Entity& barrelOfMonkeys = CreateEntity();
 			ObjectPool& monkeyPool = CreatePool("monkeyPool", 
 				new MonkeyPool(cursor, barrelOfMonkeys, 50, *this, group1, layer1, towerSightCol, bulletsCol, path));
-			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(*waveUIRend, waves, monkeyPool));
+			BarrelOfMonkeysB* barrelB = new BarrelOfMonkeysB(cursor, *waveUIRend, waves, monkeyPool);
+			AddBehavior(barrelOfMonkeys, group1, barrelB);
 
+			// Cursor
+		AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\ufo.obj"));
+		AddCollider(cursor, cursorSelectionCol, new SphereCollider());
+		AddBehavior(cursor, group1, new CursorB(*barrelB, *towerMenuBehavior, shooterPool, laserPool, saw,
+			*moneyRend, *sawTextRend, *hpUIRend, 35.0f));
 	}
 
 	// Called after all entities and collision are updated
