@@ -52,6 +52,7 @@ void Render()
 {	
 	// Calls draw in active renderers in active scene
 	game.Render(1024.0f, 768.0f);
+	
 }
 
 
@@ -62,7 +63,7 @@ void Render()
 void Shutdown()
 {	
 	// When game goes out of scope everything is deleted.
-	// May want to change this for more control?
+	game.Shutdown();
 
 }
 

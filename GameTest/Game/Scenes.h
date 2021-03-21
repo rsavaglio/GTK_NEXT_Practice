@@ -1004,14 +1004,18 @@ protected:
 
 
 		Entity& camera = CreateEntity();
-			camera.Pos(vec3(0.0f, 0.0f, -25.0f));
+			camera.Pos(vec3(0.0f, 3.0f, -25.0f));
 			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
+
+		Entity& title = CreateEntity();
+			title.Pos(vec3(-3.0f, 5.5f, 0.0f));
+			AddRenderer(title, layer, new TextRenderer("Monkey Tunnel", vec3(1.0f, 1.0f, 1.0f)));
 
 		Entity& monkey = CreateEntity();
 			monkey.Rot(vec3(0.0f, 180.0f, 0.0f));
 			monkey.Scale(3.0f);
 			AddBehavior(monkey, group, new MenuMonkeyB(0, 2.0f, 120.0f, path));
-			AddRenderer(monkey, layer, new OBJRenderer(".\\TestData\\monkey.obj", vec3(1.0f, 0.6f, 0.0f)));
+			AddRenderer(monkey, layer, new OBJRenderer(".\\TestData\\monkey.obj", vec3(0.8f, 0.5f, 0.0f)));
 
 		Entity& banana = CreateEntity();
 			banana.Scale(0.05f);
@@ -1019,6 +1023,19 @@ protected:
 			AddRenderer(banana, layer, new OBJRenderer(".\\TestData\\banana.obj", vec3(0.7f, 0.7f, 0.0f)));
 
 
+		Entity& level1Text = CreateEntity();
+		level1Text.Pos(vec3(-6.0f, 0.0f, 0.0f));
+			AddRenderer(level1Text, layer, new TextRenderer("Level 1", vec3(1.0f, 1.0f, 1.0f)));
+
+		Entity& level2Text = CreateEntity();
+			level2Text.Pos(vec3(3.0f, 0.0f, 0.0f));
+			AddRenderer(level2Text, layer, new TextRenderer("Level 2", vec3(1.0f, 1.0f, 1.0f)));
+
+		Entity& selector = CreateEntity();
+			selector.Rot(vec3(180.0f, 0.0f, 0.0f));
+			AddBehavior(selector, group, new MenuSelectorB(level1Text, level2Text, 30.0f));
+			AddRenderer(selector, layer, new OBJRenderer(".\\TestData\\cone2.obj", vec3(0.0f, 0.0f, 1.0f)));
+		
 	}
 
 	// Called after all entities are updated

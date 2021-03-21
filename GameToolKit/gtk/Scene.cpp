@@ -12,10 +12,7 @@ namespace gtk {
 	{
 	}
 
-	Scene::~Scene()
-	{
-		Shutdown();
-	}
+	Scene::~Scene() {}
 
 	void Scene::Init()
 	{

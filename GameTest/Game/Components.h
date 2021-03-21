@@ -757,7 +757,7 @@ public:
 				_winText.Active(true);
 				if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
 				{
-					SwitchScene("L1");
+					SwitchScene("MainMenu");
 				}
 			}
 
@@ -773,7 +773,7 @@ public:
 				_loseText.Active(true);
 				if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
 				{
-					SwitchScene("L1");
+					SwitchScene("MainMenu");
 				}
 
 			}
@@ -1702,7 +1702,6 @@ public:
 
 };
 
-
 class MenuMonkeyB : public gtk::Behavior
 {
 
@@ -1754,5 +1753,57 @@ public:
 
 	}
 
+
+};
+
+class MenuSelectorB : public gtk::Behavior
+{
+private:
+	
+	Entity& _text1;
+	Entity& _text2;
+
+	bool _state;
+	float _spin;
+
+public:
+	MenuSelectorB(Entity& text1, Entity& text2, float spin)
+	: _text1(text1), _text2(text2), _state(true), _spin(spin) {}
+
+	// Called before the first update
+	void Start() override {}
+
+	void Update(const float& deltaTime) override
+	{
+		Rot(vec3(0.0f, _spin * deltaTime, 0.0f), true);
+
+		if (_state)
+		{
+			// Set Pos
+			Pos(vec3(-4.5f, 2.0f, 0.0f));
+			if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
+			{
+				SwitchScene("L1");
+			}
+		}
+		else
+		{
+			// Set Pos
+			Pos(vec3(4.0f, 2.0f, 0.0f));
+			
+			if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
+			{
+				SwitchScene("L2");
+			}
+
+		}
+		
+		if (App::GetController().CheckButton(XINPUT_GAMEPAD_DPAD_LEFT)
+			|| App::GetController().CheckButton(XINPUT_GAMEPAD_DPAD_RIGHT))
+		{
+			_state = !_state;
+		}
+
+	}
 
 };
