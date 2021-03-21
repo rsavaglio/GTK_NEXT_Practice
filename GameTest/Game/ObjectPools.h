@@ -155,7 +155,7 @@ public:
 			_pool.push(entity);
 
 			// Setup here
-			_scene.AddBehavior(*entity, _group, new TowerB(_bulletPool, 0.2f));
+			_scene.AddBehavior(*entity, _group, new ShooterB(_bulletPool));
 			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
 			_scene.AddCollider(*entity, _towerSightCol, new SphereCollider(8.0f));
 			_scene.AddCollider(*entity, _cursorSelectionCol, new SphereCollider());
@@ -227,7 +227,7 @@ public:
 			_scene.AddCollider(*entity, _towerSightCol, sphereCol);
 			_scene.AddCollider(*entity, _cursorSelectionCol, new SphereCollider());
 			
-			_scene.AddBehavior(*entity, _group, new LaserB(*line, *ray, *sphereCol, 0.5f));
+			_scene.AddBehavior(*entity, _group, new LaserB(*line, *ray, *sphereCol));
 
 
 			entity->Active(false);

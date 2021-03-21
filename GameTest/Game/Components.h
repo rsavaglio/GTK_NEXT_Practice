@@ -6,6 +6,66 @@
 #include "enums.h"
 #include <string>
 
+
+// For tweaking gameplay
+
+// Wave Countdown
+#define COUNTDOWN_TIME 11.0f
+
+// Player Stats
+#define STARTING_MONEY 10
+#define STARTING_HP    20
+
+// Shooter
+#define SHOOTER_PRICE 5
+#define SHOOTER_STR  1
+#define SHOOTER_RATE 0.2f
+
+// Laser
+#define LASER_PRICE 8
+#define LASER_STR	5
+#define LASER_RATE  0.5f
+
+// Saw
+#define SAW_STR		10
+#define SAW_RATE	0.2f
+#define SAW_PRICE_1 10
+#define SAW_PRICE_2 30
+#define SAW_PRICE_3 60
+
+// Standard Money
+#define MONK_COLOR vec3(0.8f, 0.7f, 0.3f)
+#define MONK_SIZE  1.5f
+#define MONK_SPD   3.0f
+#define MONK_HP	   15
+#define MONK_WORTH 2
+#define MONK_STR   3
+
+// Brute Monkey
+#define BRUTE_COLOR vec3(0.2f, 0.3f, 0.8f)
+#define BRUTE_SIZE  3.0f
+#define BRUTE_SPD   2.0f
+#define BRUTE_HP	100
+#define BRUTE_WORTH 3
+#define BRUTE_STR   5
+
+// Tiny Monkey
+#define TINY_COLOR vec3(0.2f, 0.7f, 0.3f)
+#define TINY_SIZE  1.0f
+#define TINY_SPD   4.0f
+#define TINY_HP	5
+#define TINY_WORTH 1
+#define TINY_STR   1
+
+// Boss Monkey
+#define BOSS_COLOR vec3(1.0f, 0.2f, 0.2f)
+#define BOSS_SIZE  5.0f
+#define BOSS_SPD   1.0f
+#define BOSS_HP	1000
+#define BOSS_WORTH 20
+#define BOSS_STR   10
+
+
 using namespace gtk;
 
 class BehaviorTemplate : public gtk::Behavior
@@ -194,7 +254,6 @@ public:
 
 };
 
-
 class SphereCollider : public gtk::Collider
 {
 
@@ -228,46 +287,6 @@ private:
 
 };
 
-class SphereB : public gtk::Behavior
-{
-public:
-	
-	SphereB() : _vel(), _acc(0.0f, -9.8f, 0.0f) {}
-
-	void Start() override
-	{
-	}
-
-	void Update(const float& deltaTime) override
-	{
-
-		gtk::vec3 p = Pos();
-
-		// Update position
-		Pos(p + (_vel * deltaTime) + ((_acc * (deltaTime * deltaTime)) * (1 / 2)));
-
-		// Update velocity
-		_vel = _vel + (_acc * deltaTime);
-	}
-
-	int Trigger(const int& code) override
-	{
-
-		_vel = 0;
-
-		return 0;
-	}
-
-
-private:
-
-	gtk::vec3 _vel;
-	gtk::vec3 _acc;
-
-};
-
-
-
 class RotatorB : public gtk::Behavior
 {
 public:
@@ -293,72 +312,6 @@ private:
 
 	gtk::vec3 anim;
 
-};
-
-
-class ShooterB : public gtk::Behavior
-{
-
-public:
-	ShooterB(const float& speed)
-		: _speed(speed), _vel(), _velGoal() {}
-
-	void Start() override
-	{
-
-	}
-
-	void Update(const float& deltaTime) override
-	{
-
-		// During Gameplay
-		if (State() == 2)
-		{
-			//// Movement ////
-
-			// Update velocity goal from input
-			_velGoal.x = App::GetController().GetLeftThumbStickX() * _speed;
-			_velGoal.y = App::GetController().GetLeftThumbStickY() * _speed;
-
-			// Lerp current velocity to goal
-			_vel = LERP(_vel, _velGoal, deltaTime * 10.f);
-
-			// Set position from velocity
-			Pos(vec3(
-				Pos().x + _vel.x * deltaTime,
-				Pos().y + _vel.y * deltaTime,
-				Pos().z
-			));
-
-
-			//// Bullets ////
-
-			if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
-			{
-				//Entity& bullet = _bulletPool.Create();
-				//bullet.Trigger(1);
-			}
-
-		}
-
-	}
-
-	int Trigger(const int& code) override
-	{
-		return 0;
-	}
-
-	void OnCollision(Entity& other) override
-	{
-		SwitchScene("PracScene");
-	}
-
-
-private:
-
-	float _speed;
-	vec2 _vel;
-	vec2 _velGoal;
 };
 
 class BulletB : public gtk::Behavior
@@ -404,16 +357,10 @@ public:
 		if (other.GetName() == "monkey")
 		{
 			_Dead = true;
+			other.Trigger(SHOOTER_STR);
 		}
 	}
 
-};
-
-enum CamState
-{
-	POS1,
-	POS2,
-	TOWER
 };
 
 class CameraB : public gtk::Behavior
@@ -474,11 +421,11 @@ public:
 
 };
 
-enum
+enum MonkeyTypes
 {
 	STANDARD = -1,
 	BRUTE = -2,
-	SPEEDY = -3,
+	TINY = -3,
 	BOSS = -4
 };
 
@@ -501,7 +448,7 @@ private:
 
 public:
 	MonkeyB(Entity& cursor, std::vector<vec3> path)
-		: _cursor(cursor), _speed(1.0f), _health(5), _worth(1), _strength(1), _path(path), _currentNode(0) {}
+		: _cursor(cursor), _speed(1.0f), _health(1), _worth(1), _strength(1), _path(path), _currentNode(0) {}
 
 	void Start() override
 	{
@@ -565,22 +512,42 @@ public:
 			{
 			case STANDARD:
 				// Spawn speedy yellow monkey
-				SetColor(vec3(0.8f, 0.7f, 0.3f));
-				Scale(1.5f);
-				_speed = 3.0f;
-				_health = 20;
-				_worth = 2;
-				_strength = 3;
+				SetColor(MONK_COLOR);
+				Scale(MONK_SIZE);
+				_speed    = MONK_SPD;
+				_health   = MONK_HP;
+				_worth    = MONK_WORTH;
+				_strength = MONK_STR;
 				break;
 
 			case BRUTE:
 				// Spawn big blue monkey
-				SetColor(vec3(0.2f, 0.3f, 0.8f));
-				Scale(3.0f);
-				_speed = 2.0f;
-				_health = 100;
-				_worth = 3;
-				_strength = 5;
+				SetColor(BRUTE_COLOR);
+				Scale(BRUTE_SIZE);
+				_speed    = BRUTE_SPD;
+				_health   = BRUTE_HP;
+				_worth    = BRUTE_WORTH;
+				_strength = BRUTE_STR;
+				break;
+
+			case TINY:
+				// Spawn big blue monkey
+				SetColor(TINY_COLOR);
+				Scale(TINY_SIZE);
+				_speed    = TINY_SPD;
+				_health   = TINY_HP;
+				_worth    = TINY_WORTH;
+				_strength = TINY_STR;
+				break;
+
+			case BOSS:
+				// Spawn big blue monkey
+				SetColor(BOSS_COLOR);
+				Scale(BOSS_SIZE);
+				_speed    = BOSS_SPD;
+				_health   = BOSS_HP;
+				_worth    = BOSS_WORTH;
+				_strength = BOSS_STR;
 				break;
 			}
 		}
@@ -592,10 +559,6 @@ public:
 	void OnCollision(Entity& other) override
 	{
 
-		if (other.GetName() == "bullet")
-		{
-			Trigger(1);
-		}
 
 	}
 
@@ -624,7 +587,7 @@ struct Wave
 
 };
 
-enum
+enum GameState
 {
 	SPAWNING,
 	WAIT,
@@ -694,7 +657,7 @@ public:
 		_loseText(loseText), _winText(winText), 
 		_banana(banana), _giantMonkey(giantMonkey),
 		_barrel(barrel), _cursor(cursor), _waveUIRend(waveUIRend),_monkeyPool(monkeyPool), _waves(waves),
-		_state(COUNTDOWN), _spawnTimer(2.0f), _timeSinceSpawn(0), _waveIndex(0), _spawnIndex(0), _spawnCount(0), _countdown(11.0f) {}
+		_state(COUNTDOWN), _spawnTimer(2.0f), _timeSinceSpawn(0), _waveIndex(0), _spawnIndex(0), _spawnCount(0), _countdown(COUNTDOWN_TIME) {}
 
 
 	void Update(const float& deltaTime) override
@@ -764,7 +727,7 @@ public:
 			if (_countdown <= 0.0f)
 			{
 				_state = SPAWNING;
-				_countdown = 11.0f;
+				_countdown = COUNTDOWN_TIME;
 				// Update the UI
 				_waveUIRend.SetNum(_waveIndex + 1);
 
@@ -794,8 +757,7 @@ public:
 
 			break;
 		
-		case LOSE:
-			
+		case LOSE:		
 			_giantMonkey.Pos(LERP(_giantMonkey.Pos(), vec3(0.0f, 0.22f, -23.5f), deltaTime * 2));
 
 			if (_giantMonkey.Pos() == vec3(0.0f, 0.22f, -23.5f))
@@ -845,9 +807,7 @@ public:
 
 };
 
-
-
-class TowerB : public gtk::Behavior
+class ShooterB : public gtk::Behavior
 {
 
 private:
@@ -859,7 +819,7 @@ private:
 	float _timeSinceShot;
 
 public:
-	TowerB(ObjectPool& bulletPool, float shootDelay) : _bulletPool(bulletPool), _shootDelay(shootDelay), _timeSinceShot(0) {}
+	ShooterB(ObjectPool& bulletPool) : _bulletPool(bulletPool), _shootDelay(SHOOTER_RATE), _timeSinceShot(0) {}
 
 	void Start() override
 	{
@@ -882,6 +842,7 @@ public:
 			// If they collide
 			if ((pos - tPos).Dot((pos - tPos)) <= range && _target->Active())
 			{
+				// Check shoot delay
 				if (_timeSinceShot > _shootDelay)
 				{
 					_timeSinceShot = 0;
@@ -933,8 +894,6 @@ public:
 
 
 };
-
-
 
 class LineRenderer : public gtk::Renderer
 {
@@ -1063,7 +1022,7 @@ public:
 
 };
 
-enum
+enum LaserState
 {
 	SEARCHING,
 	SHOOTING,
@@ -1085,9 +1044,9 @@ private:
 	int _state;
 
 public:
-	LaserB(LineRenderer& lineRend, RayCollider& rayCol, SphereCollider& rangeCol, const float& shootDelay)
+	LaserB(LineRenderer& lineRend, RayCollider& rayCol, SphereCollider& rangeCol)
 		: _target(nullptr), _lineRend(lineRend), _rayCol(rayCol), _rangeCol(rangeCol),
-		_shootDelay(shootDelay), _timeSinceShot(0), _state(SEARCHING)  {}
+		_shootDelay(LASER_RATE), _timeSinceShot(0), _state(SEARCHING)  {}
 
 	void Start() override
 	{
@@ -1215,7 +1174,7 @@ public:
 
 			case SHOOT:
 
-				other.Trigger(5);
+				other.Trigger(LASER_STR);
 
 				break;
 			}
@@ -1272,7 +1231,7 @@ public:
 
 };
 
-enum
+enum SawState
 {
 	READY,
 	WAITING,
@@ -1283,7 +1242,7 @@ class SawBladeB : public gtk::Behavior
 {
 
 public:
-	SawBladeB() : _state(READY), _timeSinceHit(0), _delay(0.2f) {}
+	SawBladeB() : _state(READY), _timeSinceHit(0), _delay(SAW_RATE) {}
 
 
 	void Update(const float& deltaTime) override
@@ -1303,7 +1262,7 @@ public:
 		{
 			if (_timeSinceHit > _delay)
 			{
-				other.Trigger(10);
+				other.Trigger(SAW_STR);
 				_state = WAITING;
 				_timeSinceHit = 0;
 			}
@@ -1328,6 +1287,7 @@ enum class TowerSelection
 	LASER,
 	SAW
 };
+
 class TowerMenuB : public gtk::Behavior
 {
 public:
@@ -1437,7 +1397,6 @@ public:
 
 };
 
-
 class CursorB : public gtk::Behavior
 {
 
@@ -1477,7 +1436,7 @@ private:
 				_saw.Trigger(1);
 				_numSaws++;
 				_money -= _sawPrice;
-				_sawPrice += 10;
+				_sawPrice = SAW_PRICE_2;
 				
 			}
 			else if (_numSaws == 1)
@@ -1485,7 +1444,7 @@ private:
 				_saw.Trigger(2);
 				_numSaws++;
 				_money -= _sawPrice;
-				_sawPrice += 10;
+				_sawPrice = SAW_PRICE_3;
 			}
 			else if (_numSaws == 2)
 			{
@@ -1515,7 +1474,7 @@ public:
 		: _barrelOfMonkeys(barrelOfMonkeys), _towerMenu(towerMenu), _shooterPool(shooterPool), _laserPool(laserPool), _saw(saw), 
 		_moneyUI(moneyUI), _sawPriceUI(sawPriceUI), _hpRendUI(hpRendUI),
 		_state(ON), _numSaws(0), _speed(speed), _vel(), _velGoal(),
-		_money(1000), _shooterPrice(5), _laserPrice(8), _sawPrice(10), _hp(50), _deadMonkeyCount(0) {}
+		_money(STARTING_MONEY), _shooterPrice(SHOOTER_PRICE), _laserPrice(LASER_PRICE), _sawPrice(SAW_PRICE_1), _hp(STARTING_HP), _deadMonkeyCount(0) {}
 
 	void Update(const float& deltaTime) override
 	{

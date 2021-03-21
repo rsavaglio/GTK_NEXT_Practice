@@ -310,7 +310,7 @@ protected:
 			AddRenderer(hpText, UI2, new TextRenderer("Health"));
 		Entity& hpNum = CreateEntity(camera);
 			hpNum.Pos(vec3(-4.5f, -3.7f, 5.0f));
-			NumUIRenderer* hpUIRend = new NumUIRenderer(50);
+			NumUIRenderer* hpUIRend = new NumUIRenderer(STARTING_HP);
 			AddRenderer(hpNum, UI2, hpUIRend);
 
 
@@ -321,22 +321,25 @@ protected:
 			towerMenu.Rot(vec3(10.0f, 0.0f, 0.0f));
 			towerMenu.Scale(0.28);
 
+			// Shooter
 			Entity& shooterText = CreateEntity(towerMenu);
 				shooterText.Pos(vec3(-1.0f, -1.0f, 0.0f));
-				AddRenderer(shooterText, UI2, new TextRenderer("5"));
+				AddRenderer(shooterText, UI2, new NumUIRenderer(SHOOTER_PRICE));
 
 				Entity& shooterIcon = CreateEntity(shooterText);
 					shooterIcon.Pos(vec3(0.3f, 2.5f, 0.0f));
 					AddRenderer(shooterIcon, UI2, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
 			
+			// Laser
 			Entity& laserText = CreateEntity(towerMenu);
 				laserText.Pos(vec3(3.0f, -1.0f, 0.0f));
-				AddRenderer(laserText, UI2, new TextRenderer("8"));
+				AddRenderer(laserText, UI2, new NumUIRenderer(LASER_PRICE));
 
 				Entity& laserIcon = CreateEntity(laserText);
 					laserIcon.Pos(vec3(0.3f, 2.3f, 0.0f));
 					AddRenderer(laserIcon, UI2, new OBJRenderer(".\\TestData\\ico.obj", vec3(1.0f, 0.0f, 0.0f)));
-					
+			
+			// Saw
 			Entity& sawText = CreateEntity(towerMenu);
 				sawText.Pos(vec3(7.0f, -1.0f, 0.0f));
 				NumUIRenderer* sawTextRend = new NumUIRenderer(10);
@@ -437,22 +440,23 @@ protected:
 		std::vector<Wave> waves;
 
 		Wave wave1;
-		wave1.AddToWave(2, STANDARD, 0.1f);
-		wave1.AddToWave(2, BRUTE, 1.0f);
+		wave1.AddToWave(10, STANDARD, 0.1f);
+		wave1.AddToWave(1, BOSS, 1.0f);
 		waves.push_back(wave1);
 
-		//Wave wave2;
-		//wave2.AddToWave(3, BRUTE, 0.5f);
-		//waves.push_back(wave2);
+		Wave wave2;
+		wave2.AddToWave(3, BRUTE, 0.5f);
+		wave2.AddToWave(20, TINY, 0.2f);
+		waves.push_back(wave2);
 
-		//Wave wave3;
-		//wave3.AddToWave(1, BRUTE, 1.5f);
-		//waves.push_back(wave3);
+		Wave wave3;
+		wave3.AddToWave(1, BRUTE, 1.5f);
+		waves.push_back(wave3);
 
-		//Wave wave4;
-		//wave4.AddToWave(3, BRUTE, 0.8f);
-		//wave4.AddToWave(2, BRUTE, 0.6f);
-		//waves.push_back(wave4);
+		Wave wave4;
+		wave4.AddToWave(3, BRUTE, 0.8f);
+		wave4.AddToWave(2, BRUTE, 0.6f);
+		waves.push_back(wave4);
 
 
 		// Banana
@@ -474,6 +478,7 @@ protected:
 		giantMonkey.Pos(vec3(0.0f, 0.0f, 10000.0f));
 		giantMonkey.Rot(vec3(0.0f, 180.0f, 0.0f));
 		AddRenderer(giantMonkey, layer2, new OBJRenderer(".\\TestData\\monkey.obj", vec3(1.0f, 0.0f, 0.0f)));
+		giantMonkey.Active(false);
 		
 		Entity& loseText = CreateEntity(camera);
 		loseText.Pos(vec3(-0.1f, 0.0f, 0.0f));
@@ -485,9 +490,6 @@ protected:
 		AddRenderer(winText, UI2, new TextRenderer("YOU WIN!", vec3(1.0f)));
 		winText.Active(false);
 		
-
-		
-
 
 		// Cursor
 		Entity& cursor = CreateEntity("cursor");
