@@ -474,7 +474,13 @@ public:
 
 };
 
-
+enum
+{
+	STANDARD = -1,
+	BRUTE = -2,
+	SPEEDY = -3,
+	BOSS = -4
+};
 
 class MonkeyB : public gtk::Behavior
 {
@@ -555,16 +561,16 @@ public:
 
 			switch (code)
 			{
-			case -1:
+			case STANDARD:
 				// Spawn speedy yellow monkey
 				SetColor(vec3(0.8f, 0.7f, 0.3f));
 				Scale(1.5f);
 				_speed = 3.0f;
 				_health = 20;
-				_worth = 1;
+				_worth = 2;
 				break;
 
-			case -2:
+			case BRUTE:
 				// Spawn big blue monkey
 				SetColor(vec3(0.2f, 0.3f, 0.8f));
 				Scale(3.0f);
@@ -593,32 +599,155 @@ public:
 
 };
 
+struct SpawnGroup
+{
+	int _count;
+	int _type;
+	float _delay;
+};
+
+struct Wave
+{
+	// Monkey type, how many, spawn delay between each
+	std::vector<SpawnGroup> _spawnList;
+
+	void AddToWave(const int& count, const int& monkeyType, const float& delay)
+	{
+		_spawnList.push_back({ count, monkeyType, delay });
+	}
+
+};
+
+enum
+{
+	SPAWNING,
+	BREAK,
+	WIN
+};
+
 class BarrelOfMonkeysB : public gtk::Behavior
 {
 
 private:
+
 	ObjectPool& _monkeyPool;
 
+	std::vector<Wave> _waves;
+	int _state;
+	float _spawnTimer;
+	float _timeSinceSpawn;
+
+	int _waveIndex;
+	int _spawnIndex;
+	int _spawnCount;
+
+private:
+
+	Wave GetWave()
+	{
+		return _waves[_waveIndex];
+	}
+
+	float GetDelay()
+	{
+		return _waves[_waveIndex]._spawnList[_spawnIndex]._delay;
+	}
+
+	int GetType()
+	{
+		return _waves[_waveIndex]._spawnList[_spawnIndex]._type;
+	}
+
+	int GetCount()
+	{
+		return _waves[_waveIndex]._spawnList[_spawnIndex]._count;
+	}
+
+
 public:
-	BarrelOfMonkeysB(ObjectPool& monkeyPool) : _monkeyPool(monkeyPool) {}
+	BarrelOfMonkeysB(std::vector<Wave> waves, ObjectPool& monkeyPool) : _monkeyPool(monkeyPool), _waves(waves),
+		_state(SPAWNING), _spawnTimer(2.0f), _timeSinceSpawn(0), _waveIndex(0), _spawnIndex(0), _spawnCount(0) {}
 
 
 	void Update(const float& deltaTime) override
 	{
-		// Spawn yellow
-		if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
+		float time;
+		int type;
+
+		switch (_state)
 		{
-			Entity& newMonkey = _monkeyPool.Create();
-			newMonkey.Trigger(-1);
+		case SPAWNING:
+
+			_timeSinceSpawn += deltaTime;
+
+			// If time to spawn next monkey
+			time = GetDelay();
+			if (_timeSinceSpawn >= time)
+			{
+				_timeSinceSpawn = 0;
+
+				// Spawn Monkey
+				Entity& monkey = _monkeyPool.Create();
+				type = GetType();
+				monkey.Trigger(type);
+				_spawnCount++;
+
+				// Check if at end of spawn group
+				if (_spawnCount == GetCount())
+				{
+					// Go to next group
+					_spawnIndex++;
+					_spawnCount = 0;
+
+					// if at end of wave
+					if (_spawnIndex == GetWave()._spawnList.size())
+					{
+						_waveIndex++;
+						_spawnIndex = 0;
+
+						// if at end of wave
+						if(_waveIndex == _waves.size())
+						{
+							_state = WIN;
+						}
+					}
+				}
+
+			}
+
+
+			break;
+		case WIN:
+
+			break;
+
 		}
 
 
-		// Spawn big blue
-		if (App::GetController().CheckButton(XINPUT_GAMEPAD_B))
-		{
-			Entity& newMonkey = _monkeyPool.Create();
-			newMonkey.Trigger(-2);
-		}
+
+
+
+
+
+
+
+
+
+
+		//// Spawn yellow
+		//if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
+		//{
+		//	Entity& newMonkey = _monkeyPool.Create();
+		//	newMonkey.Trigger(-1);
+		//}
+
+
+		//// Spawn big blue
+		//if (App::GetController().CheckButton(XINPUT_GAMEPAD_B))
+		//{
+		//	Entity& newMonkey = _monkeyPool.Create();
+		//	newMonkey.Trigger(-2);
+		//}
 
 	}
 

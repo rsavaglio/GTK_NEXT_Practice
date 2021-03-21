@@ -286,13 +286,30 @@ protected:
 		//// Money ////
 		
 		Entity& uiMoney = CreateEntity(camera);
-			uiMoney.Pos(vec3(2.8f, -3.4f, 5.0f));
+			uiMoney.Pos(vec3(2.5f, -3.5f, 5.0f));
 			Entity& uiMoneyTitle = CreateEntity(uiMoney);
 				AddRenderer(uiMoneyTitle, UI2, new TextRenderer("Money"));
 			Entity& uiMoneyAmount = CreateEntity(uiMoney);
 			NumUIRenderer* moneyRend = new NumUIRenderer(9999);
 				AddRenderer(uiMoneyAmount, UI2, moneyRend);
-				uiMoneyAmount.Pos(vec3(0.0f, -0.3f, 0.0f));
+				uiMoneyAmount.Pos(vec3(0.8f, 0.0f, 0.0f));
+		
+		/// Wave ///
+		Entity& waveTitle = CreateEntity(camera);
+			waveTitle.Pos(vec3(-5.2f, -3.3f, 5.0f));
+			AddRenderer(waveTitle, UI2, new TextRenderer("Wave"));
+		Entity& waveNumUI = CreateEntity(waveTitle);
+			waveNumUI.Pos(vec3(0.6f, 0.0f, 0.0f));
+			AddRenderer(waveNumUI, UI2, new NumUIRenderer(1));
+
+		/// HP ///
+		Entity& hpText = CreateEntity(camera);
+			hpText.Pos(vec3(-5.2f, -3.7f, 5.0f));
+			AddRenderer(hpText, UI2, new TextRenderer("Health"));
+		Entity& hpNum = CreateEntity(camera);
+			hpNum.Pos(vec3(-4.5f, -3.7f, 5.0f));
+			AddRenderer(hpNum, UI2, new NumUIRenderer(50));
+
 
 		/// Tower Selection Menu
 		
@@ -303,18 +320,18 @@ protected:
 
 			Entity& shooterText = CreateEntity(towerMenu);
 				shooterText.Pos(vec3(-1.0f, -1.0f, 0.0f));
-				AddRenderer(shooterText, UI2, new TextRenderer("$5"));
+				AddRenderer(shooterText, UI2, new TextRenderer("5"));
 
 				Entity& shooterIcon = CreateEntity(shooterText);
-					shooterIcon.Pos(vec3(0.4f, 2.5f, 0.0f));
+					shooterIcon.Pos(vec3(0.3f, 2.5f, 0.0f));
 					AddRenderer(shooterIcon, UI2, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
 			
 			Entity& laserText = CreateEntity(towerMenu);
 				laserText.Pos(vec3(3.0f, -1.0f, 0.0f));
-				AddRenderer(laserText, UI2, new TextRenderer("$8"));
+				AddRenderer(laserText, UI2, new TextRenderer("8"));
 
 				Entity& laserIcon = CreateEntity(laserText);
-					laserIcon.Pos(vec3(0.6f, 2.3f, 0.0f));
+					laserIcon.Pos(vec3(0.3f, 2.3f, 0.0f));
 					AddRenderer(laserIcon, UI2, new OBJRenderer(".\\TestData\\ico.obj", vec3(1.0f, 0.0f, 0.0f)));
 					
 			Entity& sawText = CreateEntity(towerMenu);
@@ -416,10 +433,29 @@ protected:
 			AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 
 
+
 		//// Monkeys ////
+
+
+		// Waves //
+
+		std::vector<Wave> waves;
+
+		Wave wave1;
+		wave1.AddToWave(2, STANDARD, 5.0f);
+		wave1.AddToWave(5, BRUTE, 1.5f);
+		wave1.AddToWave(8, STANDARD, 5.2f);
+		waves.push_back(wave1);
+
+		Wave wave2;
+		wave2.AddToWave(3, BRUTE, 0.5f);
+		wave2.AddToWave(3, STANDARD, 1.5f);
+		wave2.AddToWave(3, BRUTE, 0.5f);
+		waves.push_back(wave2);
+
 		Entity& barrelOfMonkeys = CreateEntity();
-			ObjectPool& monkeyPool = CreatePool("monkeyPool", new MonkeyPool(cursor, barrelOfMonkeys, 20, *this, group1, layer1, towerSightCol, bulletsCol, path));
-			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(monkeyPool));
+			ObjectPool& monkeyPool = CreatePool("monkeyPool", new MonkeyPool(cursor, barrelOfMonkeys, 50, *this, group1, layer1, towerSightCol, bulletsCol, path));
+			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(waves, monkeyPool));
 
 	}
 
