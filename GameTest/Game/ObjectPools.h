@@ -48,7 +48,7 @@ public:
 			// Setup here
 			_scene.AddBehavior(*entity, _group, new BulletB());
 			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\ico.obj", vec3(0.8f, 0.5, 0.3f)));
-			_scene.AddCollider(*entity, _colGroup, new SphereCollider());
+			_scene.AddCollider(*entity, _colGroup, new SphereCollider(2.0f));
 			entity->Scale(0.5f);
 			
 			entity->Active(false);
@@ -104,6 +104,7 @@ public:
 
 
 			entity->Pos(1000.0f);
+			entity->Rot(vec3(0.0f, 90.0f, 0.0f));
 			entity->Scale(0.0f);
 
 			entity->Active(false);
@@ -157,7 +158,7 @@ public:
 			// Setup here
 			_scene.AddBehavior(*entity, _group, new ShooterB(_bulletPool));
 			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
-			_scene.AddCollider(*entity, _towerSightCol, new SphereCollider(8.0f));
+			_scene.AddCollider(*entity, _towerSightCol, new SphereCollider(SHOOTER_RNG));
 			_scene.AddCollider(*entity, _cursorSelectionCol, new SphereCollider());
 
 			entity->Active(false);

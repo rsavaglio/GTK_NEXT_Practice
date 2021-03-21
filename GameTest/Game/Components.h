@@ -20,14 +20,18 @@
 #define SHOOTER_PRICE 5
 #define SHOOTER_STR  1
 #define SHOOTER_RATE 0.2f
+#define BULLET_SPD   10.0f
+#define SHOOTER_RNG  6.5f
+#define MAX_SHOOTERS 20
 
 // Laser
 #define LASER_PRICE 8
-#define LASER_STR	5
+#define LASER_STR	4
 #define LASER_RATE  0.5f
+#define MAX_LASERS  20
 
 // Saw
-#define SAW_STR		10
+#define SAW_STR		5
 #define SAW_RATE	0.2f
 #define SAW_PRICE_1 10
 #define SAW_PRICE_2 30
@@ -36,34 +40,38 @@
 // Standard Money
 #define MONK_COLOR vec3(0.8f, 0.7f, 0.3f)
 #define MONK_SIZE  1.5f
-#define MONK_SPD   3.0f
-#define MONK_HP	   15
+#define MONK_SPD   2.2f
+#define MONK_HP	   16
 #define MONK_WORTH 2
 #define MONK_STR   3
+#define MONK_SPIN  50.0f
 
 // Brute Monkey
 #define BRUTE_COLOR vec3(0.2f, 0.3f, 0.8f)
 #define BRUTE_SIZE  3.0f
 #define BRUTE_SPD   2.0f
-#define BRUTE_HP	100
-#define BRUTE_WORTH 3
-#define BRUTE_STR   5
+#define BRUTE_HP	70
+#define BRUTE_WORTH 5
+#define BRUTE_STR   3
+#define BRUTE_SPIN  20.0f
 
 // Tiny Monkey
 #define TINY_COLOR vec3(0.2f, 0.7f, 0.3f)
 #define TINY_SIZE  1.0f
-#define TINY_SPD   4.0f
-#define TINY_HP	5
+#define TINY_SPD   3.5f
+#define TINY_HP	   8
 #define TINY_WORTH 1
 #define TINY_STR   1
+#define TINY_SPIN -200.0f
 
 // Boss Monkey
 #define BOSS_COLOR vec3(1.0f, 0.2f, 0.2f)
 #define BOSS_SIZE  5.0f
 #define BOSS_SPD   1.0f
-#define BOSS_HP	1000
+#define BOSS_HP	   500
 #define BOSS_WORTH 20
 #define BOSS_STR   10
+#define BOSS_SPIN 10.0f
 
 
 using namespace gtk;
@@ -325,7 +333,7 @@ private:
 	bool _Dead;
 
 public:
-	BulletB() :_dir(), _vel(), _speed(10.0), _Dead(true) {}
+	BulletB() :_dir(), _vel(), _speed(BULLET_SPD), _Dead(true) {}
 
 	void Start() override
 	{
@@ -440,6 +448,7 @@ private:
 	int _health;
 	int _worth;
 	int _strength;
+	float _spinSpd;
 
 	std::vector<vec3> _path;
 	int _currentNode;
@@ -448,7 +457,7 @@ private:
 
 public:
 	MonkeyB(Entity& cursor, std::vector<vec3> path)
-		: _cursor(cursor), _speed(1.0f), _health(1), _worth(1), _strength(1), _path(path), _currentNode(0) {}
+		: _cursor(cursor), _speed(1.0f), _health(1), _worth(1), _strength(1), _spinSpd(1), _path(path), _currentNode(0) {}
 
 	void Start() override
 	{
@@ -467,6 +476,9 @@ public:
 
 		// Moving from node to node
 		_T += deltaTime * _speed;
+
+		// Spin
+		Rot(vec3(0.0f, _spinSpd * deltaTime, 0.0f), true);
 
 		// If at next node
 		if (_T >= 1.0f)
@@ -518,6 +530,7 @@ public:
 				_health   = MONK_HP;
 				_worth    = MONK_WORTH;
 				_strength = MONK_STR;
+				_spinSpd  = MONK_SPIN;
 				break;
 
 			case BRUTE:
@@ -528,6 +541,7 @@ public:
 				_health   = BRUTE_HP;
 				_worth    = BRUTE_WORTH;
 				_strength = BRUTE_STR;
+				_spinSpd =  BRUTE_SPIN;
 				break;
 
 			case TINY:
@@ -538,6 +552,7 @@ public:
 				_health   = TINY_HP;
 				_worth    = TINY_WORTH;
 				_strength = TINY_STR;
+				_spinSpd  = TINY_SPIN;
 				break;
 
 			case BOSS:
@@ -548,6 +563,7 @@ public:
 				_health   = BOSS_HP;
 				_worth    = BOSS_WORTH;
 				_strength = BOSS_STR;
+				_spinSpd =  TINY_SPIN;
 				break;
 			}
 		}
@@ -702,6 +718,7 @@ public:
 						// End of wave
 						// Wait for monkeys to die
 						_state = WAIT;
+						_barrel.SetColor(vec3(0.5f, 0.2f, 0.1f));
 							
 					}
 				}
@@ -727,6 +744,8 @@ public:
 			if (_countdown <= 0.0f)
 			{
 				_state = SPAWNING;
+				_barrel.SetColor(vec3(0.8f, 0.5f, 0.25f));
+
 				_countdown = COUNTDOWN_TIME;
 				// Update the UI
 				_waveUIRend.SetNum(_waveIndex + 1);
@@ -783,21 +802,34 @@ public:
 		// Wave has ended 
 		if (code == -1)
 		{
+			// If more waves
 			if (_waveIndex < _waves.size() -1 )
 			{
-				_state = COUNTDOWN;
-				_waveIndex++;
+				if(_state != LOSE || _state != WIN)
+				{
+					// Start countdown
+					_state = COUNTDOWN;
+					_waveIndex++;
+				}
+
 			}
-			else
+			else // If no more waves
 			{
-				_state = WIN;
+				// WIN!
+				if (_state != LOSE)
+				{
+					_state = WIN;
+				}
 			}
 
 		}
-		else if (code == -2)
+		else if (code == -2) // Cursor sends -2 when HP is 0
 		{
-			_state = LOSE;
-			_giantMonkey.Active(true);
+			if (_state != WIN)
+			{
+				_state = LOSE;
+				_giantMonkey.Active(true);
+			}
 		}
 
 
@@ -837,10 +869,10 @@ public:
 			// Do collision on target
 			vec3 pos = Pos();
 			vec3 tPos = _target->Pos();
-			float range = 100;
+			float r = SHOOTER_RNG;
 
 			// If they collide
-			if ((pos - tPos).Dot((pos - tPos)) <= range && _target->Active())
+			if ((pos - tPos).Dot((pos - tPos)) <= (r+r)*(r+r) && _target->Active())
 			{
 				// Check shoot delay
 				if (_timeSinceShot > _shootDelay)
@@ -1128,7 +1160,7 @@ public:
 			tPos = _target->Pos();
 			range = 100;
 			dir = tPos - pos;
-			end = dir * 5;
+			end = dir * 3;
 
 			_rayCol._dir = dir;
 

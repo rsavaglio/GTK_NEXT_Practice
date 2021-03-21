@@ -389,11 +389,11 @@ protected:
 
 		// 10 Shooters
 		ObjectPool& shooterPool = CreatePool("shooterPool",
-			new ShooterPool(10, *this, group1, layer2, towerSightCol, cursorSelectionCol, bulletPool));
+			new ShooterPool(MAX_SHOOTERS, *this, group1, layer2, towerSightCol, cursorSelectionCol, bulletPool));
 		
 		// 10 Lasers
 		ObjectPool& laserPool = CreatePool("laserPool",
-				new LaserPool(10, *this, 
+				new LaserPool(MAX_LASERS, *this,
 				group1,
 				layer1, layer2, 
 				towerSightCol, cursorSelectionCol, bulletsCol));
@@ -440,23 +440,27 @@ protected:
 		std::vector<Wave> waves;
 
 		Wave wave1;
-		wave1.AddToWave(10, STANDARD, 0.1f);
-		wave1.AddToWave(1, BOSS, 1.0f);
+		wave1.AddToWave(5, STANDARD, 3.0f);
+		wave1.AddToWave(5, STANDARD, 1.0f);
+		wave1.AddToWave(1, BRUTE, 3.0f);
 		waves.push_back(wave1);
 
 		Wave wave2;
-		wave2.AddToWave(3, BRUTE, 0.5f);
-		wave2.AddToWave(20, TINY, 0.2f);
+		wave2.AddToWave(5, TINY,  0.2f);
+		wave2.AddToWave(1, BRUTE, 0.5f);
+		wave2.AddToWave(5, TINY, 0.2f);
+		wave2.AddToWave(1, BRUTE, 1.5f);
+		wave2.AddToWave(5, TINY, 0.2f);
 		waves.push_back(wave2);
 
 		Wave wave3;
-		wave3.AddToWave(1, BRUTE, 1.5f);
+		wave3.AddToWave(1, BOSS, 1.5f);
 		waves.push_back(wave3);
 
-		Wave wave4;
-		wave4.AddToWave(3, BRUTE, 0.8f);
-		wave4.AddToWave(2, BRUTE, 0.6f);
-		waves.push_back(wave4);
+		//Wave wave4;
+		//wave4.AddToWave(3, BRUTE, 0.8f);
+		//wave4.AddToWave(2, BRUTE, 0.6f);
+		//waves.push_back(wave4);
 
 
 		// Banana
@@ -470,7 +474,7 @@ protected:
 		Entity& barrel = CreateEntity();
 		barrel.Scale(0.4f);
 		barrel.Pos(vec3(path.front().x, path.front().y - 2, path.front().z));
-		AddRenderer(barrel, layer2, new OBJRenderer(".\\TestData\\barrel.obj", vec3(205.0f / 255.0f, 133.0f / 255.0f, 63.0f / 255.0f)));
+		AddRenderer(barrel, layer2, new OBJRenderer(".\\TestData\\barrel.obj", vec3(0.6f, 0.4f, 0.2f)));
 
 
 		// Giant evil monkey when you lose
@@ -507,9 +511,6 @@ protected:
 		AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 		AddBehavior(cursor, group1, new CursorB(*barrelB, *towerMenuBehavior, shooterPool, laserPool, saw,
 			*moneyRend, *sawTextRend, *hpUIRend, 35.0f));
-
-
-
 
 	}
 
