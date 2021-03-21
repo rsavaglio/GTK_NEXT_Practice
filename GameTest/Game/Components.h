@@ -33,9 +33,9 @@
 // Saw
 #define SAW_STR		2
 #define SAW_RATE	0.2f
-#define SAW_PRICE_1 15
-#define SAW_PRICE_2 30
-#define SAW_PRICE_3 60
+#define SAW_PRICE_1 12
+#define SAW_PRICE_2 24
+#define SAW_PRICE_3 30
 
 // Standard Money
 #define MONK_COLOR vec3(0.8f, 0.7f, 0.3f)
