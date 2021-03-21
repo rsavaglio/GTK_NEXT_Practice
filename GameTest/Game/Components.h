@@ -13,7 +13,7 @@
 #define COUNTDOWN_TIME 6.0f
 
 // Player Stats
-#define STARTING_MONEY 16
+#define STARTING_MONEY 1000 //16
 #define STARTING_HP    30
 
 // Shooter
@@ -82,29 +82,18 @@ class BehaviorTemplate : public gtk::Behavior
 public:
 	BehaviorTemplate() {}
 
-	void Start() override
-	{
+	// Called before the first update
+	void Start() override {}
 
-	}
+	void Update(const float& deltaTime) override {}
 
-	void Update(const float& deltaTime) override
-	{
-
-	}
-
+	// Use for sending messages through entities
 	int Trigger(const int& code) override
 	{
 		return 0;
 	}
 
-	void OnCollision(Entity& other) override
-	{
-
-	}
-
-
-
-private:
+	void OnCollision(Entity& other) override {}
 
 };
 
@@ -805,7 +794,7 @@ public:
 			// If more waves
 			if (_waveIndex < _waves.size() -1 )
 			{
-				if(_state != LOSE || _state != WIN)
+				if(_state != LOSE && _state != WIN)
 				{
 					// Start countdown
 					_state = COUNTDOWN;
@@ -1708,6 +1697,61 @@ public:
 	{
 		_state = OFF;
 		SetColor(vec3(1.0f, 0.0f, 0.0f));
+	}
+
+
+};
+
+
+class MenuMonkeyB : public gtk::Behavior
+{
+
+private:
+
+	
+	float _speed;
+	float _spinSpd;
+
+	std::vector<vec3> _path;
+	int _currentNode;
+	float _T;
+
+public:
+	MenuMonkeyB(int startNode, float speed, float spin, std::vector<vec3> path)
+		: _speed(speed),_spinSpd(spin), _path(path), _currentNode(startNode) {}
+
+	void Start() override
+	{
+	}
+
+	void Update(const float& deltaTime) override
+	{
+
+		// Moving from node to node
+		_T += deltaTime * _speed;
+
+		// Spin
+		Rot(vec3(0.0f, _spinSpd * deltaTime, 0.0f), true);
+
+		// If at next node
+		if (_T >= 1.0f)
+		{
+			_T = 0;
+			// If not at the end of path
+			if (_currentNode != _path.size() - 2)
+			{
+				// Next node
+				_currentNode++;
+			}
+			else // End
+			{
+				// Start again
+				_currentNode = 0;
+			}
+		}
+
+		Pos(LERP(_path[_currentNode], _path[_currentNode + 1], _T));
+
 	}
 
 

@@ -22,8 +22,6 @@ namespace gtk {
 
 	class Scene {
 
-		// TODO: Could use some feedback and refactoring here 
-
 		friend class Game;
 
 	public:

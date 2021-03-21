@@ -29,13 +29,19 @@ protected:
 
 		UpdateGroup group = CreateUpdateGroup();
 		RenderLayer layer = CreateRenderLayer();
+		CollisionGroup colGroup = CreateCollisionGroup();
 
 		Entity& camera = CreateEntity();
 			AddCamera(camera, new PerspectiveCam(1, 100, 80));
 
-		Entity& entity = CreateEntity();
-		AddBehavior(entity, group, new BehaviorTemplate());
-		AddRenderer(entity, layer, new RendTemplate());
+		Entity& parent = CreateEntity();
+			AddBehavior(parent, group, new BehaviorTemplate());
+			AddRenderer(parent, layer, new RendTemplate());
+
+		Entity& child = CreateEntity(parent);
+			AddBehavior(child, group, new BehaviorTemplate());
+			AddRenderer(child, layer, new RendTemplate());
+			AddCollider(child, colGroup, new SphereCollider());
 
 	}
 
@@ -885,6 +891,137 @@ protected:
 	}
 
 	// Called after all entities and collision are updated
+	void PostUpdate() override
+	{
+
+	}
+};
+
+class MainMenu : public gtk::Scene
+{
+
+public:
+
+	MainMenu(gtk::Game& game) : gtk::Scene(game) {}
+
+protected:
+
+	void CreatePath(const std::vector<vec3>& nodePos, RenderLayer layer, const vec3& color)
+	{
+		int i = 0;
+		for (const vec3& pos : nodePos)
+		{
+			Entity& node = CreateEntity("PathNode" + std::to_string(i));
+			AddRenderer(node, layer, new CubeRenderer(color));
+			node.Scale(3.0f);
+			node.Pos(pos);
+			i++;
+		}
+	}
+	void AddToPath(std::vector<vec3>& nodes, Direction dir, int count)
+	{
+		ASSERT(nodes.size() > 0);
+
+		switch (dir)
+		{
+		case LEFT:
+
+			for (int i = 0; i < count; i++)
+			{
+				nodes.push_back(vec3(nodes.back()) + vec3(-6.0f, 0.0f, 0.0f));
+			}
+
+			break;
+
+		case RIGHT:
+
+			for (int i = 0; i < count; i++)
+			{
+				nodes.push_back(vec3(nodes.back()) + vec3(6.0f, 0.0f, 0.0f));
+			}
+
+			break;
+
+		case UP:
+
+			for (int i = 0; i < count; i++)
+			{
+				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 6.0f, 0.0f));
+			}
+
+			break;
+
+		case DOWN:
+
+			for (int i = 0; i < count; i++)
+			{
+				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, -6.0f, 0.0f));
+			}
+
+			break;
+
+		case FORWARD:
+
+			for (int i = 0; i < count; i++)
+			{
+				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 0.0f, 6.0f));
+			}
+
+			break;
+
+		case BACK:
+
+			for (int i = 0; i < count; i++)
+			{
+				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 0.0f, -6.0f));
+			}
+
+			break;
+		}
+
+
+	}
+
+	// Called by game when scene starts
+	void Setup() override
+	{
+		using namespace gtk;
+
+		UpdateGroup group = CreateUpdateGroup();
+		RenderLayer layer = CreateRenderLayer();
+
+		std::vector<vec3> path;
+
+		// Start Node
+		path.push_back(vec3(-15.0f, -6.0f, 0.0f));
+
+		AddToPath(path, UP, 3);
+		AddToPath(path, RIGHT, 5);
+		AddToPath(path, DOWN, 3);
+		AddToPath(path, LEFT, 5);
+
+		CreatePath(path, layer, RED);
+
+
+		Entity& camera = CreateEntity();
+			camera.Pos(vec3(0.0f, 0.0f, -25.0f));
+			AddCamera(camera, new PerspectiveCam(1, 1000, 70));
+
+		Entity& monkey = CreateEntity();
+			monkey.Rot(vec3(0.0f, 180.0f, 0.0f));
+			monkey.Scale(3.0f);
+			AddBehavior(monkey, group, new MenuMonkeyB(0, 2.0f, 120.0f, path));
+			AddRenderer(monkey, layer, new OBJRenderer(".\\TestData\\monkey.obj", vec3(1.0f, 0.6f, 0.0f)));
+
+		Entity& banana = CreateEntity();
+			banana.Scale(0.05f);
+			AddBehavior(banana, group, new MenuMonkeyB(5, 2.0f, -80.0f, path));
+			AddRenderer(banana, layer, new OBJRenderer(".\\TestData\\banana.obj", vec3(0.7f, 0.7f, 0.0f)));
+
+
+	}
+
+	// Called after all entities are updated
 	void PostUpdate() override
 	{
 

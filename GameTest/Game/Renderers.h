@@ -179,11 +179,10 @@ private:
 class OBJRenderer : public gtk::Renderer
 {
 
-
 public:
 
-
-	OBJRenderer(std::string filePath, gtk::vec3 color = vec3(0.5f, 0.5f, 0.2f)) : _vbo(), _ibo(), Renderer(color)
+	OBJRenderer(std::string filePath, gtk::vec3 color = vec3(0.5f, 0.5f, 0.2f))
+		: _vbo(), _ibo(), Renderer(color)
 	{
 		LoadObject(filePath);
 	}
@@ -198,6 +197,7 @@ public:
 		gtk::vec4 s;
 		gtk::vec4 e;
 
+		// Functions from SceneObject
 		gtk::mat4 model = TRS();
 		gtk::mat4 view = GetView();
 		gtk::mat4 proj = GetProj();
@@ -224,7 +224,6 @@ public:
 
 		}
 	}
-
 
 private:
 
