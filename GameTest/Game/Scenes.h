@@ -300,7 +300,8 @@ protected:
 			AddRenderer(waveTitle, UI2, new TextRenderer("Wave"));
 		Entity& waveNumUI = CreateEntity(waveTitle);
 			waveNumUI.Pos(vec3(0.6f, 0.0f, 0.0f));
-			AddRenderer(waveNumUI, UI2, new NumUIRenderer(1));
+			NumUIRenderer* waveUIRend = new NumUIRenderer(1);
+			AddRenderer(waveNumUI, UI2, waveUIRend);
 
 		/// HP ///
 		Entity& hpText = CreateEntity(camera);
@@ -308,7 +309,8 @@ protected:
 			AddRenderer(hpText, UI2, new TextRenderer("Health"));
 		Entity& hpNum = CreateEntity(camera);
 			hpNum.Pos(vec3(-4.5f, -3.7f, 5.0f));
-			AddRenderer(hpNum, UI2, new NumUIRenderer(50));
+			NumUIRenderer* hpUIRend = new NumUIRenderer(50);
+			AddRenderer(hpNum, UI2, hpUIRend);
 
 
 		/// Tower Selection Menu
@@ -428,23 +430,21 @@ protected:
 
 		Entity& cursor = CreateEntity("cursor");
 			AddBehavior(cursor, group1, new CursorB(*towerMenuBehavior, shooterPool, laserPool, saw,
-				*moneyRend, *sawTextRend, 35.0f));
+				*moneyRend, *sawTextRend, *hpUIRend,  35.0f));
 			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\ufo.obj"));
 			AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 
 
-
 		//// Monkeys ////
-
 
 		// Waves //
 
 		std::vector<Wave> waves;
 
 		Wave wave1;
-		wave1.AddToWave(2, STANDARD, 5.0f);
-		wave1.AddToWave(5, BRUTE, 1.5f);
-		wave1.AddToWave(8, STANDARD, 5.2f);
+		wave1.AddToWave(2, STANDARD, 1.0f);
+		wave1.AddToWave(5, BRUTE, 0.1f);
+		wave1.AddToWave(2, STANDARD, 0.2f);
 		waves.push_back(wave1);
 
 		Wave wave2;
@@ -453,9 +453,19 @@ protected:
 		wave2.AddToWave(3, BRUTE, 0.5f);
 		waves.push_back(wave2);
 
+		Wave wave3;
+		wave3.AddToWave(1, BRUTE, 0.5f);
+		waves.push_back(wave3);
+
+		Wave wave4;
+		wave4.AddToWave(20, BRUTE, 0.1f);
+		wave4.AddToWave(2, BRUTE, 0.6f);
+		waves.push_back(wave4);
+
 		Entity& barrelOfMonkeys = CreateEntity();
-			ObjectPool& monkeyPool = CreatePool("monkeyPool", new MonkeyPool(cursor, barrelOfMonkeys, 50, *this, group1, layer1, towerSightCol, bulletsCol, path));
-			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(waves, monkeyPool));
+			ObjectPool& monkeyPool = CreatePool("monkeyPool", 
+				new MonkeyPool(cursor, barrelOfMonkeys, 50, *this, group1, layer1, towerSightCol, bulletsCol, path));
+			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(*waveUIRend, waves, monkeyPool));
 
 	}
 

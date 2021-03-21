@@ -492,6 +492,8 @@ private:
 	float _speed;
 	int _health;
 	int _worth;
+	int _strength;
+
 	std::vector<vec3> _path;
 	int _currentNode;
 
@@ -499,7 +501,7 @@ private:
 
 public:
 	MonkeyB(Entity& cursor, std::vector<vec3> path)
-		: _cursor(cursor), _speed(1.0f), _health(5), _worth(1), _path(path), _currentNode(0) {}
+		: _cursor(cursor), _speed(1.0f), _health(5), _worth(1), _strength(1), _path(path), _currentNode(0) {}
 
 	void Start() override
 	{
@@ -532,7 +534,7 @@ public:
 			else // Monkey reaches banana!
 			{
 				// TODO: Do something bad to the player
-
+				_cursor.Trigger(-_strength);
 
 				// Disable Monkey
 				GetEntity().Active(false);
@@ -568,6 +570,7 @@ public:
 				_speed = 3.0f;
 				_health = 20;
 				_worth = 2;
+				_strength = 3;
 				break;
 
 			case BRUTE:
@@ -577,6 +580,7 @@ public:
 				_speed = 2.0f;
 				_health = 100;
 				_worth = 3;
+				_strength = 5;
 				break;
 			}
 		}
@@ -631,6 +635,7 @@ class BarrelOfMonkeysB : public gtk::Behavior
 private:
 
 	ObjectPool& _monkeyPool;
+	NumUIRenderer& _waveUIRend;
 
 	std::vector<Wave> _waves;
 	int _state;
@@ -665,7 +670,8 @@ private:
 
 
 public:
-	BarrelOfMonkeysB(std::vector<Wave> waves, ObjectPool& monkeyPool) : _monkeyPool(monkeyPool), _waves(waves),
+	BarrelOfMonkeysB(NumUIRenderer& waveUIRend, std::vector<Wave> waves, ObjectPool& monkeyPool) :
+		_waveUIRend(waveUIRend),_monkeyPool(monkeyPool), _waves(waves),
 		_state(SPAWNING), _spawnTimer(2.0f), _timeSinceSpawn(0), _waveIndex(0), _spawnIndex(0), _spawnCount(0) {}
 
 
@@ -705,10 +711,17 @@ public:
 						_waveIndex++;
 						_spawnIndex = 0;
 
-						// if at end of wave
+						// If not at end
 						if(_waveIndex == _waves.size())
 						{
+							// YOU WIN!
 							_state = WIN;
+						}
+						else
+						{
+							// Update the UI
+							_waveUIRend.SetNum(_waveIndex + 1);
+							
 						}
 					}
 				}
@@ -718,6 +731,8 @@ public:
 
 			break;
 		case WIN:
+			// Hooray
+
 
 			break;
 
@@ -1358,6 +1373,7 @@ private:
 	Entity& _saw;
 	NumUIRenderer& _moneyUI;
 	NumUIRenderer& _sawPriceUI;
+	NumUIRenderer& _hpRendUI;
 
 	CursorState _state;
 	int _numSaws;
@@ -1369,6 +1385,8 @@ private:
 	int _shooterPrice;
 	int _laserPrice;
 	int _sawPrice;
+
+	int _hp;
 
 	void SpawnSawHelper()
 	{
@@ -1412,12 +1430,13 @@ private:
 	}
 
 public:
-	CursorB(TowerMenuB& towerMenu, ObjectPool& shooterPool, ObjectPool& laserPool, Entity& saw, NumUIRenderer& moneyUI, NumUIRenderer& sawPriceUI,
+	CursorB(TowerMenuB& towerMenu, ObjectPool& shooterPool, ObjectPool& laserPool, Entity& saw, 
+		NumUIRenderer& moneyUI, NumUIRenderer& sawPriceUI, NumUIRenderer& hpRendUI,
 			const float& speed)
 		: _towerMenu(towerMenu), _shooterPool(shooterPool), _laserPool(laserPool), _saw(saw), 
-		_moneyUI(moneyUI), _sawPriceUI(sawPriceUI),
+		_moneyUI(moneyUI), _sawPriceUI(sawPriceUI), _hpRendUI(hpRendUI),
 		_state(ON), _numSaws(0), _speed(speed), _vel(), _velGoal(),
-		_money(1000), _shooterPrice(5), _laserPrice(8), _sawPrice(10){}
+		_money(1000), _shooterPrice(5), _laserPrice(8), _sawPrice(10), _hp(50) {}
 
 	void Update(const float& deltaTime) override
 	{
@@ -1562,12 +1581,32 @@ public:
 
 	int Trigger(const int& code) override
 	{
+		// if mokey died
 		if (code > 0)
 		{
-			// A monkey died
+			//Get Money
 			_money += code;
+		}
+		else // Monkey got to the end
+		{
+			// Update Health
+			_hp += code;
+
+			if (_hp > 0)
+			{
+				_hpRendUI.SetNum(_hp);
+			}
+			else
+			{
+				// GAME OVER sad
+				
+				_hpRendUI.SetNum(0);
+				int i = 0;
+
+			}
 
 		}
+
 
 
 		return 0;

@@ -70,6 +70,7 @@ private:
 
 	Entity& _cursor;
 	Entity& _barrel;
+
 	UpdateGroup _group;
 	RenderLayer _layer;
 	CollisionGroup _colGroup;
