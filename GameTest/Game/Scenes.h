@@ -437,37 +437,56 @@ protected:
 		std::vector<Wave> waves;
 
 		Wave wave1;
-		wave1.AddToWave(20, STANDARD, 0.1f);
+		wave1.AddToWave(2, STANDARD, 0.1f);
 		wave1.AddToWave(2, BRUTE, 1.0f);
 		waves.push_back(wave1);
 
-		Wave wave2;
-		wave2.AddToWave(3, BRUTE, 0.5f);
-		waves.push_back(wave2);
+		//Wave wave2;
+		//wave2.AddToWave(3, BRUTE, 0.5f);
+		//waves.push_back(wave2);
 
-		Wave wave3;
-		wave3.AddToWave(1, BRUTE, 1.5f);
-		waves.push_back(wave3);
+		//Wave wave3;
+		//wave3.AddToWave(1, BRUTE, 1.5f);
+		//waves.push_back(wave3);
 
-		Wave wave4;
-		wave4.AddToWave(3, BRUTE, 0.8f);
-		wave4.AddToWave(2, BRUTE, 0.6f);
-		waves.push_back(wave4);
+		//Wave wave4;
+		//wave4.AddToWave(3, BRUTE, 0.8f);
+		//wave4.AddToWave(2, BRUTE, 0.6f);
+		//waves.push_back(wave4);
 
 
-
+		// Banana
 		Entity& banana = CreateEntity();
 		banana.Scale(0.05f);
 		banana.Pos(path.back());
 		AddBehavior(banana, group1, new RotatorB(vec3(0.0f, 50.0f, 0.0f)));
 		AddRenderer(banana, layer2, new OBJRenderer(".\\TestData\\banana.obj", vec3(1.0f, 1.0f, 0.0f)));
 
-
+		// Barrel at spawn
 		Entity& barrel = CreateEntity();
 		barrel.Scale(0.4f);
 		barrel.Pos(vec3(path.front().x, path.front().y - 2, path.front().z));
 		AddRenderer(barrel, layer2, new OBJRenderer(".\\TestData\\barrel.obj", vec3(205.0f / 255.0f, 133.0f / 255.0f, 63.0f / 255.0f)));
 
+
+		// Giant evil monkey when you lose
+		Entity& giantMonkey = CreateEntity();
+		giantMonkey.Pos(vec3(0.0f, 0.0f, 10000.0f));
+		giantMonkey.Rot(vec3(0.0f, 180.0f, 0.0f));
+		AddRenderer(giantMonkey, layer2, new OBJRenderer(".\\TestData\\monkey.obj", vec3(1.0f, 0.0f, 0.0f)));
+		
+		Entity& loseText = CreateEntity(camera);
+		loseText.Pos(vec3(-0.1f, 0.0f, 0.0f));
+		AddRenderer(loseText, UI2, new TextRenderer("GAME OVER!", vec3(1.0f)));
+		loseText.Active(false);
+
+		Entity& winText = CreateEntity(camera);
+		winText.Pos(vec3(-0.1f, 0.0f, 0.0f));
+		AddRenderer(winText, UI2, new TextRenderer("YOU WIN!", vec3(1.0f)));
+		winText.Active(false);
+		
+
+		
 
 
 		// Cursor
@@ -475,12 +494,13 @@ protected:
 		
 		// Monkey Spawner
 		Entity& monkeySpawner = CreateEntity();
-			ObjectPool& monkeyPool = CreatePool("monkeyPool", 
-				new MonkeyPool(cursor, monkeySpawner, 50, *this, group1, layer1, towerSightCol, bulletsCol, path));
-			BarrelOfMonkeysB* barrelB = new BarrelOfMonkeysB(barrel, cursor, *waveUIRend, waves, monkeyPool);
+			ObjectPool& monkeyPool = 
+				CreatePool("monkeyPool",new MonkeyPool(cursor, monkeySpawner, 50, *this, group1, layer1, towerSightCol, bulletsCol, path));
+			BarrelOfMonkeysB* barrelB = 
+				new BarrelOfMonkeysB(loseText, winText, banana, giantMonkey, barrel, cursor, *waveUIRend, waves, monkeyPool);
 			AddBehavior(monkeySpawner, group1, barrelB);
 
-			// Cursor
+		// Cursor
 		AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\ufo.obj"));
 		AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 		AddBehavior(cursor, group1, new CursorB(*barrelB, *towerMenuBehavior, shooterPool, laserPool, saw,

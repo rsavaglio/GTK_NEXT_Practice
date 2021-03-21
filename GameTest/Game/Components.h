@@ -638,6 +638,10 @@ class BarrelOfMonkeysB : public gtk::Behavior
 
 private:
 
+	Entity& _loseText;
+	Entity& _winText;
+	Entity& _banana;
+	Entity& _giantMonkey;
 	Entity& _barrel;
 	Entity& _cursor;
 	ObjectPool& _monkeyPool;
@@ -684,7 +688,11 @@ public:
 
 
 public:
-	BarrelOfMonkeysB(Entity& barrel, Entity& cursor, NumUIRenderer& waveUIRend, std::vector<Wave> waves, ObjectPool& monkeyPool) :
+	BarrelOfMonkeysB(Entity& loseText, Entity& winText, 
+		Entity& banana, Entity& giantMonkey, Entity& barrel, Entity& cursor, 
+		NumUIRenderer& waveUIRend, std::vector<Wave> waves, ObjectPool& monkeyPool) :
+		_loseText(loseText), _winText(winText), 
+		_banana(banana), _giantMonkey(giantMonkey),
 		_barrel(barrel), _cursor(cursor), _waveUIRend(waveUIRend),_monkeyPool(monkeyPool), _waves(waves),
 		_state(COUNTDOWN), _spawnTimer(2.0f), _timeSinceSpawn(0), _waveIndex(0), _spawnIndex(0), _spawnCount(0), _countdown(11.0f) {}
 
@@ -768,16 +776,39 @@ public:
 
 
 		case WIN:
-			// Hooray
 
-			i = 0;
+			// Move banana to center
+			_banana.Pos(LERP(_banana.Pos(), vec3(0.0f, 0.22f, -20.5f), deltaTime * 2));
+
+			// When at center show text and poll for input
+			if (_banana.Pos() == vec3(0.0f, 0.22f, -20.5f))
+			{
+				_winText.Active(true);
+				if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
+				{
+					SwitchScene("L1");
+				}
+			}
+
+
 
 			break;
 		
 		case LOSE:
-			// sad
+			
+			_giantMonkey.Pos(LERP(_giantMonkey.Pos(), vec3(0.0f, 0.22f, -23.5f), deltaTime * 2));
 
-			i = 0;
+			if (_giantMonkey.Pos() == vec3(0.0f, 0.22f, -23.5f))
+			{
+				_loseText.Active(true);
+				if (App::GetController().CheckButton(XINPUT_GAMEPAD_A))
+				{
+					SwitchScene("L1");
+				}
+
+			}
+
+
 
 			break;
 
@@ -804,6 +835,7 @@ public:
 		else if (code == -2)
 		{
 			_state = LOSE;
+			_giantMonkey.Active(true);
 		}
 
 
