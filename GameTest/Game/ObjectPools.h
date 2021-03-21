@@ -68,6 +68,7 @@ private:
 
 	std::vector<vec3> _path;
 
+	Entity& _cursor;
 	Entity& _barrel;
 	UpdateGroup _group;
 	RenderLayer _layer;
@@ -76,10 +77,10 @@ private:
 
 public:
 
-	MonkeyPool(Entity& barrel, int count, Scene& scene,
+	MonkeyPool(Entity& cursor, Entity& barrel, int count, Scene& scene,
 		const gtk::UpdateGroup& group, const gtk::RenderLayer& layer, const gtk::CollisionGroup colGroup, const gtk::CollisionGroup colGroup2,
 		std::vector<vec3> path)
-		: _path(path), _barrel(barrel), _group(group), _layer(layer), _colGroup(colGroup), _colGroup2(colGroup2),
+		: _path(path), _cursor(cursor), _barrel(barrel), _group(group), _layer(layer), _colGroup(colGroup), _colGroup2(colGroup2),
 		ObjectPool(count, scene)
 	{
 		GeneratePool();
@@ -95,7 +96,7 @@ public:
 
 
 			// Setup here
-			_scene.AddBehavior(*entity, _group, new MonkeyB(_path));
+			_scene.AddBehavior(*entity, _group, new MonkeyB(_cursor, _path));
 			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\monkey.obj", vec3(1.0f, 0.0f, 0.0f)));
 			_scene.AddCollider(*entity, _colGroup, new SphereCollider());
 			_scene.AddCollider(*entity, _colGroup2, new SphereCollider());

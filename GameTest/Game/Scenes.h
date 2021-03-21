@@ -290,7 +290,8 @@ protected:
 			Entity& uiMoneyTitle = CreateEntity(uiMoney);
 				AddRenderer(uiMoneyTitle, UI2, new TextRenderer("Money"));
 			Entity& uiMoneyAmount = CreateEntity(uiMoney);
-				AddRenderer(uiMoneyAmount, UI2, new TextRenderer("$100"));
+			NumUIRenderer* moneyRend = new NumUIRenderer(9999);
+				AddRenderer(uiMoneyAmount, UI2, moneyRend);
 				uiMoneyAmount.Pos(vec3(0.0f, -0.3f, 0.0f));
 
 		/// Tower Selection Menu
@@ -318,7 +319,8 @@ protected:
 					
 			Entity& sawText = CreateEntity(towerMenu);
 				sawText.Pos(vec3(7.0f, -1.0f, 0.0f));
-				AddRenderer(sawText, UI2, new TextRenderer("$10"));
+				NumUIRenderer* sawTextRend = new NumUIRenderer(10);
+				AddRenderer(sawText, UI2, sawTextRend);
 
 				Entity& sawIcon = CreateEntity(sawText);
 					sawIcon.Pos(vec3(0.6f, 2.3f, 0.0f));
@@ -356,10 +358,6 @@ protected:
 #pragma endregion
 	
 
-		//// Monkeys ////
-		Entity& barrelOfMonkeys = CreateEntity();
-			ObjectPool& monkeyPool = CreatePool("monkeyPool", new MonkeyPool(barrelOfMonkeys, 20, *this, group1, layer1, towerSightCol, bulletsCol, path));
-			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(monkeyPool));
 
 		//// Towers ////
 #pragma region Towers
@@ -412,9 +410,16 @@ protected:
 #pragma endregion
 
 		Entity& cursor = CreateEntity("cursor");
-			AddBehavior(cursor, group1, new CursorB(*towerMenuBehavior, shooterPool, laserPool, saw, 35.0f));
+			AddBehavior(cursor, group1, new CursorB(*towerMenuBehavior, shooterPool, laserPool, saw,
+				*moneyRend, *sawTextRend, 35.0f));
 			AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\ufo.obj"));
 			AddCollider(cursor, cursorSelectionCol, new SphereCollider());
+
+
+		//// Monkeys ////
+		Entity& barrelOfMonkeys = CreateEntity();
+			ObjectPool& monkeyPool = CreatePool("monkeyPool", new MonkeyPool(cursor, barrelOfMonkeys, 20, *this, group1, layer1, towerSightCol, bulletsCol, path));
+			AddBehavior(barrelOfMonkeys, group1, new BarrelOfMonkeysB(monkeyPool));
 
 	}
 

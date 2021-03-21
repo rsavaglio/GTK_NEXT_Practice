@@ -4,6 +4,7 @@
 #include "gtk/gtkMath.hpp"
 #include <math.h>
 #include "enums.h"
+#include <string>
 
 using namespace gtk;
 
@@ -36,6 +37,160 @@ public:
 
 
 private:
+
+};
+
+class TextRenderer : public gtk::Renderer
+{
+
+public:
+	gtk::vec3 _color;
+	const char* _text;
+
+public:
+
+	TextRenderer(const char* text, gtk::vec3 color = gtk::vec3(0.5f, 0.5f, 0.2f)) : _color(color), _text(text)
+	{
+	}
+
+	// Helper
+	float GetRotFromParents(gtk::Entity& ent)
+	{
+		// Base case, at root entity
+		if (&ent.Parent() == &ent)
+		{
+			return ent.Rot().z;
+		}
+		else
+		{
+			// Not at root yet
+			return ent.Rot().z + GetRotFromParents(ent.Parent());
+		}
+	}
+
+	float GetScaleFromParents(gtk::Entity& ent)
+	{
+		// Base case, at root entity
+		if (&ent.Parent() == &ent)
+		{
+			return ent.Scale().z;
+		}
+		else
+		{
+			// Not at root yet
+			return ent.Scale().z * GetScaleFromParents(ent.Parent());
+		}
+	}
+
+	void Start() override
+	{
+
+	}
+
+	void Draw() override
+	{
+		gtk::mat4 model = TRS();
+		gtk::mat4 view = GetView();
+		gtk::mat4 proj = GetProj();
+
+		gtk::mat4 mvp = proj * view * model;
+
+
+		gtk::vec4 p = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+		p = mvp * p;
+
+		// Only draw when infront of camera
+		if (p.z > 0)
+		{
+
+			App::Print(p.x / p.z, p.y / p.z, _text, _color.r, _color.g, _color.b);
+
+		}
+
+	}
+
+
+
+};
+
+class NumUIRenderer : public gtk::Renderer
+{
+
+private:
+	gtk::vec3 _color;
+	int _num;
+
+public:
+
+	NumUIRenderer(const int& text, gtk::vec3 color = gtk::vec3(0.5f, 0.5f, 0.2f)) : _color(color), _num(text)
+	{
+	}
+
+	void SetNum(int num)
+	{
+		_num = num;
+	}
+
+	// Helper
+	float GetRotFromParents(gtk::Entity& ent)
+	{
+		// Base case, at root entity
+		if (&ent.Parent() == &ent)
+		{
+			return ent.Rot().z;
+		}
+		else
+		{
+			// Not at root yet
+			return ent.Rot().z + GetRotFromParents(ent.Parent());
+		}
+	}
+
+	float GetScaleFromParents(gtk::Entity& ent)
+	{
+		// Base case, at root entity
+		if (&ent.Parent() == &ent)
+		{
+			return ent.Scale().z;
+		}
+		else
+		{
+			// Not at root yet
+			return ent.Scale().z * GetScaleFromParents(ent.Parent());
+		}
+	}
+
+	void Start() override
+	{
+
+	}
+
+	void Draw() override
+	{
+		gtk::mat4 model = TRS();
+		gtk::mat4 view = GetView();
+		gtk::mat4 proj = GetProj();
+
+		gtk::mat4 mvp = proj * view * model;
+
+
+		gtk::vec4 p = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+		p = mvp * p;
+
+		// Only draw when infront of camera
+		if (p.z > 0)
+		{
+
+			int num = _num;
+
+			App::Print(p.x / p.z, p.y / p.z, std::to_string(num).c_str(), _color.r, _color.g, _color.b);
+		}
+
+	}
+
+
 
 };
 
@@ -325,17 +480,20 @@ class MonkeyB : public gtk::Behavior
 {
 
 private:
+	
+	Entity& _cursor;
 
 	float _speed;
 	int _health;
+	int _worth;
 	std::vector<vec3> _path;
 	int _currentNode;
 
 	float _T;
 
 public:
-	MonkeyB(std::vector<vec3> path)
-		: _speed(1.0f), _health(5), _path(path), _currentNode(0) {}
+	MonkeyB(Entity& cursor, std::vector<vec3> path)
+		: _cursor(cursor), _speed(1.0f), _health(5), _worth(1), _path(path), _currentNode(0) {}
 
 	void Start() override
 	{
@@ -345,7 +503,11 @@ public:
 	{
 		if (_health <= 0)
 		{
+			// Monkey dead
 			GetEntity().Active(false);
+
+			// Give player some money
+			_cursor.Trigger(_worth);
 		}
 
 		// Moving from node to node
@@ -399,6 +561,7 @@ public:
 				Scale(1.5f);
 				_speed = 3.0f;
 				_health = 20;
+				_worth = 1;
 				break;
 
 			case -2:
@@ -407,6 +570,7 @@ public:
 				Scale(3.0f);
 				_speed = 2.0f;
 				_health = 100;
+				_worth = 3;
 				break;
 			}
 		}
@@ -1056,12 +1220,15 @@ public:
 class CursorB : public gtk::Behavior
 {
 
+
 private:
 
 	TowerMenuB& _towerMenu;
 	ObjectPool& _shooterPool;
 	ObjectPool& _laserPool;
 	Entity& _saw;
+	NumUIRenderer& _moneyUI;
+	NumUIRenderer& _sawPriceUI;
 
 	CursorState _state;
 	int _numSaws;
@@ -1069,41 +1236,69 @@ private:
 	vec3 _vel;
 	vec3 _velGoal;
 
+	int _money;
+	int _shooterPrice;
+	int _laserPrice;
+	int _sawPrice;
+
 	void SpawnSawHelper()
 	{
-		// Can have up to three saws
+		// Purchase saw
+		if (_money >= _sawPrice)
+		{
+			if (_numSaws == 0)
+			{
+				_saw.Trigger(1);
+				_numSaws++;
+				_money -= _sawPrice;
+				_sawPrice += 10;
+				
+			}
+			else if (_numSaws == 1)
+			{
+				_saw.Trigger(2);
+				_numSaws++;
+				_money -= _sawPrice;
+				_sawPrice += 10;
+			}
+			else if (_numSaws == 2)
+			{
+				_saw.Trigger(3);
+				_numSaws++;
+				_money -= _sawPrice;
+				_sawPriceUI.Active(false);
+			}
+			else
+			{
+				// made unhappy sound
+			}
 
-		if (_numSaws == 0)
-		{
-			_saw.Trigger(1);
-			_numSaws++;
-		}
-		else if (_numSaws == 1)
-		{
-			_saw.Trigger(2);
-			_numSaws++;
-		}
-		else if (_numSaws == 2)
-		{
-			_saw.Trigger(3);
-			_numSaws++;
+			// Update price
+			_sawPriceUI.SetNum(_sawPrice);
 		}
 		else
 		{
-			// made unhappy sound
+			// Make unhappy sound
 		}
 	}
 
 public:
-	CursorB(TowerMenuB& towerMenu, ObjectPool& shooterPool, ObjectPool& laserPool, Entity& saw, const float& speed)
-		: _towerMenu(towerMenu), _shooterPool(shooterPool), _laserPool(laserPool), _saw(saw), _state(ON), _numSaws(0), _speed(speed), _vel(), _velGoal() {}
+	CursorB(TowerMenuB& towerMenu, ObjectPool& shooterPool, ObjectPool& laserPool, Entity& saw, NumUIRenderer& moneyUI, NumUIRenderer& sawPriceUI,
+			const float& speed)
+		: _towerMenu(towerMenu), _shooterPool(shooterPool), _laserPool(laserPool), _saw(saw), 
+		_moneyUI(moneyUI), _sawPriceUI(sawPriceUI),
+		_state(ON), _numSaws(0), _speed(speed), _vel(), _velGoal(),
+		_money(1000), _shooterPrice(5), _laserPrice(8), _sawPrice(10){}
 
 	void Update(const float& deltaTime) override
 	{
-		_saw.Pos(Pos());
 
 		//// Movement ////
 #pragma region Movement
+
+		// Update saw position first 
+		// so it lags behind a bit
+		_saw.Pos(Pos());
 
 		// Update velocity goal from input
 		_velGoal.x = App::GetController().GetLeftThumbStickX() * _speed;
@@ -1164,29 +1359,41 @@ public:
 
 		switch (_state)
 		{
-		case ON: // if not colliding
+		case ON: // if not colliding with path or placed tower
 
 			// GREEN
 			SetColor(vec3(0.0f, 1.0f, 0.0f));
 
+			// When buying a new tower
 			if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
 			{
+				// Current selection
 				switch (_towerMenu._selection)
 				{
 				case TowerSelection::SHOOTER:
 
-					newShooter = &_shooterPool.Create();
-					newShooter->Pos(Pos());
-					newShooter->Trigger(-1);
+					// Check if enough money
+					if (_money >= _shooterPrice)
+					{
+						_money -= _shooterPrice;
 
+						newShooter = &_shooterPool.Create();
+						newShooter->Pos(Pos());
+						newShooter->Trigger(-1);
+						
+					}
 					break;
 
 				case TowerSelection::LASER:
 
-					newLaser = &_laserPool.Create();
-					newLaser->Pos(Pos());
-					newLaser->Trigger(-1);
+					if (_money >= _laserPrice)
+					{
+						_money -= _laserPrice;
 
+						newLaser = &_laserPool.Create();
+						newLaser->Pos(Pos());
+						newLaser->Trigger(-1);
+					}
 					break;
 				
 				case TowerSelection::SAW:
@@ -1213,16 +1420,27 @@ public:
 					// Make unhappy sound
 				}
 			}
-			
-
 			break;
 		}
 
+		// Reset state, it's set to off in on collision
 		_state = ON;
+
+		// Update the money UI
+		_moneyUI.SetNum(_money);
+
 	}
 
 	int Trigger(const int& code) override
 	{
+		if (code > 0)
+		{
+			// A monkey died
+			_money += code;
+
+		}
+
+
 		return 0;
 	}
 
