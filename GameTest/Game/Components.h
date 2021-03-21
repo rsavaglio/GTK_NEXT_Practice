@@ -638,6 +638,7 @@ class BarrelOfMonkeysB : public gtk::Behavior
 
 private:
 
+	Entity& _barrel;
 	Entity& _cursor;
 	ObjectPool& _monkeyPool;
 	NumUIRenderer& _waveUIRend;
@@ -683,8 +684,8 @@ public:
 
 
 public:
-	BarrelOfMonkeysB(Entity& cursor, NumUIRenderer& waveUIRend, std::vector<Wave> waves, ObjectPool& monkeyPool) :
-		_cursor(cursor), _waveUIRend(waveUIRend),_monkeyPool(monkeyPool), _waves(waves),
+	BarrelOfMonkeysB(Entity& barrel, Entity& cursor, NumUIRenderer& waveUIRend, std::vector<Wave> waves, ObjectPool& monkeyPool) :
+		_barrel(barrel), _cursor(cursor), _waveUIRend(waveUIRend),_monkeyPool(monkeyPool), _waves(waves),
 		_state(COUNTDOWN), _spawnTimer(2.0f), _timeSinceSpawn(0), _waveIndex(0), _spawnIndex(0), _spawnCount(0), _countdown(11.0f) {}
 
 
@@ -697,6 +698,8 @@ public:
 		switch (_state)
 		{
 		case SPAWNING:
+
+			_barrel.Rot(vec3(0.0f, deltaTime * 50.f, 0.0f), true);
 
 			_timeSinceSpawn += deltaTime;
 

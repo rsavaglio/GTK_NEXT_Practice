@@ -354,7 +354,6 @@ protected:
 
 #pragma endregion 
 
-
 		//// PATH ////
 #pragma region PathCreation
 		std::vector<vec3> path;
@@ -431,7 +430,6 @@ protected:
 
 	
 
-
 		//// Monkeys ////
 
 		// Waves //
@@ -458,22 +456,39 @@ protected:
 
 
 
+		Entity& banana = CreateEntity();
+		banana.Scale(0.05f);
+		banana.Pos(path.back());
+		AddBehavior(banana, group1, new RotatorB(vec3(0.0f, 50.0f, 0.0f)));
+		AddRenderer(banana, layer2, new OBJRenderer(".\\TestData\\banana.obj", vec3(1.0f, 1.0f, 0.0f)));
+
+
+		Entity& barrel = CreateEntity();
+		barrel.Scale(0.4f);
+		barrel.Pos(vec3(path.front().x, path.front().y - 2, path.front().z));
+		AddRenderer(barrel, layer2, new OBJRenderer(".\\TestData\\barrel.obj", vec3(205.0f / 255.0f, 133.0f / 255.0f, 63.0f / 255.0f)));
+
+
 
 		// Cursor
 		Entity& cursor = CreateEntity("cursor");
 		
 		// Monkey Spawner
-		Entity& barrelOfMonkeys = CreateEntity();
+		Entity& monkeySpawner = CreateEntity();
 			ObjectPool& monkeyPool = CreatePool("monkeyPool", 
-				new MonkeyPool(cursor, barrelOfMonkeys, 50, *this, group1, layer1, towerSightCol, bulletsCol, path));
-			BarrelOfMonkeysB* barrelB = new BarrelOfMonkeysB(cursor, *waveUIRend, waves, monkeyPool);
-			AddBehavior(barrelOfMonkeys, group1, barrelB);
+				new MonkeyPool(cursor, monkeySpawner, 50, *this, group1, layer1, towerSightCol, bulletsCol, path));
+			BarrelOfMonkeysB* barrelB = new BarrelOfMonkeysB(barrel, cursor, *waveUIRend, waves, monkeyPool);
+			AddBehavior(monkeySpawner, group1, barrelB);
 
 			// Cursor
 		AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\ufo.obj"));
 		AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 		AddBehavior(cursor, group1, new CursorB(*barrelB, *towerMenuBehavior, shooterPool, laserPool, saw,
 			*moneyRend, *sawTextRend, *hpUIRend, 35.0f));
+
+
+
+
 	}
 
 	// Called after all entities and collision are updated
