@@ -342,7 +342,7 @@ protected:
 			// Saw
 			Entity& sawText = CreateEntity(towerMenu);
 				sawText.Pos(vec3(7.0f, -1.0f, 0.0f));
-				NumUIRenderer* sawTextRend = new NumUIRenderer(10);
+				NumUIRenderer* sawTextRend = new NumUIRenderer(SAW_PRICE_1);
 				AddRenderer(sawText, UI2, sawTextRend);
 
 				Entity& sawIcon = CreateEntity(sawText);
@@ -359,6 +359,7 @@ protected:
 
 		//// PATH ////
 #pragma region PathCreation
+		
 		std::vector<vec3> path;
 
 		// Start Node
@@ -377,6 +378,7 @@ protected:
 		AddToPath(path, UP, 3);
 
 		CreatePath(path, layer1, cursorSelectionCol, RED);
+
 #pragma endregion
 	
 
@@ -431,36 +433,37 @@ protected:
 
 #pragma endregion
 
-	
-
-		//// Monkeys ////
 
 		// Waves //
 
 		std::vector<Wave> waves;
 
 		Wave wave1;
-		wave1.AddToWave(5, STANDARD, 3.0f);
-		wave1.AddToWave(5, STANDARD, 1.0f);
-		wave1.AddToWave(1, BRUTE, 3.0f);
+		wave1.AddToWave(6, STANDARD, 3.0f);
 		waves.push_back(wave1);
 
 		Wave wave2;
-		wave2.AddToWave(5, TINY,  0.2f);
-		wave2.AddToWave(1, BRUTE, 0.5f);
-		wave2.AddToWave(5, TINY, 0.2f);
-		wave2.AddToWave(1, BRUTE, 1.5f);
-		wave2.AddToWave(5, TINY, 0.2f);
+		wave2.AddToWave(6, STANDARD, 1.0f);
 		waves.push_back(wave2);
 
 		Wave wave3;
-		wave3.AddToWave(1, BOSS, 1.5f);
+		wave3.AddToWave(1, BRUTE, 3.0f);
 		waves.push_back(wave3);
 
-		//Wave wave4;
-		//wave4.AddToWave(3, BRUTE, 0.8f);
-		//wave4.AddToWave(2, BRUTE, 0.6f);
-		//waves.push_back(wave4);
+		Wave wave4;
+		wave4.AddToWave(10, TINY, 0.5f);
+		waves.push_back(wave4);
+
+		waves.push_back(wave4);
+
+		Wave wave5;
+		wave5.AddToWave(10, BRUTE, 0.2f);
+		wave5.AddToWave(5, TINY, 1.0f);
+		waves.push_back(wave5);
+
+		Wave wave6;
+		wave6.AddToWave(2, BOSS, 5.0f);
+		waves.push_back(wave6);
 
 
 		// Banana

@@ -10,30 +10,30 @@
 // For tweaking gameplay
 
 // Wave Countdown
-#define COUNTDOWN_TIME 11.0f
+#define COUNTDOWN_TIME 6.0f
 
 // Player Stats
-#define STARTING_MONEY 10
-#define STARTING_HP    20
+#define STARTING_MONEY 16
+#define STARTING_HP    30
 
 // Shooter
-#define SHOOTER_PRICE 5
+#define SHOOTER_PRICE 6
 #define SHOOTER_STR  1
-#define SHOOTER_RATE 0.2f
+#define SHOOTER_RATE 0.3f
 #define BULLET_SPD   10.0f
-#define SHOOTER_RNG  6.5f
+#define SHOOTER_RNG  6.7f
 #define MAX_SHOOTERS 20
 
 // Laser
-#define LASER_PRICE 8
-#define LASER_STR	4
+#define LASER_PRICE 10
+#define LASER_STR	2
 #define LASER_RATE  0.5f
 #define MAX_LASERS  20
 
 // Saw
-#define SAW_STR		5
+#define SAW_STR		2
 #define SAW_RATE	0.2f
-#define SAW_PRICE_1 10
+#define SAW_PRICE_1 15
 #define SAW_PRICE_2 30
 #define SAW_PRICE_3 60
 
@@ -41,24 +41,24 @@
 #define MONK_COLOR vec3(0.8f, 0.7f, 0.3f)
 #define MONK_SIZE  1.5f
 #define MONK_SPD   2.2f
-#define MONK_HP	   16
-#define MONK_WORTH 2
+#define MONK_HP	   12
+#define MONK_WORTH 1
 #define MONK_STR   3
 #define MONK_SPIN  50.0f
 
 // Brute Monkey
 #define BRUTE_COLOR vec3(0.2f, 0.3f, 0.8f)
 #define BRUTE_SIZE  3.0f
-#define BRUTE_SPD   2.0f
-#define BRUTE_HP	70
-#define BRUTE_WORTH 5
+#define BRUTE_SPD   1.8f
+#define BRUTE_HP	65
+#define BRUTE_WORTH 2
 #define BRUTE_STR   3
 #define BRUTE_SPIN  20.0f
 
 // Tiny Monkey
 #define TINY_COLOR vec3(0.2f, 0.7f, 0.3f)
 #define TINY_SIZE  1.0f
-#define TINY_SPD   3.5f
+#define TINY_SPD   3.0f
 #define TINY_HP	   8
 #define TINY_WORTH 1
 #define TINY_STR   1
@@ -69,7 +69,7 @@
 #define BOSS_SIZE  5.0f
 #define BOSS_SPD   1.0f
 #define BOSS_HP	   500
-#define BOSS_WORTH 20
+#define BOSS_WORTH 5
 #define BOSS_STR   10
 #define BOSS_SPIN 10.0f
 
