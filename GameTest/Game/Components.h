@@ -10,11 +10,11 @@
 // For tweaking gameplay
 
 // Wave Countdown
-#define COUNTDOWN_TIME 6.0f
+#define COUNTDOWN_TIME 8.0f
 
 // Player Stats
-#define STARTING_MONEY 1000 //16
-#define STARTING_HP    30
+#define STARTING_MONEY 16
+#define STARTING_HP    20
 
 // Shooter
 #define SHOOTER_PRICE 6
@@ -32,10 +32,10 @@
 
 // Saw
 #define SAW_STR		2
-#define SAW_RATE	0.2f
+#define SAW_RATE	0.3f
 #define SAW_PRICE_1 12
-#define SAW_PRICE_2 24
-#define SAW_PRICE_3 30
+#define SAW_PRICE_2 16
+#define SAW_PRICE_3 20
 
 // Standard Money
 #define MONK_COLOR vec3(0.8f, 0.7f, 0.3f)
@@ -68,10 +68,19 @@
 #define BOSS_COLOR vec3(1.0f, 0.2f, 0.2f)
 #define BOSS_SIZE  5.0f
 #define BOSS_SPD   1.0f
-#define BOSS_HP	   500
+#define BOSS_HP	   400
 #define BOSS_WORTH 5
-#define BOSS_STR   10
+#define BOSS_STR   5
 #define BOSS_SPIN 10.0f
+
+// Boss Monkey
+#define MEGA_COLOR vec3(1.0f, 0.1f, 1.0f)
+#define MEGA_SIZE  7.0f
+#define MEGA_SPD   0.8f
+#define MEGA_HP	   2500
+#define MEGA_WORTH 20
+#define MEGA_STR   10
+#define MEGA_SPIN  8.0f
 
 
 using namespace gtk;
@@ -423,7 +432,9 @@ enum MonkeyTypes
 	STANDARD = -1,
 	BRUTE = -2,
 	TINY = -3,
-	BOSS = -4
+	BOSS = -4,
+	MEGA = -5
+
 };
 
 class MonkeyB : public gtk::Behavior
@@ -553,6 +564,17 @@ public:
 				_worth    = BOSS_WORTH;
 				_strength = BOSS_STR;
 				_spinSpd =  TINY_SPIN;
+				break;
+
+			case MEGA:
+				// Spawn big blue monkey
+				SetColor(MEGA_COLOR);
+				Scale(MEGA_SIZE);
+				_speed = MEGA_SPD;
+				_health = MEGA_HP;
+				_worth = MEGA_WORTH;
+				_strength = MEGA_STR;
+				_spinSpd = MEGA_SPIN;
 				break;
 			}
 		}

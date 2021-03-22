@@ -155,12 +155,12 @@ protected:
 	}
 };
 
-class TD_Level_1 : public gtk::Scene
+class TD_Level_2 : public gtk::Scene
 {
 
 public:
 
-	TD_Level_1(gtk::Game& game) : gtk::Scene(game) {}
+	TD_Level_2(gtk::Game& game) : gtk::Scene(game) {}
 
 protected:
 
@@ -377,7 +377,10 @@ protected:
 		AddToPath(path, BACK, 2);
 		AddToPath(path, LEFT, 2);
 		AddToPath(path, DOWN, 3);
-		AddToPath(path, RIGHT, 4);
+		AddToPath(path, BACK, 1);
+		AddToPath(path, RIGHT, 1);
+		AddToPath(path, FORWARD, 1);
+		AddToPath(path, RIGHT, 3);
 		AddToPath(path, UP, 3);
 		AddToPath(path, RIGHT, 3);
 		AddToPath(path, BACK, 1);
@@ -446,30 +449,69 @@ protected:
 
 		Wave wave1;
 		wave1.AddToWave(6, STANDARD, 3.0f);
+		wave1.AddToWave(6, STANDARD, 1.0f);
 		waves.push_back(wave1);
 
 		Wave wave2;
 		wave2.AddToWave(6, STANDARD, 1.0f);
+		wave2.AddToWave(3, TINY, 1.0f);
+		wave2.AddToWave(6, TINY, 0.5f);
 		waves.push_back(wave2);
 
 		Wave wave3;
-		wave3.AddToWave(1, BRUTE, 3.0f);
+		wave3.AddToWave(6, STANDARD, 1.0f);
+		wave3.AddToWave(4, BRUTE, 3.0f);
+		wave3.AddToWave(6, STANDARD, 1.0f);
 		waves.push_back(wave3);
 
 		Wave wave4;
-		wave4.AddToWave(10, TINY, 0.5f);
-		waves.push_back(wave4);
-
+		wave4.AddToWave(6, TINY, 0.5f);
+		wave4.AddToWave(2, BRUTE, 3.0f);
+		wave4.AddToWave(1, STANDARD, 4.0f);
+		wave4.AddToWave(5, STANDARD, 2.0f);
+		wave4.AddToWave(6, TINY, 0.5f);
 		waves.push_back(wave4);
 
 		Wave wave5;
-		wave5.AddToWave(10, BRUTE, 0.2f);
-		wave5.AddToWave(5, TINY, 1.0f);
+		wave5.AddToWave(1, BOSS, 3.0f);
 		waves.push_back(wave5);
-
+		
 		Wave wave6;
-		wave6.AddToWave(2, BOSS, 5.0f);
+		wave6.AddToWave(10, TINY, 0.2f);
+		wave6.AddToWave(3, BRUTE, 0.1f);
+		wave6.AddToWave(6, STANDARD, 0.5f);
+		wave6.AddToWave(6, STANDARD, 1.0f);
+		wave6.AddToWave(3, BRUTE, 1.0f);
 		waves.push_back(wave6);
+
+		Wave wave7;
+		wave7.AddToWave(3, BRUTE, 1.0f);
+		wave7.AddToWave(3, BRUTE, 0.7f);
+		wave7.AddToWave(5, BRUTE, 1.0f);
+		wave7.AddToWave(6, BRUTE, 0.7f);
+		wave7.AddToWave(1, BOSS, 1.0f);
+		waves.push_back(wave7);
+
+		Wave wave8;
+		wave8.AddToWave(3, STANDARD, 1.0f);
+		wave8.AddToWave(20, TINY, 0.4f);
+		wave8.AddToWave(4, BRUTE, 1.0f);
+		wave8.AddToWave(7, STANDARD, 0.2f);
+		wave8.AddToWave(1, BOSS, 1.0f);
+		waves.push_back(wave8);
+
+		Wave wave9;
+		wave9.AddToWave(20, TINY, 0.1f);
+		wave9.AddToWave(6, STANDARD, 0.2f);
+		wave9.AddToWave(5, BRUTE, 0.7f);
+		wave9.AddToWave(1, BOSS, 1.0f);
+		wave9.AddToWave(10, TINY, 0.3f);
+		waves.push_back(wave9);
+
+		Wave wave10;
+		wave10.AddToWave(5, BOSS, 3.0f);
+		wave10.AddToWave(1, BOSS, 3.0f);
+		waves.push_back(wave10);
 
 
 		// Banana
@@ -530,12 +572,12 @@ protected:
 	}
 };
 
-class TD_Level_2 : public gtk::Scene
+class TD_Level_1 : public gtk::Scene
 {
 
 public:
 
-	TD_Level_2(gtk::Game& game) : gtk::Scene(game) {}
+	TD_Level_1(gtk::Game& game) : gtk::Scene(game) {}
 
 protected:
 
@@ -746,9 +788,11 @@ protected:
 		// Start Node
 		path.push_back(vec3(-15.0f, -6.0f, 0.0f));
 
-		AddToPath(path, UP, 2);
+		AddToPath(path, UP, 3);
 		AddToPath(path, RIGHT, 5);
-		AddToPath(path, DOWN, 2);
+		AddToPath(path, DOWN, 3);
+		AddToPath(path, LEFT, 3);
+
 
 		CreatePath(path, layer1, cursorSelectionCol, RED);
 
@@ -813,31 +857,29 @@ protected:
 
 		Wave wave1;
 		wave1.AddToWave(6, STANDARD, 3.0f);
+		wave1.AddToWave(6, STANDARD, 2.0f);
+		wave1.AddToWave(6, STANDARD, 1.0f);
 		waves.push_back(wave1);
 
 		Wave wave2;
-		wave2.AddToWave(6, STANDARD, 1.0f);
+		wave2.AddToWave(6, STANDARD, 2.0f);
+		wave2.AddToWave(15, TINY, 0.5f);
 		waves.push_back(wave2);
 
 		Wave wave3;
-		wave3.AddToWave(1, BRUTE, 3.0f);
+		wave3.AddToWave(1, BRUTE, 1.0f);
 		waves.push_back(wave3);
 
 		Wave wave4;
-		wave4.AddToWave(10, TINY, 0.5f);
-		waves.push_back(wave4);
-
+		wave4.AddToWave(5, STANDARD, 1.0f);
+		wave4.AddToWave(2, BRUTE, 1.0f);
+		wave4.AddToWave(3, TINY, 0.5f);
+		wave4.AddToWave(1, STANDARD, 0.1f);
 		waves.push_back(wave4);
 
 		Wave wave5;
-		wave5.AddToWave(10, BRUTE, 0.2f);
-		wave5.AddToWave(5, TINY, 1.0f);
+		wave5.AddToWave(1, BOSS, 0.2f);
 		waves.push_back(wave5);
-
-		Wave wave6;
-		wave6.AddToWave(2, BOSS, 5.0f);
-		waves.push_back(wave6);
-
 
 		// Banana
 		Entity& banana = CreateEntity();
@@ -1025,11 +1067,11 @@ protected:
 
 		Entity& level1Text = CreateEntity();
 		level1Text.Pos(vec3(-6.0f, 0.0f, 0.0f));
-			AddRenderer(level1Text, layer, new TextRenderer("Level 1", vec3(1.0f, 1.0f, 1.0f)));
+			AddRenderer(level1Text, layer, new TextRenderer("Easy", vec3(1.0f, 1.0f, 1.0f)));
 
 		Entity& level2Text = CreateEntity();
 			level2Text.Pos(vec3(3.0f, 0.0f, 0.0f));
-			AddRenderer(level2Text, layer, new TextRenderer("Level 2", vec3(1.0f, 1.0f, 1.0f)));
+			AddRenderer(level2Text, layer, new TextRenderer("Tough", vec3(1.0f, 1.0f, 1.0f)));
 
 		Entity& selector = CreateEntity();
 			selector.Rot(vec3(180.0f, 0.0f, 0.0f));
