@@ -9,6 +9,9 @@
 
 // For tweaking gameplay
 
+#define MAX_VOL -100
+#define MIN_VOL -10000
+
 // Wave Countdown
 #define COUNTDOWN_TIME 8.0f
 
@@ -628,6 +631,7 @@ class BarrelOfMonkeysB : public gtk::Behavior
 
 private:
 
+	Entity& _music;
 	Entity& _loseText;
 	Entity& _winText;
 	Entity& _banana;
@@ -678,10 +682,10 @@ public:
 
 
 public:
-	BarrelOfMonkeysB(Entity& loseText, Entity& winText, 
+	BarrelOfMonkeysB(Entity& music,  Entity& loseText, Entity& winText,
 		Entity& banana, Entity& giantMonkey, Entity& barrel, Entity& cursor, 
 		NumUIRenderer& waveUIRend, std::vector<Wave> waves, ObjectPool& monkeyPool) :
-		_loseText(loseText), _winText(winText), 
+		_music(music), _loseText(loseText), _winText(winText), 
 		_banana(banana), _giantMonkey(giantMonkey),
 		_barrel(barrel), _cursor(cursor), _waveUIRend(waveUIRend),_monkeyPool(monkeyPool), _waves(waves),
 		_state(COUNTDOWN), _spawnTimer(2.0f), _timeSinceSpawn(0), _waveIndex(0), _spawnIndex(0), _spawnCount(0), _countdown(COUNTDOWN_TIME) {}
@@ -723,7 +727,6 @@ public:
 					// if at end of wave
 					if (_spawnIndex == GetWave()._spawnList.size())
 					{
-						
 						_spawnIndex = 0;
 
 						// End of wave
@@ -731,6 +734,11 @@ public:
 						_state = WAIT;
 						_barrel.SetColor(vec3(0.5f, 0.2f, 0.1f));
 							
+					}
+					else
+					{
+						// Next music layer
+						_music.Trigger(1);
 					}
 				}
 
@@ -755,6 +763,7 @@ public:
 			if (_countdown <= 0.0f)
 			{
 				_state = SPAWNING;
+				_music.Trigger(1);
 				_barrel.SetColor(vec3(0.8f, 0.5f, 0.25f));
 
 				_countdown = COUNTDOWN_TIME;
@@ -820,6 +829,7 @@ public:
 				{
 					// Start countdown
 					_state = COUNTDOWN;
+					_music.Trigger(-1);
 					_waveIndex++;
 				}
 
@@ -1827,5 +1837,116 @@ public:
 		}
 
 	}
+
+};
+
+enum
+{
+	LAYER1,
+	LAYER2,
+	LAYER3,
+	LAYER4
+};
+
+class MusicB : public gtk::Behavior
+{
+private:
+	int _state;
+
+	int _layer2Start;
+	vec4 _vol;
+	vec4 _volGoal;
+
+public:
+	MusicB(int layer2Vol = MIN_VOL) : _layer2Start(layer2Vol), _vol(vec4(MIN_VOL)), _volGoal(vec4(MIN_VOL)), _state(LAYER1) {}
+
+	// Called before the first update
+	void Start() override 
+	{
+
+		// Start music at same time
+
+		App::PlaySound(".\\TestData\\Layer1.wav", true);
+		App::SetSoundVolume(".\\TestData\\Layer1.wav", MIN_VOL);
+		
+		App::PlaySound(".\\TestData\\Layer2.wav", true);
+		App::SetSoundVolume(".\\TestData\\Layer2.wav", MIN_VOL);
+		
+		App::PlaySound(".\\TestData\\Layer3.wav", true);
+		App::SetSoundVolume(".\\TestData\\Layer3.wav", MIN_VOL);
+		
+		App::PlaySound(".\\TestData\\Layer4.wav", true);
+		App::SetSoundVolume(".\\TestData\\Layer4.wav", MIN_VOL);
+
+
+		_volGoal.x = MAX_VOL - 1000;
+		_volGoal.y = _layer2Start;
+		_volGoal.z = MIN_VOL;
+		_volGoal.w = MIN_VOL;
+
+
+	}
+
+	void Update(const float& deltaTime) override 
+	{
+		_vol = LERP(_vol, _volGoal, deltaTime * 0.4);
+		App::SetSoundVolume(".\\TestData\\Layer1.wav", _vol.x);
+		App::SetSoundVolume(".\\TestData\\Layer2.wav", _vol.y);
+		App::SetSoundVolume(".\\TestData\\Layer3.wav", _vol.z);
+		App::SetSoundVolume(".\\TestData\\Layer4.wav", _vol.w);
+	}
+
+	// Use for sending messages through entities
+	int Trigger(const int& code) override
+	{
+		if (code == -1)
+		{
+			// Reset Track
+			_state = LAYER1;
+			_volGoal.y = MIN_VOL;
+			_volGoal.z = MIN_VOL;
+			_volGoal.w = MIN_VOL;
+
+		}
+		if (code == 1)
+		{
+			// Next track
+			switch (_state)
+			{
+			case LAYER1:
+
+				_state = LAYER2;
+				_volGoal.y = MAX_VOL;
+				_volGoal.z = MIN_VOL;
+				_volGoal.w = MIN_VOL;
+
+				break;
+			case LAYER2:
+				
+				_state = LAYER3;
+				_volGoal.y = MAX_VOL;
+				_volGoal.z = MAX_VOL;
+				_volGoal.w = MIN_VOL;
+
+				break;
+			case LAYER3:
+
+				_state = LAYER4;
+				_volGoal.y = MAX_VOL;
+				_volGoal.z = MAX_VOL;
+				_volGoal.w = MAX_VOL;
+
+				break;
+			case LAYER4:
+				// dance
+				break;
+			}
+		}
+
+
+		return 0;
+	}
+
+	void OnCollision(Entity& other) override {}
 
 };

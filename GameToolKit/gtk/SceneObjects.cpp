@@ -154,6 +154,18 @@ namespace gtk {
 		return (1 - t) * s + t * e;
 	}
 
+	vec4 SceneObject::LERP(const vec4& s, const vec4& e, const float& t)
+	{
+		vec4 temp(0);
+
+		temp.x = (1 - t) * s.x + t * e.x;
+		temp.y = (1 - t) * s.y + t * e.y;
+		temp.z = (1 - t) * s.z + t * e.z;
+		temp.w = (1 - t) * s.w + t * e.w;
+
+		return temp;
+	}
+
 	vec3 SceneObject::LERP(const vec3& s, const vec3& e, const float& t)
 	{
 		vec3 temp(0);

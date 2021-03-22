@@ -65,6 +65,7 @@ namespace gtk {
 		// Math Helpers
 
 		float LERP(const float& s, const float& e, const float& t);
+		vec4  LERP(const vec4& s, const vec4& e, const float& t);
 		vec3  LERP(const vec3& s, const vec3& e, const float& t);
 		vec2  LERP(const vec2& s, const vec2& e, const float& t);
 
