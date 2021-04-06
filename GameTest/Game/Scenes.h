@@ -7,6 +7,7 @@
 #include "ObjectPools.h"
 #include "Colliders.h"
 #include "enums.h"
+#include "Path.h"
 
 #include <queue>
 
@@ -57,86 +58,11 @@ class TD_Level_2 : public gtk::Scene
 
 public:
 
+	Path _path;
+
 	TD_Level_2(gtk::Game& game) : gtk::Scene(game) {}
 
 protected:
-
-	void CreatePath(const std::vector<vec3>& nodePos, RenderLayer layer, CollisionGroup colGroup, const vec3& color)
-	{
-		int i = 0;
-		for (const vec3& pos : nodePos)
-		{
-			Entity& node = CreateEntity("PathNode" + std::to_string(i));
-			AddRenderer(node, layer, new CubeRenderer(color));
-			AddCollider(node, colGroup, new SphereCollider());
-			node.Scale(3.0f);
-			node.Pos(pos);
-			i++;
-		}
-	}
-	void AddToPath(std::vector<vec3>& nodes, Direction dir, int count)
-	{
-		ASSERT(nodes.size() > 0);
-
-		switch (dir)
-		{
-		case LEFT :
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(-6.0f, 0.0f, 0.0f));
-			}
-
-			break;
-
-		case RIGHT:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(6.0f, 0.0f, 0.0f));
-			}
-
-			break;
-
-		case UP:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 6.0f, 0.0f));
-			}
-
-			break;
-
-		case DOWN:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, -6.0f, 0.0f));
-			}
-
-			break;
-
-		case FORWARD:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 0.0f, 6.0f));
-			}
-
-			break;
-
-		case BACK:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 0.0f, -6.0f));
-			}
-
-			break;
-		}
-
-
-	}
 
 	// Called by game when scene starts
 	void Setup() override
@@ -266,28 +192,28 @@ protected:
 
 		//// PATH ////
 #pragma region PathCreation
-		
-		std::vector<vec3> path;
 
 		// Start Node
-		path.push_back(vec3(-28.0f, 12.0f, 0.0f));
+		_path.Init(vec3(-28.0f, 12.0f, 0.0f));
 		
-		AddToPath(path, RIGHT, 3);
-		AddToPath(path, FORWARD, 2);
-		AddToPath(path, DOWN, 2);
-		AddToPath(path, BACK, 2);
-		AddToPath(path, LEFT, 2);
-		AddToPath(path, DOWN, 3);
-		AddToPath(path, BACK, 1);
-		AddToPath(path, RIGHT, 1);
-		AddToPath(path, FORWARD, 1);
-		AddToPath(path, RIGHT, 3);
-		AddToPath(path, UP, 3);
-		AddToPath(path, RIGHT, 3);
-		AddToPath(path, BACK, 1);
-		AddToPath(path, UP, 3);
+		// Add nodes
+		_path.Add(RIGHT, 3);
+		_path.Add(FORWARD, 2);
+		_path.Add(DOWN, 2);
+		_path.Add(BACK, 2);
+		_path.Add(LEFT, 2);
+		_path.Add(DOWN, 3);
+		_path.Add(BACK, 1);
+		_path.Add(RIGHT, 1);
+		_path.Add(FORWARD, 1);
+		_path.Add(RIGHT, 3);
+		_path.Add(UP, 3);
+		_path.Add(RIGHT, 3);
+		_path.Add(BACK, 1);
+		_path.Add(UP, 3);
 
-		CreatePath(path, layer1, cursorSelectionCol, RED);
+		// Create entities
+		_path.CreatePathinScene(*this, layer1, cursorSelectionCol);
 
 #pragma endregion
 	
@@ -349,86 +275,86 @@ protected:
 		std::vector<Wave> waves;
 
 		Wave wave1;
-		wave1.AddToWave(12, STANDARD, 2.0f);
+		wave1.Add(12, STANDARD, 2.0f);
 		waves.push_back(wave1);
 
 		Wave wave2;
-		wave2.AddToWave(6, TINY, 1.0f);
-		wave2.AddToWave(6, STANDARD, 2.0f);
+		wave2.Add(6, TINY, 1.0f);
+		wave2.Add(6, STANDARD, 2.0f);
 		waves.push_back(wave2);
 
 		Wave wave3;
-		wave3.AddToWave(12, TINY, 1.0f);
-		wave3.AddToWave(8, STANDARD, 1.0f);
-		wave3.AddToWave(3, BRUTE, 3.0f);
+		wave3.Add(12, TINY, 1.0f);
+		wave3.Add(8, STANDARD, 1.0f);
+		wave3.Add(3, BRUTE, 3.0f);
 		waves.push_back(wave3);
 
 		Wave wave4;
-		wave4.AddToWave(6, TINY, 0.5f);
-		wave4.AddToWave(2, BRUTE, 3.0f);
-		wave4.AddToWave(1, STANDARD, 4.0f);
-		wave4.AddToWave(5, STANDARD, 2.0f);
-		wave4.AddToWave(6, TINY, 0.5f);
+		wave4.Add(6, TINY, 0.5f);
+		wave4.Add(2, BRUTE, 3.0f);
+		wave4.Add(1, STANDARD, 4.0f);
+		wave4.Add(5, STANDARD, 2.0f);
+		wave4.Add(6, TINY, 0.5f);
 		waves.push_back(wave4);
 
 		Wave wave5;
-		wave3.AddToWave(1, STANDARD, 1.0f);
-		wave3.AddToWave(4, TINY, 1.0f);
-		wave5.AddToWave(1, BOSS, 3.0f);
+		wave3.Add(1, STANDARD, 1.0f);
+		wave3.Add(4, TINY, 1.0f);
+		wave5.Add(1, BOSS, 3.0f);
 		waves.push_back(wave5);
 		
 		Wave wave6;
-		wave6.AddToWave(10, TINY, 0.2f);
-		wave6.AddToWave(3, BRUTE, 0.1f);
-		wave6.AddToWave(6, STANDARD, 0.5f);
-		wave6.AddToWave(6, STANDARD, 1.0f);
-		wave6.AddToWave(3, BRUTE, 1.0f);
+		wave6.Add(10, TINY, 0.2f);
+		wave6.Add(3, BRUTE, 0.1f);
+		wave6.Add(6, STANDARD, 0.5f);
+		wave6.Add(6, STANDARD, 1.0f);
+		wave6.Add(3, BRUTE, 1.0f);
 		waves.push_back(wave6);
 
 		Wave wave7;
-		wave7.AddToWave(3, BRUTE, 1.0f);
-		wave7.AddToWave(3, BRUTE, 0.7f);
-		wave7.AddToWave(5, BRUTE, 1.0f);
-		wave7.AddToWave(6, BRUTE, 0.7f);
-		wave7.AddToWave(1, BOSS, 1.0f);
+		wave7.Add(3, BRUTE, 1.0f);
+		wave7.Add(3, BRUTE, 0.7f);
+		wave7.Add(5, BRUTE, 1.0f);
+		wave7.Add(6, BRUTE, 0.7f);
+		wave7.Add(1, BOSS, 1.0f);
 		waves.push_back(wave7);
 
 		Wave wave8;
-		wave8.AddToWave(3, STANDARD, 1.0f);
-		wave8.AddToWave(20, TINY, 0.4f);
-		wave8.AddToWave(4, BRUTE, 1.0f);
-		wave8.AddToWave(7, STANDARD, 0.2f);
-		wave8.AddToWave(1, BOSS, 1.0f);
+		wave8.Add(3, STANDARD, 1.0f);
+		wave8.Add(20, TINY, 0.4f);
+		wave8.Add(4, BRUTE, 1.0f);
+		wave8.Add(7, STANDARD, 0.2f);
+		wave8.Add(1, BOSS, 1.0f);
 		waves.push_back(wave8);
 
 		Wave wave9;
-		wave9.AddToWave(20, TINY, 0.1f);
-		wave9.AddToWave(6, STANDARD, 0.2f);
-		wave9.AddToWave(5, BRUTE, 0.7f);
-		wave9.AddToWave(1, BOSS, 1.0f);
-		wave9.AddToWave(10, TINY, 0.3f);
+		wave9.Add(20, TINY, 0.1f);
+		wave9.Add(6, STANDARD, 0.2f);
+		wave9.Add(5, BRUTE, 0.7f);
+		wave9.Add(1, BOSS, 1.0f);
+		wave9.Add(10, TINY, 0.3f);
 		waves.push_back(wave9);
 
 		Wave wave10;
-		wave9.AddToWave(1, TINY, 0.1f);
-		wave9.AddToWave(1, STANDARD, 0.2f);
-		wave9.AddToWave(1, BRUTE, 0.7f);
-		wave10.AddToWave(5, BOSS, 5.0f);
-		wave10.AddToWave(1, MEGA, 3.0f);
+		wave10.Add(1, TINY, 0.1f);
+		wave10.Add(1, STANDARD, 0.2f);
+		wave10.Add(1, BRUTE, 0.7f);
+		wave10.Add(5, BOSS, 5.0f);
+		wave10.Add(1, MEGA, 3.0f);
 		waves.push_back(wave10);
 
 
 		// Banana
 		Entity& banana = CreateEntity();
 		banana.Scale(0.05f);
-		banana.Pos(path.back());
+		banana.Pos(_path.nodes.back());
 		AddBehavior(banana, group1, new RotatorB(vec3(0.0f, 50.0f, 0.0f)));
 		AddRenderer(banana, layer2, new OBJRenderer(".\\TestData\\banana.obj", vec3(1.0f, 1.0f, 0.0f)));
 
 		// Barrel at spawn
 		Entity& barrel = CreateEntity();
 		barrel.Scale(0.4f);
-		barrel.Pos(vec3(path.front().x, path.front().y - 2, path.front().z));
+		barrel.Pos(vec3(_path.nodes.front().x, _path.nodes.front().y - 2, _path.nodes.front().z));
 		AddRenderer(barrel, layer2, new OBJRenderer(".\\TestData\\barrel.obj", vec3(0.6f, 0.4f, 0.2f)));
 
 
@@ -456,7 +382,7 @@ protected:
 		// Monkey Spawner
 		Entity& monkeySpawner = CreateEntity();
 			ObjectPool& monkeyPool = 
-				CreatePool("monkeyPool",new MonkeyPool(cursor, monkeySpawner, 50, *this, group1, layer1, towerSightCol, bulletsCol, path));
+				CreatePool("monkeyPool",new MonkeyPool(cursor, monkeySpawner, 50, *this, group1, layer1, towerSightCol, bulletsCol, _path.nodes));
 			BarrelOfMonkeysB* barrelB = 
 				new BarrelOfMonkeysB(conductor, loseText, winText, banana, giantMonkey, barrel, cursor, *waveUIRend, waves, monkeyPool);
 			AddBehavior(monkeySpawner, group1, barrelB);
@@ -481,86 +407,11 @@ class TD_Level_1 : public gtk::Scene
 
 public:
 
+	Path _path;
+
 	TD_Level_1(gtk::Game& game) : gtk::Scene(game) {}
 
 protected:
-
-	void CreatePath(const std::vector<vec3>& nodePos, RenderLayer layer, CollisionGroup colGroup, const vec3& color)
-	{
-		int i = 0;
-		for (const vec3& pos : nodePos)
-		{
-			Entity& node = CreateEntity("PathNode" + std::to_string(i));
-			AddRenderer(node, layer, new CubeRenderer(color));
-			AddCollider(node, colGroup, new SphereCollider());
-			node.Scale(3.0f);
-			node.Pos(pos);
-			i++;
-		}
-	}
-	void AddToPath(std::vector<vec3>& nodes, Direction dir, int count)
-	{
-		ASSERT(nodes.size() > 0);
-
-		switch (dir)
-		{
-		case LEFT:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(-6.0f, 0.0f, 0.0f));
-			}
-
-			break;
-
-		case RIGHT:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(6.0f, 0.0f, 0.0f));
-			}
-
-			break;
-
-		case UP:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 6.0f, 0.0f));
-			}
-
-			break;
-
-		case DOWN:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, -6.0f, 0.0f));
-			}
-
-			break;
-
-		case FORWARD:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 0.0f, 6.0f));
-			}
-
-			break;
-
-		case BACK:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 0.0f, -6.0f));
-			}
-
-			break;
-		}
-
-
-	}
 
 	// Called by game when scene starts
 	void Setup() override
@@ -692,18 +543,15 @@ protected:
 		//// PATH ////
 #pragma region PathCreation
 
-		std::vector<vec3> path;
-
 		// Start Node
-		path.push_back(vec3(-15.0f, -6.0f, 0.0f));
+		_path.Init(vec3(-15.0f, -6.0f, 0.0f));
 
-		AddToPath(path, UP, 3);
-		AddToPath(path, RIGHT, 5);
-		AddToPath(path, DOWN, 3);
-		AddToPath(path, LEFT, 3);
+		_path.Add(UP, 3);
+		_path.Add(RIGHT, 5);
+		_path.Add(DOWN, 3);
+		_path.Add(LEFT, 3);
 
-
-		CreatePath(path, layer1, cursorSelectionCol, RED);
+		_path.CreatePathinScene(*this, layer1, cursorSelectionCol);
 
 #pragma endregion
 
@@ -765,45 +613,45 @@ protected:
 		std::vector<Wave> waves;
 
 		Wave wave1;
-		wave1.AddToWave(12, STANDARD, 2.0f);
+		wave1.Add(12, STANDARD, 2.0f);
 		waves.push_back(wave1);
 
 		Wave wave2;
-		wave2.AddToWave(6, STANDARD, 2.0f);
-		wave2.AddToWave(15, TINY, 0.5f);
+		wave2.Add(6, STANDARD, 2.0f);
+		wave2.Add(15, TINY, 0.5f);
 		waves.push_back(wave2);
 
 		Wave wave3;
-		wave2.AddToWave(2, STANDARD, 2.0f);
-		wave2.AddToWave(3, TINY, 2.0f);
-		wave3.AddToWave(1, BRUTE, 1.0f);
+		wave2.Add(2, STANDARD, 2.0f);
+		wave2.Add(3, TINY, 2.0f);
+		wave3.Add(1, BRUTE, 1.0f);
 		waves.push_back(wave3);
 
 		Wave wave4;
-		wave4.AddToWave(5, STANDARD, 1.0f);
-		wave4.AddToWave(2, BRUTE, 1.0f);
-		wave4.AddToWave(3, TINY, 0.5f);
-		wave4.AddToWave(1, STANDARD, 0.1f);
+		wave4.Add(5, STANDARD, 1.0f);
+		wave4.Add(2, BRUTE, 1.0f);
+		wave4.Add(3, TINY, 0.5f);
+		wave4.Add(1, STANDARD, 0.1f);
 		waves.push_back(wave4);
 
 		Wave wave5;
-		wave4.AddToWave(1, TINY, 0.5f);
-		wave4.AddToWave(1, TINY, 0.5f);
-		wave4.AddToWave(1, TINY, 0.5f);
-		wave5.AddToWave(1, BOSS, 0.2f);
+		wave4.Add(1, TINY, 0.5f);
+		wave4.Add(1, TINY, 0.5f);
+		wave4.Add(1, TINY, 0.5f);
+		wave5.Add(1, BOSS, 0.2f);
 		waves.push_back(wave5);
 
 		// Banana
 		Entity& banana = CreateEntity();
 		banana.Scale(0.05f);
-		banana.Pos(path.back());
+		banana.Pos(_path.nodes.back());
 		AddBehavior(banana, group1, new RotatorB(vec3(0.0f, 50.0f, 0.0f)));
 		AddRenderer(banana, layer2, new OBJRenderer(".\\TestData\\banana.obj", vec3(1.0f, 1.0f, 0.0f)));
 
 		// Barrel at spawn
 		Entity& barrel = CreateEntity();
 		barrel.Scale(0.4f);
-		barrel.Pos(vec3(path.front().x, path.front().y - 2, path.front().z));
+		barrel.Pos(vec3(_path.nodes.front().x, _path.nodes.front().y - 2, _path.nodes.front().z));
 		AddRenderer(barrel, layer2, new OBJRenderer(".\\TestData\\barrel.obj", vec3(0.6f, 0.4f, 0.2f)));
 
 
@@ -831,7 +679,7 @@ protected:
 		// Monkey Spawner
 		Entity& monkeySpawner = CreateEntity();
 		ObjectPool& monkeyPool =
-			CreatePool("monkeyPool", new MonkeyPool(cursor, monkeySpawner, 50, *this, group1, layer1, towerSightCol, bulletsCol, path));
+			CreatePool("monkeyPool", new MonkeyPool(cursor, monkeySpawner, 50, *this, group1, layer1, towerSightCol, bulletsCol, _path.nodes));
 		BarrelOfMonkeysB* barrelB =
 			new BarrelOfMonkeysB(conductor, loseText, winText, banana, giantMonkey, barrel, cursor, *waveUIRend, waves, monkeyPool);
 		AddBehavior(monkeySpawner, group1, barrelB);
@@ -856,85 +704,12 @@ class MainMenu : public gtk::Scene
 
 public:
 
+	Path _path;
+
 	MainMenu(gtk::Game& game) : gtk::Scene(game) {}
 
 protected:
 
-	void CreatePath(const std::vector<vec3>& nodePos, RenderLayer layer, const vec3& color)
-	{
-		int i = 0;
-		for (const vec3& pos : nodePos)
-		{
-			Entity& node = CreateEntity("PathNode" + std::to_string(i));
-			AddRenderer(node, layer, new CubeRenderer(color));
-			node.Scale(3.0f);
-			node.Pos(pos);
-			i++;
-		}
-	}
-	void AddToPath(std::vector<vec3>& nodes, Direction dir, int count)
-	{
-		ASSERT(nodes.size() > 0);
-
-		switch (dir)
-		{
-		case LEFT:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(-6.0f, 0.0f, 0.0f));
-			}
-
-			break;
-
-		case RIGHT:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(6.0f, 0.0f, 0.0f));
-			}
-
-			break;
-
-		case UP:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 6.0f, 0.0f));
-			}
-
-			break;
-
-		case DOWN:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, -6.0f, 0.0f));
-			}
-
-			break;
-
-		case FORWARD:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 0.0f, 6.0f));
-			}
-
-			break;
-
-		case BACK:
-
-			for (int i = 0; i < count; i++)
-			{
-				nodes.push_back(vec3(nodes.back()) + vec3(0.0f, 0.0f, -6.0f));
-			}
-
-			break;
-		}
-
-
-	}
 
 	// Called by game when scene starts
 	void Setup() override
@@ -943,18 +718,17 @@ protected:
 
 		UpdateGroup group = CreateUpdateGroup();
 		RenderLayer layer = CreateRenderLayer();
-
-		std::vector<vec3> path;
+		CollisionGroup colGroup = CreateCollisionGroup();
 
 		// Start Node
-		path.push_back(vec3(-15.0f, -6.0f, 0.0f));
+		_path.Init(vec3(-15.0f, -6.0f, 0.0f));
 
-		AddToPath(path, UP, 3);
-		AddToPath(path, RIGHT, 5);
-		AddToPath(path, DOWN, 3);
-		AddToPath(path, LEFT, 5);
+		_path.Add(UP, 3);
+		_path.Add(RIGHT, 5);
+		_path.Add(DOWN, 3);
+		_path.Add(LEFT, 5);
 
-		CreatePath(path, layer, RED);
+		_path.CreatePathinScene(*this, layer, colGroup);
 
 
 		Entity& camera = CreateEntity();
@@ -968,12 +742,12 @@ protected:
 		Entity& monkey = CreateEntity();
 			monkey.Rot(vec3(0.0f, 180.0f, 0.0f));
 			monkey.Scale(3.0f);
-			AddBehavior(monkey, group, new MenuMonkeyB(0, 2.0f, 120.0f, path));
+			AddBehavior(monkey, group, new MenuMonkeyB(0, 2.0f, 120.0f, _path.nodes));
 			AddRenderer(monkey, layer, new OBJRenderer(".\\TestData\\monkey.obj", vec3(0.8f, 0.5f, 0.0f)));
 
 		Entity& banana = CreateEntity();
 			banana.Scale(0.05f);
-			AddBehavior(banana, group, new MenuMonkeyB(5, 2.0f, -80.0f, path));
+			AddBehavior(banana, group, new MenuMonkeyB(5, 2.0f, -80.0f, _path.nodes));
 			AddRenderer(banana, layer, new OBJRenderer(".\\TestData\\banana.obj", vec3(0.7f, 0.7f, 0.0f)));
 
 

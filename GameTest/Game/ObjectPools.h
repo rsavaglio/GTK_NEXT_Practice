@@ -80,7 +80,7 @@ public:
 
 	MonkeyPool(Entity& cursor, Entity& barrel, int count, Scene& scene,
 		const gtk::UpdateGroup& group, const gtk::RenderLayer& layer, const gtk::CollisionGroup colGroup, const gtk::CollisionGroup colGroup2,
-		std::vector<vec3> path)
+		const std::vector<vec3>& path)
 		: _path(path), _cursor(cursor), _barrel(barrel), _group(group), _layer(layer), _colGroup(colGroup), _colGroup2(colGroup2),
 		ObjectPool(count, scene)
 	{

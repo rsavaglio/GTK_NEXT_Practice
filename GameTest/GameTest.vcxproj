@@ -196,6 +196,7 @@
     <ClInclude Include="Game\Games.h" />
     <ClInclude Include="Game\Components.h" />
     <ClInclude Include="Game\ObjectPools.h" />
+    <ClInclude Include="Game\Path.h" />
     <ClInclude Include="Game\Renderers.h" />
     <ClInclude Include="Game\Scenes.h" />
     <ClInclude Include="stdafx.h" />
