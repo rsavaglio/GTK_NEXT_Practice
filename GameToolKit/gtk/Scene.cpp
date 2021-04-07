@@ -285,6 +285,22 @@ namespace gtk {
 		return *camera;
 	}
 
+	Model& Scene::CreateModel(std::string path, std::string name)
+	{
+		Model* newModel = new Model(path);
+
+		m_Models.insert({name, newModel});
+
+		return *newModel;
+	}
+
+	Model& Scene::GetModel(std::string name)
+	{
+		ASSERT(m_Models.find(name) != m_Models.end());
+
+		return *m_Models.at(name);
+	}
+
 	void Scene::SetMainCam(const unsigned int& id) 
 	{
 		ASSERT(m_CameraMap.find(id) != m_CameraMap.end());
@@ -622,6 +638,7 @@ namespace gtk {
 		// Shred maps
 		MapShredder(m_CameraMap);
 		MapShredder(m_ObjectPools);
+		MapShredder(m_Models);
 
 		// Clear Entity Scene Graph
 		delete[] m_EntityPointerProvider;

@@ -47,7 +47,7 @@ public:
 
 			// Setup here
 			_scene.AddBehavior(*entity, _group, new BulletB());
-			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\ico.obj", vec3(0.8f, 0.5, 0.3f)));
+			_scene.AddRenderer(*entity, _layer, new OBJRenderer(_scene.GetModel("ico"), vec3(0.8f, 0.5, 0.3f)));
 			_scene.AddCollider(*entity, _colGroup, new SphereCollider(2.0f));
 			entity->Scale(0.5f);
 			
@@ -98,7 +98,7 @@ public:
 
 			// Setup here
 			_scene.AddBehavior(*entity, _group, new MonkeyB(_cursor, _path));
-			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\monkey.obj", vec3(1.0f, 0.0f, 0.0f)));
+			_scene.AddRenderer(*entity, _layer, new OBJRenderer(_scene.GetModel("monkey"), vec3(1.0f, 0.0f, 0.0f)));
 			_scene.AddCollider(*entity, _colGroup, new SphereCollider());
 			_scene.AddCollider(*entity, _colGroup2, new SphereCollider());
 
@@ -157,7 +157,7 @@ public:
 
 			// Setup here
 			_scene.AddBehavior(*entity, _group, new ShooterB(_bulletPool));
-			_scene.AddRenderer(*entity, _layer, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
+			_scene.AddRenderer(*entity, _layer, new OBJRenderer(_scene.GetModel("cone"), vec3(0.0f, 0.0f, 1.0f)));
 			_scene.AddCollider(*entity, _towerSightCol, new SphereCollider(SHOOTER_RNG));
 			_scene.AddCollider(*entity, _cursorSelectionCol, new SphereCollider());
 
@@ -220,7 +220,7 @@ public:
 			
 			LineRenderer* line = new LineRenderer(vec3(1.0f, 0.0f, 0.0f));
 			_scene.AddRenderer(*entity, _lineRend, line);
-			_scene.AddRenderer(*entity, _bodyRend, new OBJRenderer(".\\TestData\\ico.obj", vec3(1.0f, 0.0f, 0.0f)));
+			_scene.AddRenderer(*entity, _bodyRend, new OBJRenderer(_scene.GetModel("ico"), vec3(1.0f, 0.0f, 0.0f)));
 			
 			RayCollider* ray = new RayCollider();
 			SphereCollider* sphereCol = new SphereCollider(15.0f);

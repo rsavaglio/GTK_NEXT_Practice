@@ -19,6 +19,7 @@ namespace gtk {
 	class Collider;
 	class CollisionGroup;
 	class Camera;
+	class Model;
 
 	class Scene {
 
@@ -62,6 +63,9 @@ namespace gtk {
 
 		Collider& AddCollider(Entity& entity, const CollisionGroup& group, Collider* const collider);
 
+		Model& CreateModel(std::string path, std::string name);
+		Model& GetModel(std::string name);
+
 		void SetMainCam(const unsigned int& id);
 
 		void TriggerBehaviours(const unsigned int& id, const int& code);
@@ -94,8 +98,11 @@ namespace gtk {
 
 
 		std::unordered_map<std::string, ObjectPool*> m_ObjectPools;
+		std::unordered_map<std::string, Model*> m_Models;
 
 		std::unordered_map<unsigned int, Camera*> m_CameraMap;
+
+
 		Camera* m_MainCam;
 	
 	private:

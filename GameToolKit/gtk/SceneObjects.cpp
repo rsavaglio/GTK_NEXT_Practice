@@ -568,4 +568,92 @@ namespace gtk {
 	{
 		return m_Active;
 	}
+
+
+
+	Model::Model(std::string filePath) : _vbo(), _ibo()
+	{
+		LoadObject(filePath);
+	}
+
+	const std::vector<gtk::vec4>& Model::GetVBO() const
+	{
+		return _vbo;
+	}
+
+	const std::vector<int>& Model::GetIBO() const
+	{
+		return _ibo;
+	}
+
+	void Model::LoadObject(std::string filePath)
+	{
+		using namespace std;
+
+		// TODO: Add flyweight here, longer load time for every object that needs an obj
+
+		// Open File
+		fstream file;
+		file.open(filePath);
+		ASSERT(file.is_open());
+
+		string prefix;
+
+		// Find the verts
+		while (prefix != "v")
+		{
+			file >> prefix;
+		}
+
+		// Add each vert to vbo
+		float x, y, z;
+		while (prefix == "v")
+		{
+			file >> x;
+			file >> y;
+			file >> z;
+
+			gtk::vec4 newVert = { x, y, z, 1.0f };
+			_vbo.push_back(newVert);
+
+			file >> prefix;
+		}
+
+		// Find the faces
+		while (prefix != "f")
+		{
+			file >> prefix;
+		}
+
+		int e1 = 0;
+		int e2 = 0;
+		int e3 = 0;
+
+		// Add each quad to ibo
+		while (!file.eof())
+		{
+
+			file >> e1;
+			file >> e2;
+			file >> e3;
+
+			e1 -= 1;
+			e2 -= 1;
+			e3 -= 1;
+
+			_ibo.push_back(e1);
+			_ibo.push_back(e2);
+
+			_ibo.push_back(e2);
+			_ibo.push_back(e3);
+
+			_ibo.push_back(e3);
+			_ibo.push_back(e1);
+
+			file >> prefix;
+
+		}
+
+		file.close();
+	}
 }

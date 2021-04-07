@@ -111,15 +111,15 @@ public:
 
 };
 
+
 class OBJRenderer : public gtk::Renderer
 {
 
 public:
 
-	OBJRenderer(std::string filePath, gtk::vec3 color = vec3(0.5f, 0.5f, 0.2f))
-		: _vbo(), _ibo(), Renderer(color)
+	OBJRenderer(const Model& model, gtk::vec3 color = vec3(0.5f, 0.5f, 0.2f))
+		: _model(model), Renderer(color)
 	{
-		LoadObject(filePath);
 	}
 
 	void Start() override
@@ -140,10 +140,11 @@ public:
 		gtk::mat4 mvp = proj * view * model;
 
 		// Draw Model
-		for (int i = 0; i < _ibo.size(); i += 2)
+		for (int i = 0; i < _model.GetIBO().size(); i += 2)
 		{
-			s = { _vbo[_ibo[i]].x, _vbo[_ibo[i]].y, _vbo[_ibo[i]].z, 1 };
-			e = { _vbo[_ibo[i + 1]].x, _vbo[_ibo[i + 1]].y, _vbo[_ibo[i + 1]].z, 1 };
+			// Get the start and end verts for each line
+			s = { _model.GetVBO()[_model.GetIBO()[i]].x, _model.GetVBO()[_model.GetIBO()[i]].y, _model.GetVBO()[_model.GetIBO()[i]].z, 1 };
+			e = { _model.GetVBO()[_model.GetIBO()[i + 1]].x, _model.GetVBO()[_model.GetIBO()[i + 1]].y, _model.GetVBO()[_model.GetIBO()[i + 1]].z, 1 };
 
 			s = mvp * s;
 			e = mvp * e;
@@ -161,79 +162,8 @@ public:
 	}
 
 private:
-
-	void LoadObject(std::string filePath)
-	{
-		using namespace std;
-
-		// TODO: Add flyweight here, longer load time for every object that needs an obj
-
-		// Open File
-		fstream file;
-		file.open(filePath);
-		ASSERT(file.is_open());
-
-		string prefix;
-
-		// Find the verts
-		while (prefix != "v")
-		{
-			file >> prefix;
-		}
-
-		// Add each vert to vbo
-		float x, y, z;
-		while (prefix == "v")
-		{
-			file >> x;
-			file >> y;
-			file >> z;
-
-			gtk::vec4 newVert = { x, y, z, 1.0f };
-			_vbo.push_back(newVert);
-
-			file >> prefix;
-		}
-
-		// Find the faces
-		while (prefix != "f")
-		{
-			file >> prefix;
-		}
-
-		int e1 = 0;
-		int e2 = 0;
-		int e3 = 0;
-
-		// Add each quad to ibo
-		while (!file.eof())
-		{
-
-			file >> e1;
-			file >> e2;
-			file >> e3;
-
-			e1 -= 1;
-			e2 -= 1;
-			e3 -= 1;
-
-			_ibo.push_back(e1);
-			_ibo.push_back(e2);
-
-			_ibo.push_back(e2);
-			_ibo.push_back(e3);
-
-			_ibo.push_back(e3);
-			_ibo.push_back(e1);
-
-			file >> prefix;
-
-		}
-
-		file.close();
-	}
-	std::vector<gtk::vec4> _vbo;
-	std::vector<int> _ibo;
+		
+	const Model& _model;
 };
 
 class CubeRenderer : public gtk::Renderer
@@ -812,8 +742,6 @@ struct Wave
 	}
 
 };
-
-
 
 enum GameState
 {

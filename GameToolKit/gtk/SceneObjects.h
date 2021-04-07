@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <queue>
+#include <fstream>
 
 namespace gtk {
 
@@ -408,5 +409,33 @@ namespace gtk {
 		bool m_Active;
 
 	};
+
+
+	///////////////
+	///	Model
+	///////////////
+
+	class Model
+	{
+		friend class gtk::Scene;
+
+	public:
+
+		const std::vector<gtk::vec4>& GetVBO() const;
+		const std::vector<int>& GetIBO() const;
+
+	private:
+
+		Model(std::string filePath);
+		Model(const Model&) = delete;
+
+		// Loads object data from an OBJ
+		// Must be only positions and triangles
+		void LoadObject(std::string filePath);
+
+		std::vector<gtk::vec4> _vbo;
+		std::vector<int> _ibo;
+	};
+
 
 }

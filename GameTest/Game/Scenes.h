@@ -87,6 +87,18 @@ protected:
 
 #pragma endregion
 
+
+		//// Models ////
+
+		Model& monkeyModel = CreateModel(".\\TestData\\monkey.obj", "monkey");
+		Model& donutModel  = CreateModel(".\\TestData\\donut.obj", "donut");
+		Model& sphereModel = CreateModel(".\\TestData\\sphere.obj", "sphere");
+		Model& coneModel   = CreateModel(".\\TestData\\cone.obj", "cone");
+		Model& icoModel    = CreateModel(".\\TestData\\ico.obj", "ico");
+		Model& bananaModel = CreateModel(".\\TestData\\banana.obj", "banana");
+		Model& barrelModel = CreateModel(".\\TestData\\barrel.obj", "barrel");
+		Model& ufoModel    = CreateModel(".\\TestData\\ufo.obj", "ufo");
+
 		//// Camera ////
 
 		Entity& tripod = CreateEntity();
@@ -161,7 +173,7 @@ protected:
 
 				Entity& shooterIcon = CreateEntity(shooterText);
 					shooterIcon.Pos(vec3(0.3f, 2.5f, 0.0f));
-					AddRenderer(shooterIcon, UI2, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
+					AddRenderer(shooterIcon, UI2, new OBJRenderer(coneModel, vec3(0.0f, 0.0f, 1.0f)));
 			
 			// Laser
 			Entity& laserText = CreateEntity(towerMenu);
@@ -170,7 +182,7 @@ protected:
 
 				Entity& laserIcon = CreateEntity(laserText);
 					laserIcon.Pos(vec3(0.3f, 2.3f, 0.0f));
-					AddRenderer(laserIcon, UI2, new OBJRenderer(".\\TestData\\ico.obj", vec3(1.0f, 0.0f, 0.0f)));
+					AddRenderer(laserIcon, UI2, new OBJRenderer(icoModel, vec3(1.0f, 0.0f, 0.0f)));
 			
 			// Saw
 			Entity& sawText = CreateEntity(towerMenu);
@@ -182,7 +194,7 @@ protected:
 					sawIcon.Pos(vec3(0.6f, 2.3f, 0.0f));
 					sawIcon.Rot(vec3(-70.0f, 0.0f, 0.0f));
 					sawIcon.Scale(vec3(0.7f));
-					AddRenderer(sawIcon, UI2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
+					AddRenderer(sawIcon, UI2, new OBJRenderer(donutModel, vec3(0.3f, 0.3f, 1.0f)));
 
 			// Add behavior to tower menu
 			TowerMenuB* towerMenuBehavior = new TowerMenuB(shooterIcon, laserIcon, sawIcon);
@@ -240,7 +252,7 @@ protected:
 		Entity& saw = CreateEntity("saw");
 			Entity& hSpinner = CreateEntity(saw);
 				Entity& hBlade = CreateEntity(hSpinner);
-					AddRenderer(hBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
+					AddRenderer(hBlade, layer2, new OBJRenderer(donutModel, vec3(0.3f, 0.3f, 1.0f)));
 					AddCollider(hBlade, bulletsCol, new SphereCollider(2.0f));
 					AddBehavior(hBlade, group1, new SawBladeB());
 					hBlade.Pos(vec3(3.0f, 0.0f, 0.0f));
@@ -248,7 +260,7 @@ protected:
 			
 					Entity& vSpinner = CreateEntity(saw);
 				Entity& vBlade = CreateEntity(vSpinner);
-					AddRenderer(vBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
+					AddRenderer(vBlade, layer2, new OBJRenderer(donutModel, vec3(0.3f, 0.3f, 1.0f)));
 					AddCollider(vBlade, bulletsCol, new SphereCollider(2.0f));
 					AddBehavior(vBlade, group1, new SawBladeB());
 					vBlade.Pos(vec3(0.0f, 3.0f, 0.0f));
@@ -257,7 +269,7 @@ protected:
 			
 			Entity& dSpinner = CreateEntity(saw);
 				Entity& dBlade = CreateEntity(dSpinner);
-					AddRenderer(dBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
+					AddRenderer(dBlade, layer2, new OBJRenderer(donutModel, vec3(0.3f, 0.3f, 1.0f)));
 					AddCollider(dBlade, bulletsCol, new SphereCollider(2.0f));
 					AddBehavior(dBlade, group1, new SawBladeB());
 					dBlade.Pos(vec3(0.0f, -0.2f, 0.0f));
@@ -349,20 +361,20 @@ protected:
 		banana.Scale(0.05f);
 		banana.Pos(_path.nodes.back());
 		AddBehavior(banana, group1, new RotatorB(vec3(0.0f, 50.0f, 0.0f)));
-		AddRenderer(banana, layer2, new OBJRenderer(".\\TestData\\banana.obj", vec3(1.0f, 1.0f, 0.0f)));
+		AddRenderer(banana, layer2, new OBJRenderer(bananaModel, vec3(1.0f, 1.0f, 0.0f)));
 
 		// Barrel at spawn
 		Entity& barrel = CreateEntity();
 		barrel.Scale(0.4f);
 		barrel.Pos(vec3(_path.nodes.front().x, _path.nodes.front().y - 2, _path.nodes.front().z));
-		AddRenderer(barrel, layer2, new OBJRenderer(".\\TestData\\barrel.obj", vec3(0.6f, 0.4f, 0.2f)));
+		AddRenderer(barrel, layer2, new OBJRenderer(barrelModel, vec3(0.6f, 0.4f, 0.2f)));
 
 
 		// Giant evil monkey when you lose
 		Entity& giantMonkey = CreateEntity();
 		giantMonkey.Pos(vec3(0.0f, 0.0f, 10000.0f));
 		giantMonkey.Rot(vec3(0.0f, 180.0f, 0.0f));
-		AddRenderer(giantMonkey, layer2, new OBJRenderer(".\\TestData\\monkey.obj", vec3(1.0f, 0.0f, 0.0f)));
+		AddRenderer(giantMonkey, layer2, new OBJRenderer(monkeyModel, vec3(1.0f, 0.0f, 0.0f)));
 		giantMonkey.Active(false);
 		
 		Entity& loseText = CreateEntity(camera);
@@ -388,7 +400,7 @@ protected:
 			AddBehavior(monkeySpawner, group1, barrelB);
 
 		// Cursor
-		AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\ufo.obj"));
+		AddRenderer(cursor, layer2, new OBJRenderer(ufoModel));
 		AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 		AddBehavior(cursor, group1, new CursorB(*barrelB, *towerMenuBehavior, shooterPool, laserPool, saw,
 			*moneyRend, *sawTextRend, *hpUIRend, 35.0f));
@@ -435,6 +447,18 @@ protected:
 		CollisionGroup bulletsCol = CreateCollisionGroup();
 
 #pragma endregion
+
+		//// Models ////
+
+		Model& monkeyModel = CreateModel(".\\TestData\\monkey.obj", "monkey");
+		Model& donutModel = CreateModel(".\\TestData\\donut.obj", "donut");
+		Model& sphereModel = CreateModel(".\\TestData\\sphere.obj", "sphere");
+		Model& coneModel = CreateModel(".\\TestData\\cone.obj", "cone");
+		Model& icoModel = CreateModel(".\\TestData\\ico.obj", "ico");
+		Model& bananaModel = CreateModel(".\\TestData\\banana.obj", "banana");
+		Model& barrelModel = CreateModel(".\\TestData\\barrel.obj", "barrel");
+		Model& ufoModel = CreateModel(".\\TestData\\ufo.obj", "ufo");
+
 
 		//// Camera ////
 
@@ -511,7 +535,7 @@ protected:
 
 		Entity& shooterIcon = CreateEntity(shooterText);
 		shooterIcon.Pos(vec3(0.3f, 2.5f, 0.0f));
-		AddRenderer(shooterIcon, UI2, new OBJRenderer(".\\TestData\\cone.obj", vec3(0.0f, 0.0f, 1.0f)));
+		AddRenderer(shooterIcon, UI2, new OBJRenderer(coneModel, vec3(0.0f, 0.0f, 1.0f)));
 
 		// Laser
 		Entity& laserText = CreateEntity(towerMenu);
@@ -520,7 +544,7 @@ protected:
 
 		Entity& laserIcon = CreateEntity(laserText);
 		laserIcon.Pos(vec3(0.3f, 2.3f, 0.0f));
-		AddRenderer(laserIcon, UI2, new OBJRenderer(".\\TestData\\ico.obj", vec3(1.0f, 0.0f, 0.0f)));
+		AddRenderer(laserIcon, UI2, new OBJRenderer(icoModel, vec3(1.0f, 0.0f, 0.0f)));
 
 		// Saw
 		Entity& sawText = CreateEntity(towerMenu);
@@ -532,7 +556,7 @@ protected:
 		sawIcon.Pos(vec3(0.6f, 2.3f, 0.0f));
 		sawIcon.Rot(vec3(-70.0f, 0.0f, 0.0f));
 		sawIcon.Scale(vec3(0.7f));
-		AddRenderer(sawIcon, UI2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
+		AddRenderer(sawIcon, UI2, new OBJRenderer(donutModel, vec3(0.3f, 0.3f, 1.0f)));
 
 		// Add behavior to tower menu
 		TowerMenuB* towerMenuBehavior = new TowerMenuB(shooterIcon, laserIcon, sawIcon);
@@ -578,7 +602,7 @@ protected:
 		Entity& saw = CreateEntity("saw");
 		Entity& hSpinner = CreateEntity(saw);
 		Entity& hBlade = CreateEntity(hSpinner);
-		AddRenderer(hBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
+		AddRenderer(hBlade, layer2, new OBJRenderer(donutModel, vec3(0.3f, 0.3f, 1.0f)));
 		AddCollider(hBlade, bulletsCol, new SphereCollider(2.0f));
 		AddBehavior(hBlade, group1, new SawBladeB());
 		hBlade.Pos(vec3(3.0f, 0.0f, 0.0f));
@@ -586,7 +610,7 @@ protected:
 
 		Entity& vSpinner = CreateEntity(saw);
 		Entity& vBlade = CreateEntity(vSpinner);
-		AddRenderer(vBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
+		AddRenderer(vBlade, layer2, new OBJRenderer(donutModel, vec3(0.3f, 0.3f, 1.0f)));
 		AddCollider(vBlade, bulletsCol, new SphereCollider(2.0f));
 		AddBehavior(vBlade, group1, new SawBladeB());
 		vBlade.Pos(vec3(0.0f, 3.0f, 0.0f));
@@ -595,7 +619,7 @@ protected:
 
 		Entity& dSpinner = CreateEntity(saw);
 		Entity& dBlade = CreateEntity(dSpinner);
-		AddRenderer(dBlade, layer2, new OBJRenderer(".\\TestData\\donut.obj", vec3(0.3f, 0.3f, 1.0f)));
+		AddRenderer(dBlade, layer2, new OBJRenderer(donutModel, vec3(0.3f, 0.3f, 1.0f)));
 		AddCollider(dBlade, bulletsCol, new SphereCollider(2.0f));
 		AddBehavior(dBlade, group1, new SawBladeB());
 		dBlade.Pos(vec3(0.0f, -0.2f, 0.0f));
@@ -646,20 +670,20 @@ protected:
 		banana.Scale(0.05f);
 		banana.Pos(_path.nodes.back());
 		AddBehavior(banana, group1, new RotatorB(vec3(0.0f, 50.0f, 0.0f)));
-		AddRenderer(banana, layer2, new OBJRenderer(".\\TestData\\banana.obj", vec3(1.0f, 1.0f, 0.0f)));
+		AddRenderer(banana, layer2, new OBJRenderer(bananaModel, vec3(1.0f, 1.0f, 0.0f)));
 
 		// Barrel at spawn
 		Entity& barrel = CreateEntity();
 		barrel.Scale(0.4f);
 		barrel.Pos(vec3(_path.nodes.front().x, _path.nodes.front().y - 2, _path.nodes.front().z));
-		AddRenderer(barrel, layer2, new OBJRenderer(".\\TestData\\barrel.obj", vec3(0.6f, 0.4f, 0.2f)));
+		AddRenderer(barrel, layer2, new OBJRenderer(barrelModel, vec3(0.6f, 0.4f, 0.2f)));
 
 
 		// Giant evil monkey when you lose
 		Entity& giantMonkey = CreateEntity();
 		giantMonkey.Pos(vec3(0.0f, 0.0f, 10000.0f));
 		giantMonkey.Rot(vec3(0.0f, 180.0f, 0.0f));
-		AddRenderer(giantMonkey, layer2, new OBJRenderer(".\\TestData\\monkey.obj", vec3(1.0f, 0.0f, 0.0f)));
+		AddRenderer(giantMonkey, layer2, new OBJRenderer(monkeyModel, vec3(1.0f, 0.0f, 0.0f)));
 		giantMonkey.Active(false);
 
 		Entity& loseText = CreateEntity(camera);
@@ -685,7 +709,7 @@ protected:
 		AddBehavior(monkeySpawner, group1, barrelB);
 
 		// Cursor
-		AddRenderer(cursor, layer2, new OBJRenderer(".\\TestData\\ufo.obj"));
+		AddRenderer(cursor, layer2, new OBJRenderer(ufoModel));
 		AddCollider(cursor, cursorSelectionCol, new SphereCollider());
 		AddBehavior(cursor, group1, new CursorB(*barrelB, *towerMenuBehavior, shooterPool, laserPool, saw,
 			*moneyRend, *sawTextRend, *hpUIRend, 35.0f));
@@ -720,6 +744,13 @@ protected:
 		RenderLayer layer = CreateRenderLayer();
 		CollisionGroup colGroup = CreateCollisionGroup();
 
+		/// Models
+
+		Model& monkeyModel = CreateModel(".\\TestData\\monkey.obj", "monkey");
+		Model& bananaModel = CreateModel(".\\TestData\\banana.obj", "banana");
+		Model& coneModel = CreateModel(".\\TestData\\cone2.obj", "cone");
+
+
 		// Start Node
 		_path.Init(vec3(-15.0f, -6.0f, 0.0f));
 
@@ -743,12 +774,12 @@ protected:
 			monkey.Rot(vec3(0.0f, 180.0f, 0.0f));
 			monkey.Scale(3.0f);
 			AddBehavior(monkey, group, new MenuMonkeyB(0, 2.0f, 120.0f, _path.nodes));
-			AddRenderer(monkey, layer, new OBJRenderer(".\\TestData\\monkey.obj", vec3(0.8f, 0.5f, 0.0f)));
+			AddRenderer(monkey, layer, new OBJRenderer(monkeyModel, vec3(0.8f, 0.5f, 0.0f)));
 
 		Entity& banana = CreateEntity();
 			banana.Scale(0.05f);
 			AddBehavior(banana, group, new MenuMonkeyB(5, 2.0f, -80.0f, _path.nodes));
-			AddRenderer(banana, layer, new OBJRenderer(".\\TestData\\banana.obj", vec3(0.7f, 0.7f, 0.0f)));
+			AddRenderer(banana, layer, new OBJRenderer(bananaModel, vec3(0.7f, 0.7f, 0.0f)));
 
 
 		Entity& level1Text = CreateEntity();
@@ -762,7 +793,7 @@ protected:
 		Entity& selector = CreateEntity();
 			selector.Rot(vec3(180.0f, 0.0f, 0.0f));
 			AddBehavior(selector, group, new MenuSelectorB(level1Text, level2Text, 30.0f));
-			AddRenderer(selector, layer, new OBJRenderer(".\\TestData\\cone2.obj", vec3(0.0f, 0.0f, 1.0f)));
+			AddRenderer(selector, layer, new OBJRenderer(coneModel, vec3(0.0f, 0.0f, 1.0f)));
 
 
 			//// Music ////
