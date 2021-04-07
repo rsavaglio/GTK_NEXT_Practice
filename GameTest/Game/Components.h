@@ -2,12 +2,11 @@
 #include "gtk/gtk.h"
 #include "app/app.h"
 #include "gtk/gtkMath.hpp"
+
 #include <math.h>
-#include "enums.h"
 #include <string>
 #include <fstream>
 #include <array>
-
 
 // For tweaking gameplay
 
@@ -90,6 +89,11 @@
 
 using namespace gtk;
 
+enum CursorState {
+	ON,
+	OFF
+};
+
 class BehaviorTemplate : public gtk::Behavior
 {
 
@@ -110,7 +114,6 @@ public:
 	void OnCollision(Entity& other) override {}
 
 };
-
 
 class OBJRenderer : public gtk::Renderer
 {

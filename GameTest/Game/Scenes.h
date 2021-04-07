@@ -6,7 +6,6 @@
 #include "Renderers.h"
 #include "ObjectPools.h"
 #include "Colliders.h"
-#include "enums.h"
 #include "Path.h"
 
 #include <queue>
@@ -451,13 +450,13 @@ protected:
 		//// Models ////
 
 		Model& monkeyModel = CreateModel(".\\TestData\\monkey.obj", "monkey");
-		Model& donutModel = CreateModel(".\\TestData\\donut.obj", "donut");
+		Model& donutModel  = CreateModel(".\\TestData\\donut.obj", "donut");
 		Model& sphereModel = CreateModel(".\\TestData\\sphere.obj", "sphere");
-		Model& coneModel = CreateModel(".\\TestData\\cone.obj", "cone");
-		Model& icoModel = CreateModel(".\\TestData\\ico.obj", "ico");
+		Model& coneModel   = CreateModel(".\\TestData\\cone.obj", "cone");
+		Model& icoModel    = CreateModel(".\\TestData\\ico.obj", "ico");
 		Model& bananaModel = CreateModel(".\\TestData\\banana.obj", "banana");
 		Model& barrelModel = CreateModel(".\\TestData\\barrel.obj", "barrel");
-		Model& ufoModel = CreateModel(".\\TestData\\ufo.obj", "ufo");
+		Model& ufoModel    = CreateModel(".\\TestData\\ufo.obj", "ufo");
 
 
 		//// Camera ////
@@ -744,11 +743,11 @@ protected:
 		RenderLayer layer = CreateRenderLayer();
 		CollisionGroup colGroup = CreateCollisionGroup();
 
-		/// Models
+		/// Models ///
 
 		Model& monkeyModel = CreateModel(".\\TestData\\monkey.obj", "monkey");
 		Model& bananaModel = CreateModel(".\\TestData\\banana.obj", "banana");
-		Model& coneModel = CreateModel(".\\TestData\\cone2.obj", "cone");
+		Model& coneModel   = CreateModel(".\\TestData\\cone2.obj", "cone");
 
 
 		// Start Node
@@ -771,7 +770,7 @@ protected:
 			AddRenderer(title, layer, new TextRenderer("Monkey Tunnel", vec3(1.0f, 1.0f, 1.0f)));
 
 		Entity& monkey = CreateEntity();
-			monkey.Rot(vec3(0.0f, 180.0f, 0.0f));
+			monkey.Rot({ 0.0f, 180.0f, 0.0f });
 			monkey.Scale(3.0f);
 			AddBehavior(monkey, group, new MenuMonkeyB(0, 2.0f, 120.0f, _path.nodes));
 			AddRenderer(monkey, layer, new OBJRenderer(monkeyModel, vec3(0.8f, 0.5f, 0.0f)));
@@ -796,7 +795,7 @@ protected:
 			AddRenderer(selector, layer, new OBJRenderer(coneModel, vec3(0.0f, 0.0f, 1.0f)));
 
 
-			//// Music ////
+		//// Music ////
 
 		Entity& conductor = CreateEntity();
 			AddBehavior(conductor, group, new MusicB(MAX_VOL));
